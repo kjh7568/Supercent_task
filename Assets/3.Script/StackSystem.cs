@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class StackSystem : MonoBehaviour
 {
-    [Header("Stack Points (앞 = 먼저 채움)")]
     [SerializeField] private List<StackPoint> stackPoints = new();
 
     public int TotalCount
@@ -34,20 +33,22 @@ public class StackSystem : MonoBehaviour
     {
         foreach (var sp in stackPoints)
         {
-            if (sp.HasSpace)
+            if (sp.TargetType == config.itemType && sp.HasSpace)
             {
                 sp.AddItem(config);
                 return;
             }
         }
 
-        Debug.LogWarning("[StackSystem] 모든 StackPoint가 가득 찼습니다.");
+        Debug.LogWarning($"[StackSystem] {config.itemType} 타입의 빈 StackPoint가 없습니다.");
     }
 
-    public void Remove()
+    public void Remove(StackItemType type)
     {
         for (int i = stackPoints.Count - 1; i >= 0; i--)
         {
+            if (stackPoints[i].TargetType != type) continue;
+
             var item = stackPoints[i].RemoveTopItem();
             if (item != null)
             {

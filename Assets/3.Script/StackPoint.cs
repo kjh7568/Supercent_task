@@ -4,10 +4,12 @@ using UnityEngine;
 public class StackPoint : MonoBehaviour
 {
     [Header("Settings")]
+    [SerializeField] private StackItemType targetType;
     [SerializeField] private int capacity = 10;
     [SerializeField] private Vector3 stackAxis = Vector3.up;
     [SerializeField] private float itemSpacing = 0.3f;
 
+    public StackItemType TargetType => targetType;
     public bool HasSpace => items.Count < capacity;
     public int Count => items.Count;
 

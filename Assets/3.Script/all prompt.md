@@ -104,3 +104,124 @@
 **User:** 오케이 시작하기 전에 리퀘스트랑 올프롬프트에 각각 내용 저장해
 
 **Assistant:** Player Request.md, all prompt.md 저장 완료.
+
+**User:** 스탭2개인데 스탭 1밖에 안 적혔는데?
+
+**Assistant:** Player Request.md 테이블에 S2 항목 추가.
+
+**User:** ㅇㅇ 시작 (S1)
+
+**Assistant:** S1 OreObject.cs 생성. Active/Mining/Hidden 3상태, miningDuration/respawnTime 인스펙터 노출, Renderer/Collider 토글, Coroutine 리스폰, OnPickedUp Action 이벤트.
+
+**User:** 에디터에서 할 내용 없지 아직?
+
+**Assistant:** 없음. S2 이후 Collider Is Trigger 설정 예정이라고 안내.
+
+**User:** ㅇㅇ 커밋먼저해
+
+**Assistant:** S1 커밋 완료.
+
+**User:** 진행 (S2)
+
+**Assistant:** S2 OreObject.cs에 OnTriggerEnter/Stay/Exit 추가. playerTag 필드로 태그 필터링, Enter→StartMining, Stay→UpdateMining, Exit→CancelMining 연결. 에디터 작업 안내(Collider Is Trigger, Player 태그 확인).
+
+**User:** 안캐지는데, 트리거 엔터 스테이 익시트에 각각 로그 추가해봐
+
+**Assistant:** Enter/Stay/Exit에 Debug.Log 추가 (오브젝트명, 태그, 타이머 출력).
+
+**User:** 아 맞네 리지드 바디 안넣었어. 근데 리지드 바디는 아예 쓰지 않을거라. 기능만 있고 물리법칙은 적용 안되게 하려면 뭐 켜야 하더라
+
+**Assistant:** Rigidbody의 Is Kinematic 체크하면 물리 시뮬레이션 꺼지고 트리거 감지는 유지된다고 안내.
+
+**User:** ㅇㅋ 됐다. 커밋해
+
+**Assistant:** S2 커밋 완료.
+
+---
+
+## 2026-04-02 (세션 3 - StackSystem)
+
+**User:** StackSystem 범용 컴포넌트를 만들거야. 채광된 광석과 만들어진 가공품이 동시에 사용할 수 있는 확장성 있는 구조. 광석 채광 후 오브젝트 형태로 등에 적재되는 것까지 구현. 프로세스 짜봐
+
+**Assistant:** 프로세스 제안.
+- S1: StackItemType enum + StackItemConfig ScriptableObject
+- S2: StackPoint 컴포넌트 (적재 앵커 단위 관리)
+- S3: StackSystem 컴포넌트 (플레이어 총괄 관리자)
+- S4: OreObject 연동 (이벤트 시그니처 변경 + config 필드 추가)
+- S5: 씬 셋업 (에디터 작업)
+
+**User:** 작업 시작 전에 리퀘스트에 저장
+
+**Assistant:** Player Request.md에 [003] StackSystem 항목 저장 완료.
+
+**User:** 1부터 시작
+
+**Assistant:** S1 진행. StackItemType.cs (Ore/Product enum), StackItemConfig.cs (ScriptableObject, itemType+itemPrefab) 생성.
+
+**User:** 커밋
+
+**Assistant:** S1 커밋 완료.
+
+**User:** s2 ㄱ
+
+**Assistant:** S2 진행. StackPoint.cs 생성. capacity/stackAxis/itemSpacing 인스펙터 설정, AddItem()/RemoveTopItem()/HasSpace 구현.
+
+**User:** 인스펙터에서 할 내용 없지?
+
+**Assistant:** 없음. 인스펙터 설정은 S5에서 한번에 처리.
+
+**User:** 커밋
+
+**Assistant:** S2 커밋 완료.
+
+**User:** 3 ㄱ
+
+**Assistant:** S3 진행. StackSystem.cs 생성. Start()에서 OreObject 구독, Add(config)/Remove() 구현, OnDestroy()에서 구독 해제.
+
+**User:** 커밋
+
+**Assistant:** S3 커밋 완료.
+
+**User:** 4 ㄱ
+
+**Assistant:** S4 진행. OreObject.cs 수정. stackConfig 필드 추가, OnPickedUp을 Action→Action<StackItemConfig>로 변경, CompletePickup()에서 Invoke(stackConfig) 호출.
+
+**User:** 다함. 커밋 / 언스테이지 내용 다 커밋해 (씬 파일 포함)
+
+**Assistant:** S4+씬 파일 커밋. 이후 S4만 언도 후 재커밋 반복. 씬 파일을 S4에 포함하여 최종 커밋 완료.
+
+**User:** 다시 언도 했어. 아직 s5는 안했어. s4만 한거야. 다시 내용 적어서 커밋해
+
+**Assistant:** 스테이지 내용 확인 후 S4로 커밋 완료. (OreObject.cs + StackItemConfig.asset + StackedOre.prefab + MainScene.unity)
+
+**User:** 그럼 이제 스택 포인트에 포인트들 넣으면 되는거임?
+
+**Assistant:** 맞는데, 먼저 광석=등/가공품=손 타입 분리 설계 확인. 현재 구조는 순서 기반 → 타입 기반으로 변경 필요 제안.
+
+**User:** 광석은 등에 매고 가공품은 손으로 가는거야
+
+**Assistant:** StackPoint/StackSystem 수정 필요 확인.
+
+**User:** ㅇㅇ ㄱ
+
+**Assistant:** StackPoint에 targetType 필드 추가, StackSystem.Add()에 타입 일치 조건 추가.
+
+**User:** 스택 시스템은 수정할 거 없엄?
+
+**Assistant:** Remove()도 타입 구분 없음 지적.
+
+**User:** 그치; 광석만 납품 가공품만 납품이여야지.
+
+**Assistant:** Remove()를 Remove(StackItemType type)으로 변경.
+
+**User:** 36번째 줄에서 널레퍼런스 뜸
+
+**Assistant:** config 또는 sp가 null일 때 발생. OreObject Inspector의 Stack Config 슬롯 미연결이 원인으로 추정.
+
+**User:** 오케이 일단 대화하면서 바뀐 점이나 변경사항들 플레이어 리퀘스트에 반영해줘
+
+**Assistant:** Player Request.md 업데이트. targetType 기반 라우팅 변경 이유, Remove(StackItemType) 변경 이유 기록.
+
+**User:** 그 다음 이 세션 대화내용 올프롬프트에 저장해줘
+
+**Assistant:** all prompt.md 세션 3 저장 완료.

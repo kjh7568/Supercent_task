@@ -51,17 +51,24 @@
 
 **구현 방법**
 - 데이터: `StackItemConfig` ScriptableObject (아이템 타입, 프리팹)로 아이템 종류 정의
-- 적재 앵커: `StackPoint` 컴포넌트를 플레이어 자식 오브젝트(손/등)에 부착, capacity·stackAxis·itemSpacing 설정
+- 적재 앵커: `StackPoint` 컴포넌트를 플레이어 자식 오브젝트(손/등)에 부착, targetType·capacity·stackAxis·itemSpacing 설정
+- 타입별 라우팅: 광석 → 등(StackPoint_Back), 가공품 → 손(StackPoint_Hand). StackPoint의 `targetType`으로 구분
 - 총괄 관리: `StackSystem` 컴포넌트(플레이어)에서 StackPoint 목록 관리, Add/Remove 처리
 - 연동: OreObject.OnPickedUp을 `Action<StackItemConfig>`로 변경, StackSystem이 Start()에서 구독
 - 배치 방식: 아이템 인스턴스를 StackPoint 자식으로 붙이고 `anchor + axis * spacing * count` 위치에 배치
+- Remove: `Remove(StackItemType type)`으로 타입별 납품 (광석만/가공품만 별도 처리)
 
 **작업 스탭**
 
 | 스탭 | 내용 | 파일 |
 |---|---|---|
 | S1 | StackItemType enum + StackItemConfig ScriptableObject | StackItemType.cs, StackItemConfig.cs |
-| S2 | StackPoint 컴포넌트 — 적재 앵커 단위 관리 | StackPoint.cs |
+| S2 | StackPoint 컴포넌트 — 적재 앵커 단위 관리 (targetType 필드 포함) | StackPoint.cs |
 | S3 | StackSystem 컴포넌트 — 플레이어 총괄 관리자 | StackSystem.cs |
 | S4 | OreObject 연동 — 이벤트 시그니처 변경 + config 필드 추가 | OreObject.cs |
-| S5 | 씬 셋업 안내 — StackPoint 오브젝트 배치, SO 생성, 프리팹 연결 | 에디터 작업 |
+| S5 | 씬 셋업 — StackPoint 오브젝트 배치, SO 생성, 프리팹 연결 | 에디터 작업 |
+
+**구현 중 변경사항**
+- `StackPoint.targetType` 추가: 초기 설계는 순서 기반 라우팅이었으나, 광석=등/가공품=손 분리 요구로 타입 기반 라우팅으로 변경
+- `StackSystem.Add()`: 타입 일치 StackPoint만 탐색하도록 변경
+- `StackSystem.Remove()`: 파라미터 없던 것을 `Remove(StackItemType type)`으로 변경 — 납품 시 광석/가공품 독립 처리 필요
