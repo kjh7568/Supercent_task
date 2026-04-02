@@ -41,3 +41,27 @@
 |---|---|---|
 | S1 | OreObject 상태 관리 + 채굴 타이머 + 리스폰 로직 | OreObject.cs |
 | S2 | 플레이어 충돌 감지 & 픽업 이벤트 발동 | OreObject.cs |
+
+---
+
+## [003] StackSystem 범용 적재 시스템
+
+**요청 내용**
+플레이어가 광석을 채광하거나 가공품을 획득할 때, 해당 오브젝트들이 3D 오브젝트 형태로 손과 등에 쌓이는 운반 시스템 구현. 광물과 가공품이 동시에 사용할 수 있는 확장성 있는 구조.
+
+**구현 방법**
+- 데이터: `StackItemConfig` ScriptableObject (아이템 타입, 프리팹)로 아이템 종류 정의
+- 적재 앵커: `StackPoint` 컴포넌트를 플레이어 자식 오브젝트(손/등)에 부착, capacity·stackAxis·itemSpacing 설정
+- 총괄 관리: `StackSystem` 컴포넌트(플레이어)에서 StackPoint 목록 관리, Add/Remove 처리
+- 연동: OreObject.OnPickedUp을 `Action<StackItemConfig>`로 변경, StackSystem이 Start()에서 구독
+- 배치 방식: 아이템 인스턴스를 StackPoint 자식으로 붙이고 `anchor + axis * spacing * count` 위치에 배치
+
+**작업 스탭**
+
+| 스탭 | 내용 | 파일 |
+|---|---|---|
+| S1 | StackItemType enum + StackItemConfig ScriptableObject | StackItemType.cs, StackItemConfig.cs |
+| S2 | StackPoint 컴포넌트 — 적재 앵커 단위 관리 | StackPoint.cs |
+| S3 | StackSystem 컴포넌트 — 플레이어 총괄 관리자 | StackSystem.cs |
+| S4 | OreObject 연동 — 이벤트 시그니처 변경 + config 필드 추가 | OreObject.cs |
+| S5 | 씬 셋업 안내 — StackPoint 오브젝트 배치, SO 생성, 프리팹 연결 | 에디터 작업 |
