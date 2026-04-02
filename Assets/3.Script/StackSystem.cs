@@ -29,6 +29,16 @@ public class StackSystem : MonoBehaviour
             ore.OnPickedUp -= Add;
     }
 
+    public bool HasSpace(StackItemType type)
+    {
+        foreach (var sp in stackPoints)
+        {
+            if (sp.TargetType == type && sp.HasSpace)
+                return true;
+        }
+        return false;
+    }
+
     public void Add(StackItemConfig config)
     {
         foreach (var sp in stackPoints)

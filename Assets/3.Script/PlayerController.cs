@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
         if (dir.sqrMagnitude < 0.01f) return;
 
         Vector3 moveDir = new Vector3(dir.x, 0f, dir.y);
-        transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
+        transform.Translate(moveDir * (moveSpeed * Time.deltaTime), Space.World);
 
         Quaternion targetRot = Quaternion.LookRotation(moveDir);
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, rotateSpeed * Time.deltaTime);

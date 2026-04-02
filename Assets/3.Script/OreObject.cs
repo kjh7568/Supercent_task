@@ -19,6 +19,7 @@ public class OreObject : MonoBehaviour
     private Renderer[] renderers;
     private Collider[] colliders;
     private float miningTimer;
+    private StackSystem stackSystem;
 
     [Header("References")]
     [SerializeField] private string playerTag = "Player";
@@ -27,25 +28,23 @@ public class OreObject : MonoBehaviour
     {
         renderers = GetComponentsInChildren<Renderer>();
         colliders = GetComponentsInChildren<Collider>();
+        stackSystem = FindObjectOfType<StackSystem>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"[Ore] TriggerEnter: {other.name} / tag: {other.tag}");
         if (!other.CompareTag(playerTag)) return;
         StartMining();
     }
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log($"[Ore] TriggerStay: {other.name} / timer: {miningTimer:F2}");
         if (!other.CompareTag(playerTag)) return;
         UpdateMining(Time.deltaTime);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log($"[Ore] TriggerExit: {other.name}");
         if (!other.CompareTag(playerTag)) return;
         CancelMining();
     }
@@ -53,6 +52,7 @@ public class OreObject : MonoBehaviour
     public void StartMining()
     {
         if (State != OreState.Active) return;
+        if (stackSystem != null && !stackSystem.HasSpace(stackConfig.itemType)) return;
         State = OreState.Mining;
         miningTimer = 0f;
     }
@@ -75,6 +75,13 @@ public class OreObject : MonoBehaviour
 
     private void CompletePickup()
     {
+        if (stackSystem != null && !stackSystem.HasSpace(stackConfig.itemType))
+        {
+            State = OreState.Active;
+            miningTimer = 0f;
+            return;
+        }
+
         State = OreState.Hidden;
         miningTimer = 0f;
         SetVisible(false);

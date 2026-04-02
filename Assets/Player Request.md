@@ -72,3 +72,11 @@
 - `StackPoint.targetType` 추가: 초기 설계는 순서 기반 라우팅이었으나, 광석=등/가공품=손 분리 요구로 타입 기반 라우팅으로 변경
 - `StackSystem.Add()`: 타입 일치 StackPoint만 탐색하도록 변경
 - `StackSystem.Remove()`: 파라미터 없던 것을 `Remove(StackItemType type)`으로 변경 — 납품 시 광석/가공품 독립 처리 필요
+
+**BF: 등 꽉 찼을 때 광석 사라지는 문제**
+- 문제: 등이 꽉 찬 상태에서 광석 채굴이 완료되면 광석이 사라지면 안 됨 (근본 문제)
+- 파생 문제: 9/10 상태에서 2개 동시 채굴 시 둘 다 StartMining() 통과 → 먼저 완료된 게 10번째 슬롯 채우면 나중 완료된 것도 공간 없이 사라짐
+- 해결:
+  - `OreObject.StartMining()`: StackSystem.HasSpace() 체크 → 공간 없으면 채굴 시작 안 함
+  - `OreObject.CompletePickup()`: 완료 시점에도 HasSpace() 재확인 → 공간 없으면 Active 복귀, 광석 유지
+  - `StackSystem.HasSpace(StackItemType)` 메서드 추가

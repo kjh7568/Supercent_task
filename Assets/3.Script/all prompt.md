@@ -225,3 +225,23 @@
 **User:** 그 다음 이 세션 대화내용 올프롬프트에 저장해줘
 
 **Assistant:** all prompt.md 세션 3 저장 완료.
+
+**User:** 이제 bf 하나 하자. 등에 광석이 꽉 차면 광석이 사라지면 안되는 로직이 필요함.
+
+**Assistant:** 채굴 자체를 막는 방식(StartMining 체크)과 채굴 완료 후 사라지지 않는 방식 중 선택 질문.
+
+**User:** 채굴 자체를 막는게 쓸데 없는 연산을 줄일 수 있겠지?
+
+**Assistant:** StackSystem.HasSpace(type) 추가, OreObject.StartMining()에서 체크 → 공간 없으면 채굴 시작 안 함. OreObject.Awake()에서 StackSystem 캐싱.
+
+**User:** 예를 들어 9개 들고 있는 상황에서 2개랑 겹쳐있으면 둘 다 시작은 되겠지? 타이머 다 돌면 광석이 없어지는 문제.
+
+**Assistant:** CompletePickup()에서도 HasSpace() 재확인 추가 → 공간 없으면 Active 복귀, 광석 유지.
+
+**User:** 이번 변경사항 리퀘스트 MD에 적어줘
+
+**Assistant:** Player Request.md BF 항목 추가.
+
+**User:** 근본적인 문제(등 꽉 찼을 때 광석 사라지면 안됨)도 추가해
+
+**Assistant:** Player Request.md BF 항목에 근본 문제 추가 완료.
