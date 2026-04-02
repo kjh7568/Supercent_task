@@ -17,10 +17,34 @@ public class OreObject : MonoBehaviour
     private Collider[] colliders;
     private float miningTimer;
 
+    [Header("References")]
+    [SerializeField] private string playerTag = "Player";
+
     private void Awake()
     {
         renderers = GetComponentsInChildren<Renderer>();
         colliders = GetComponentsInChildren<Collider>();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"[Ore] TriggerEnter: {other.name} / tag: {other.tag}");
+        if (!other.CompareTag(playerTag)) return;
+        StartMining();
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log($"[Ore] TriggerStay: {other.name} / timer: {miningTimer:F2}");
+        if (!other.CompareTag(playerTag)) return;
+        UpdateMining(Time.deltaTime);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log($"[Ore] TriggerExit: {other.name}");
+        if (!other.CompareTag(playerTag)) return;
+        CancelMining();
     }
 
     public void StartMining()
