@@ -82,3 +82,25 @@
 **User:** 대화 내용 기록해
 
 **Assistant:** all prompt.md 업데이트 완료.
+
+---
+
+## 2026-04-02 (세션 2 - OreObject)
+
+**User:** 이 세션에서는 OreObject 컴포넌트를 만들거야. 광석은 플레이어와 닿았을 때 픽업 트리거를 발동하면 되고, 광석은 사라졌다가 자신이 가지고 있는 타이머의 시간이 되면 다시 보여서 캘 수 있게 되는 구조야. 먼저 프로세스 짜봐
+
+**Assistant:** 프로젝트 구조 파악 후 프로세스 제안.
+- S1: OreObject 상태 관리 + 리스폰 타이머 (Active/Hidden, Coroutine)
+- S2: 플레이어 충돌 감지 & 픽업 이벤트 발동 (OnTriggerEnter, Action OnPickedUp)
+- S3(보류): 인벤토리/자원 연동
+
+**User:** 근데 닿았다고 해서 바로 캐지는게 아니라 캐는 시간이 좀 들어. 이 점도 반영해줘
+
+**Assistant:** 채굴 시간 반영하여 프로세스 수정.
+- OnTriggerEnter → 채굴 시작, OnTriggerStay → miningDuration 누적, OnTriggerExit → 타이머 리셋
+- Active/Mining/Hidden 3상태로 변경
+- S1+S2 합쳐서 OreObject.cs 하나로 구현
+
+**User:** 오케이 시작하기 전에 리퀘스트랑 올프롬프트에 각각 내용 저장해
+
+**Assistant:** Player Request.md, all prompt.md 저장 완료.
