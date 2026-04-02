@@ -10,8 +10,11 @@ public class OreObject : MonoBehaviour
     [SerializeField] private float miningDuration = 2f;
     [SerializeField] private float respawnTime = 10f;
 
+    [Header("Stack")]
+    [SerializeField] private StackItemConfig stackConfig;
+
     public OreState State { get; private set; } = OreState.Active;
-    public event Action OnPickedUp;
+    public event Action<StackItemConfig> OnPickedUp;
 
     private Renderer[] renderers;
     private Collider[] colliders;
@@ -75,7 +78,7 @@ public class OreObject : MonoBehaviour
         State = OreState.Hidden;
         miningTimer = 0f;
         SetVisible(false);
-        OnPickedUp?.Invoke();
+        OnPickedUp?.Invoke(stackConfig);
         StartCoroutine(RespawnRoutine());
     }
 

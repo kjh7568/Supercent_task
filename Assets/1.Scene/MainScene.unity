@@ -1071,6 +1071,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   miningDuration: 2
   respawnTime: 10
+  stackConfig: {fileID: 0}
   playerTag: Player
 --- !u!1001 &2083967465
 PrefabInstance:
@@ -1169,6 +1170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   miningDuration: 2
   respawnTime: 10
+  stackConfig: {fileID: 0}
   playerTag: Player
 --- !u!1001 &1389003462626649826
 PrefabInstance:
@@ -1267,6 +1269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   miningDuration: 2
   respawnTime: 10
+  stackConfig: {fileID: 11400000, guid: 9d4819b1976a5454d98debdaef875953, type: 2}
   playerTag: Player
 --- !u!1001 &5206027947178480844
 PrefabInstance:

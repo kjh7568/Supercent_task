@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/GitHub/Supercent_task -type f -name *.cs)",
+      "Bash(du -sh /d/GitHub/Supercent_task/Assets/*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
