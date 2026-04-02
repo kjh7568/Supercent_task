@@ -10,12 +10,14 @@ public class DynamicJoystick : MonoBehaviour
     public Vector2 Direction { get; private set; }
 
     private int _touchId = -1;
-    private Canvas _canvas;
+    private Camera _uiCamera;
 
     private void Awake()
     {
-        _canvas = GetComponentInParent<Canvas>();
+        var canvas = GetComponentInParent<Canvas>();
+        _uiCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
         background.gameObject.SetActive(false);
+        handle.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -47,28 +49,28 @@ public class DynamicJoystick : MonoBehaviour
     private void ActivateJoystick(Vector2 screenPos)
     {
         background.gameObject.SetActive(true);
+        handle.gameObject.SetActive(true);
         background.position = screenPos;
-        handle.anchoredPosition = Vector2.zero;
+        handle.position = screenPos;
     }
 
     private void MoveHandle(Vector2 screenPos)
     {
-        Vector2 delta = screenPos - (Vector2)background.position;
-        float scaleFactor = _canvas.scaleFactor;
-        Vector2 localDelta = delta / scaleFactor;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            background, screenPos, _uiCamera, out Vector2 localPoint);
 
-        if (localDelta.magnitude > handleRange)
-            localDelta = localDelta.normalized * handleRange;
+        if (localPoint.magnitude > handleRange)
+            localPoint = localPoint.normalized * handleRange;
 
-        handle.anchoredPosition = localDelta;
-        Direction = localDelta / handleRange;
+        handle.position = background.TransformPoint(localPoint);
+        Direction = localPoint / handleRange;
     }
 
     private void ResetJoystick()
     {
         _touchId = -1;
         Direction = Vector2.zero;
-        handle.anchoredPosition = Vector2.zero;
         background.gameObject.SetActive(false);
+        handle.gameObject.SetActive(false);
     }
 }
