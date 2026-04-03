@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// 계산대 — 손님이 WaitingInQueue 상태일 때 DepositZone 제품을 손님에게 하나씩 이동.
-/// 제품 1개 전달마다 코인 1개를 PickupZone에 추가.
+/// 모든 제품 전달 완료 후 코인을 한번에 PickupZone에 추가.
 /// </summary>
 public class CashRegister : MonoBehaviour
 {
@@ -57,6 +57,7 @@ public class CashRegister : MonoBehaviour
 
         Debug.Log($"[CashRegister] 구매 시작 — 요구량: {customer.Config.demandAmount}개");
 
+        int soldCount = 0;
         for (int i = 0; i < customer.Config.demandAmount; i++)
         {
             var product = depositZone.TakeTopItem();
@@ -71,17 +72,18 @@ public class CashRegister : MonoBehaviour
             if (product != null)
                 Destroy(product);
 
-            if (pickupZone.HasSpace)
-            {
-                var coin = Instantiate(coinConfig.itemPrefab);
-                pickupZone.PlaceItem(coin);
-                Debug.Log($"[CashRegister] 코인 추가 ({pickupZone.Count}) - {gameObject.name}");
-            }
-
+            soldCount++;
             yield return new WaitForSeconds(transferInterval);
         }
 
-        Debug.Log($"[CashRegister] 구매 완료");
+        // 모든 제품 전달 완료 후 코인 한번에 지급
+        for (int i = 0; i < soldCount; i++)
+        {
+            if (!pickupZone.HasSpace) break;
+            var coin = Instantiate(coinConfig.itemPrefab);
+            pickupZone.PlaceItem(coin);
+        }
+        Debug.Log($"[CashRegister] 구매 완료 — 코인 {soldCount}개 지급");
         customer.CompletePurchase();
         isBusy = false;
     }
