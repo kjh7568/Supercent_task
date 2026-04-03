@@ -72,6 +72,17 @@ public class StackSystem : MonoBehaviour
         return null;
     }
 
+    /// <summary>기존 GameObject를 타입에 맞는 StackPoint에 배치 (PickupZone → 플레이어 이동 시 사용)</summary>
+    public bool ReceiveItem(GameObject item, StackItemType type)
+    {
+        foreach (var sp in stackPoints)
+        {
+            if (sp.TargetType == type && sp.HasSpace)
+                return sp.AddExistingItem(item);
+        }
+        return false;
+    }
+
     public void Remove(StackItemType type)
     {
         for (int i = stackPoints.Count - 1; i >= 0; i--)

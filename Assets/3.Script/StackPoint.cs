@@ -27,6 +27,18 @@ public class StackPoint : MonoBehaviour
         return instance;
     }
 
+    /// <summary>기존 GameObject를 StackPoint에 수용 (PickupZone → 플레이어 이동 시 사용)</summary>
+    public bool AddExistingItem(GameObject item)
+    {
+        if (!HasSpace || item == null) return false;
+
+        item.transform.SetParent(transform);
+        item.transform.localPosition = stackAxis * (itemSpacing * items.Count);
+        item.transform.localRotation = Quaternion.identity;
+        items.Add(item);
+        return true;
+    }
+
     public GameObject RemoveTopItem()
     {
         if (items.Count == 0) return null;
