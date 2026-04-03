@@ -343,3 +343,59 @@
 **User:** 대화내용 올프롬프트에 넣어줘.
 
 **Assistant:** all prompt.md 세션 4 저장 완료.
+
+---
+
+## 2026-04-03 (세션 5 - CustomerSystem)
+
+**User:** 이 세션에서는 손님 시스템을 만들거야. 현재 판매 계산대까지 만들었어. 손님이 스폰되고 요구하는 요구치만큼 계산대에 제품이 있으면 제품을 사가고 돈을 주는 형태야. 프로세스 초안 짜보는데, 궁금한 점 있어?
+
+**Assistant:** 손님 행동 흐름(이동/큐잉), 요구 제품 종류, 부족 시 처리, 돈 지급 위치, 스폰 조건 질문.
+
+**User:** 줄 서서 계산대 앞에서 앞 사람 끝나길 기다림. 단일 요구. 부족 시 기다림. 픽업존에 쌓임. 시간 기반 스폰. 구매 시 제품이 손님 손으로 하나하나 이동 연출 있어야 함.
+
+**Assistant:** 코드 전체 파악 후 프로세스 초안 작성.
+- S1: CustomerConfig + CustomerQueue
+- S2: Customer + CustomerSpawner
+- S3: CashRegister 수정 (손님 구매 처리)
+이동 방식, 큐 슬롯 수, 프리팹, 풀링, 코인 보상 질문.
+
+**User:** MoveTowards 단순 이동. 슬롯 수는 인스펙터 설정. 프리팹 직접 만들겠음. 풀링. 물건 하나에 10원.
+
+**Assistant:** 최종 프로세스 확정 (슬롯 자동 계산 방식, 코인 1개 = 10원 CustomerConfig 보관).
+
+**User:** 1 ㄱㄱ
+
+**Assistant:** S1 진행. CustomerConfig.cs (ScriptableObject, 요구타입/수량/이동속도/코인보상). CustomerQueue.cs (시작위치+방향+간격으로 슬롯 자동 계산, TryEnqueue/Dequeue/UpdateSlotPosition, OnDrawGizmos). Customer.cs 스텁 생성.
+
+**User:** 엥 잠만 내가 대기 줄 트랜스폼을 다 배치해줘야 한다고
+
+**Assistant:** Transform 배열 방식 → 시작위치+방향+간격 자동 계산 방식으로 변경. OnDrawGizmos로 씬 뷰 미리보기 지원.
+
+**User:** 컴파일 에러 있잖아
+
+**Assistant:** Customer 클래스 미존재로 발생한 에러. Customer.cs 스텁 추가로 해결.
+
+**User:** 커밋
+
+**Assistant:** [CustomerSystem] S1 커밋 완료.
+
+**User:** 2 ㄱ
+
+**Assistant:** S2 진행. CustomerObjectPool.cs (pre-instantiate, Get/Return), Customer.cs 실제 구현 (상태머신 Idle→MovingToQueue→WaitingInQueue→Purchasing→Leaving, MoveTowards 이동, UpdateSlotPosition/StartPurchasing/CompletePurchase), CustomerSpawner.cs (코루틴 타이머, 대기열 만원 시 스킵, 스폰 위치=퇴장 복귀 위치).
+
+**User:** 커밋
+
+**Assistant:** [CustomerSystem] S2 커밋 완료.
+
+**User:** 진행해
+
+**Assistant:** S3 진행. CashRegister.cs 수정. 기존 SellLoop 제거 → 손님 WaitingInQueue + 수량 충족 시 구매 루프 실행. 제품 1개씩 ItemTransferAnimator로 손님 위치 이동 → 코인 PickupZone 배치 → CompletePurchase() 호출.
+
+**User:** 아 맞다. 리퀘스트에 프로세스 적어놔
+
+**Assistant:** Player Request.md에 [005] CustomerSystem 항목 추가 완료.
+
+**User:** 대화내용 올프롬프트에 넣어줘
+
+**Assistant:** all prompt.md 세션 5 저장 완료.

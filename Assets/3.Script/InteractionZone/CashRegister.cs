@@ -2,22 +2,27 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 계산대 — DepositZone(가공품 투입) → 즉시 판매 → PickupZone(코인 출력).
-/// 가공 시간 없이 sellInterval 간격으로 연속 처리.
+/// 계산대 — 손님이 WaitingInQueue 상태일 때 DepositZone 제품을 손님에게 하나씩 이동.
+/// 제품 1개 전달마다 코인 1개를 PickupZone에 추가.
 /// </summary>
 public class CashRegister : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private DepositZone depositZone;
     [SerializeField] private PickupZone pickupZone;
+    [SerializeField] private CustomerQueue customerQueue;
 
     [Header("Settings")]
-    [SerializeField] private StackItemConfig outputConfig;
-    [SerializeField] private float sellInterval = 0.15f;
+    [SerializeField] private StackItemConfig coinConfig;
+    [SerializeField] private float transferDuration = 0.3f;
+    [SerializeField] private float transferInterval = 0.15f;
+    [SerializeField] private float arcHeight = 1f;
+
+    private bool isBusy = false;
 
     private void Start()
     {
-        if (depositZone == null || pickupZone == null || outputConfig == null)
+        if (depositZone == null || pickupZone == null || customerQueue == null || coinConfig == null)
         {
             Debug.LogError($"[CashRegister] 필수 레퍼런스가 없습니다. 인스펙터를 확인하세요. - {gameObject.name}");
             return;
@@ -30,22 +35,54 @@ public class CashRegister : MonoBehaviour
     {
         while (true)
         {
-            if (depositZone.Count > 0 && pickupZone.HasSpace)
+            if (!isBusy && customerQueue.HasFrontCustomer)
             {
-                var product = depositZone.TakeTopItem();
+                var customer = customerQueue.FrontCustomer;
+
+                if (customer.State == CustomerState.WaitingInQueue &&
+                    depositZone.Count >= customer.Config.demandAmount)
+                {
+                    StartCoroutine(ProcessPurchase(customer));
+                }
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator ProcessPurchase(Customer customer)
+    {
+        isBusy = true;
+        customer.StartPurchasing();
+
+        Debug.Log($"[CashRegister] 구매 시작 — 요구량: {customer.Config.demandAmount}개");
+
+        for (int i = 0; i < customer.Config.demandAmount; i++)
+        {
+            var product = depositZone.TakeTopItem();
+            if (product == null) break;
+
+            Vector3 customerPos = customer.transform.position + Vector3.up * 0.5f;
+
+            yield return StartCoroutine(ItemTransferAnimator.Transfer(
+                product, customerPos, transferDuration, arcHeight
+            ));
+
+            if (product != null)
                 Destroy(product);
 
-                var coin = Instantiate(outputConfig.itemPrefab);
-                pickupZone.PlaceItem(coin);
-
-                Debug.Log($"[CashRegister] 판매 완료 → Coin 추가 ({pickupZone.Count}) - {gameObject.name}");
-
-                yield return new WaitForSeconds(sellInterval);
-            }
-            else
+            if (pickupZone.HasSpace)
             {
-                yield return new WaitForSeconds(0.1f);
+                var coin = Instantiate(coinConfig.itemPrefab);
+                pickupZone.PlaceItem(coin);
+                Debug.Log($"[CashRegister] 코인 추가 ({pickupZone.Count}) - {gameObject.name}");
             }
+
+            yield return new WaitForSeconds(transferInterval);
         }
+
+        Debug.Log($"[CashRegister] 구매 완료");
+        customer.CompletePurchase();
+        isBusy = false;
     }
 }
