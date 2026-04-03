@@ -40,7 +40,7 @@ public class CashRegister : MonoBehaviour
                 var customer = customerQueue.FrontCustomer;
 
                 if (customer.State == CustomerState.WaitingInQueue &&
-                    depositZone.Count >= customer.Config.demandAmount)
+                    depositZone.Count > 0)
                 {
                     StartCoroutine(ProcessPurchase(customer));
                 }
@@ -58,10 +58,20 @@ public class CashRegister : MonoBehaviour
         Debug.Log($"[CashRegister] 구매 시작 — 요구량: {customer.Config.demandAmount}개");
 
         int soldCount = 0;
-        for (int i = 0; i < customer.Config.demandAmount; i++)
+        int remaining = customer.Config.demandAmount;
+
+        while (remaining > 0)
         {
+            // 제품이 채워질 때까지 대기
+            if (depositZone.Count == 0)
+            {
+                Debug.Log($"[CashRegister] 제품 대기 중 (남은 수량: {remaining}개)");
+                yield return new WaitForSeconds(0.2f);
+                continue;
+            }
+
             var product = depositZone.TakeTopItem();
-            if (product == null) break;
+            if (product == null) continue;
 
             Vector3 customerPos = customer.transform.position + Vector3.up * 0.5f;
 
@@ -73,6 +83,7 @@ public class CashRegister : MonoBehaviour
                 Destroy(product);
 
             soldCount++;
+            remaining--;
             yield return new WaitForSeconds(transferInterval);
         }
 
