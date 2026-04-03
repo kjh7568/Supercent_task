@@ -553,3 +553,68 @@
 **User:** 조정 내용 리퀘스트에 적고 올프롬프트에 대화내용 다 적어
 
 **Assistant:** Player Request.md [006] 추가 변경사항 기록, all prompt.md 세션 6 대화 전체 저장 완료.
+
+---
+
+## 2026-04-03 (세션 7 - WorkerSystem)
+
+**User:** 이 섹션에서는 인부를 만들거야. 인부 해금은 이전에 만들었던 업그레이드존 처럼 어디 올라가면 돈이 들어가고 해금이 되는거야. 인부는 해금이 되면 총 3명이 스폰되고 스폰되면 광산에서 광물을 채광해. 채광 속도와 범위는 플레이어의 1단계 속도랑 같아. 인부는 채광하는 과정이 플레이어랑 약간 다른데, 플레이어는 스피어에 들어온 광물중 가장 가까운 광물을 채굴하지만 인부는 자신과 가장 가까운 광석 앞으로 가서 그 광석을 채굴하는거야.
+
+**Assistant:** 기존 시스템 파악 후 5가지 질문. Q1: 채굴한 광물 처리 방식. Q2: 이동 방식 (NavMesh vs MoveTowards). Q3: 스폰 위치. Q4: 광석 예약 처리. Q5: 1단계 스탯 기준.
+
+**User:** 1. 인부가 채굴한 광물은 가공기 디포짓 존으로 바로 이동해. 2. 옵션줘. 3. 씬에 미리 배치 후 SetActive(True). 4. 예약 처리 필요. 5. 업그레이드 단계가 아니라 플레이어의 기본 수치.
+
+**Assistant:** Q2 옵션 제시 (NavMesh vs MoveTowards 비교표). 추가 질문. Q6: 채굴 완료 후 광물 이동 방식 (인부가 직접 걸어가는지 vs 광석이 날아가는지). Q7: 채굴 대상 범위 제한 여부.
+
+**User:** 6. 채굴 완료 순간 디포짓존으로 광석 오브젝트가 날라가는게 맞긴한데, 아크 애니메이션이 뭔데. 7. 전범위로 하자.
+
+**Assistant:** 아크 애니메이션 = 포물선 이동 설명 (기존 ItemTransferAnimator 방식, A→B 위로 붕 뜨면서 날아감). Q2 최종 결정 질문 (광산 지형 평탄 여부).
+
+**User:** 평탄해. MoveTowards로 하자. 더 질문 없지?
+
+**Assistant:** 최종 스펙 정리 및 구현 스텝 계획 제안.
+- S1: WorkerUnlockZone (코인 납부 → 인부 3명 SetActive 활성화)
+- S2: OreReservation + WorkerController (광석 예약 시스템 + Idle→Moving→Mining FSM)
+- S3: 채굴 완료 처리 (광석 포물선 이동 → DepositZone.PlaceItem())
+
+**User:** 각 단계별 검증이 가능한거지?
+
+**Assistant:** 각 스텝 개별 검증 가능. S1: 존 코인 납부 → 인부 3명 씬에 나타남. S2: 인부가 광석으로 이동 → 도달 시 광석 사라짐 → 다음 광석 반복. S3: 채굴 완료 순간 광석이 포물선으로 DepositZone까지 날아감.
+
+**User:** 오케이 그럼 일단 리퀘스트랑 올프롬프트에 내용 저장해
+
+**Assistant:** Player Request.md [007] WorkerSystem 추가, all prompt.md 세션 7 저장 완료.
+
+**User:** 1 ㄱ
+
+**Assistant:** S1 진행. WorkerUnlockZone.cs 생성. InteractionZone 상속, 코인 납부 완료 시 workerPrefab을 spawnOrigin 기준 1열 중앙 정렬로 Instantiate, 해금 후 존 SetActive(false).
+
+**User:** 아 미안 워커는 프리팹으로 두고 소환될 때 스폰위에서 1열로 소환되는거로 해줘
+
+**Assistant:** WorkerUnlockZone 수정. workerPrefab + spawnOrigin + workerCount + spawnSpacing 필드로 변경. 중앙 정렬 1열 Instantiate 로직 적용.
+
+**User:** 커밋
+
+**Assistant:** [WorkerSystem] S1 커밋 완료.
+
+**User:** 2 ㄱ
+
+**Assistant:** S2 진행. OreReservation.cs 생성 (static Dictionary 예약/해제). WorkerController.cs 생성 (Idle→Moving→Mining FSM, MoveTowards 이동, 전범위 광석 탐색). OreObject.cs에 MineByWorker() 추가 (stackSystem 체크 없이 히든+리스폰).
+
+**User:** 굳 커밋
+
+**Assistant:** [WorkerSystem] S2 커밋 완료.
+
+**User:** 3 ㄱ
+
+**Assistant:** S3 진행. OreObject.cs에 StackConfig 프로퍼티 노출. WorkerController.cs OnMineComplete() → TransferRoutine() 코루틴으로 교체. 아이템 생성 → MineByWorker() → ItemTransferAnimator 포물선 이동 → DepositZone.PlaceItem(). WorkerUnlockZone에 workerDepositZone 필드 추가, 스폰 시 Init() 주입.
+
+**User:** 어 근데 프리팹에겐 Hierarchy에 있는 오브젝트 할당 못하잖아
+
+**Assistant:** WorkerController의 DepositZone 필드를 인스펙터 직접 할당 → Init() 주입 방식으로 변경. WorkerUnlockZone이 씬 오브젝트라 DepositZone 참조 가능 → 스폰 시 worker.Init(depositZone) 호출.
+
+**User:** 오케이 커밋!
+
+**Assistant:** [WorkerSystem] S3 커밋 완료.
+
+**User:** 그 다음 s1에서 약간 바꾼거 리퀘스트에 반영하고 대화내용 올프롬프트에 넣어줘
