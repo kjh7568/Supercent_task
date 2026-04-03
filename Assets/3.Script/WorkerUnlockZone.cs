@@ -13,6 +13,7 @@ public class WorkerUnlockZone : InteractionZone
     [SerializeField] private Transform spawnOrigin;
     [SerializeField] private int workerCount = 3;
     [SerializeField] private float spawnSpacing = 1.2f;
+    [SerializeField] private DepositZone workerDepositZone;
     [SerializeField] private float transferDuration = 0.3f;
     [SerializeField] private float transferInterval = 0.1f;
     [SerializeField] private float arcHeight = 1f;
@@ -93,6 +94,7 @@ public class WorkerUnlockZone : InteractionZone
         {
             Vector3 pos = startPos + right * (spawnSpacing * i);
             var worker = Instantiate(workerPrefab, pos, spawnOrigin != null ? spawnOrigin.rotation : Quaternion.identity);
+            worker.GetComponent<WorkerController>()?.Init(workerDepositZone);
             spawnedWorkers.Add(worker);
         }
 

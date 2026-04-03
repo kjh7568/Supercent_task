@@ -13,6 +13,7 @@ public class OreObject : MonoBehaviour
     [SerializeField] private StackItemConfig stackConfig;
 
     public OreState State { get; private set; } = OreState.Active;
+    public StackItemConfig StackConfig => stackConfig;
     public event Action<StackItemConfig> OnPickedUp;
 
     private Renderer[] renderers;

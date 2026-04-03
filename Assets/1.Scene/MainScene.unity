@@ -160,6 +160,7 @@ MonoBehaviour:
   spawnOrigin: {fileID: 3463253}
   workerCount: 3
   spawnSpacing: 1.2
+  workerDepositZone: {fileID: 2050723115}
   transferDuration: 0.3
   transferInterval: 0.1
   arcHeight: 1

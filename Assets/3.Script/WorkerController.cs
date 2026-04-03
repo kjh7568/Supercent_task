@@ -12,16 +12,23 @@ public class WorkerController : MonoBehaviour
     [SerializeField] private float miningInterval = 2f;
     [SerializeField] private float stopDistance = 0.8f;
 
+    [Header("Deposit")]
+    [SerializeField] private float arcDuration = 0.5f;
+    [SerializeField] private float arcHeight = 1.5f;
+
+    private DepositZone depositZone;
+
     private enum State { Idle, Moving, Mining }
     private State state = State.Idle;
 
     private OreObject target;
     private OreObject[] allOres;
 
-    private void Start()
+    public void Init(DepositZone targetDepositZone)
     {
+        depositZone = targetDepositZone;
         allOres = FindObjectsOfType<OreObject>();
-        Debug.Log($"[Worker] 시작 - 광석 {allOres.Length}개 감지");
+        Debug.Log($"[Worker] 초기화 - 광석 {allOres.Length}개 감지");
     }
 
     private void Update()
@@ -84,11 +91,37 @@ public class WorkerController : MonoBehaviour
             ReleasAndIdle();
     }
 
-    // S3에서 포물선 이동 로직으로 교체 예정
     protected virtual void OnMineComplete()
     {
-        target.MineByWorker();
-        Debug.Log($"[Worker] 채굴 완료 - {target.gameObject.name}");
+        StartCoroutine(TransferRoutine());
+    }
+
+    private IEnumerator TransferRoutine()
+    {
+        var config = target.StackConfig;
+        var item = Instantiate(config.itemPrefab, target.transform.position, Quaternion.identity);
+
+        target.MineByWorker(); // 광석 즉시 히든 + 리스폰 타이머 시작
+
+        if (depositZone != null)
+        {
+            yield return StartCoroutine(ItemTransferAnimator.Transfer(
+                item, depositZone.transform.position, arcDuration, arcHeight
+            ));
+
+            if (depositZone.HasSpace)
+                depositZone.PlaceItem(item);
+            else
+                Destroy(item);
+
+            Debug.Log($"[Worker] 광석 DepositZone 전달 완료");
+        }
+        else
+        {
+            Destroy(item);
+            Debug.LogWarning("[Worker] DepositZone 미연결 - 아이템 제거");
+        }
+
         ReleasAndIdle();
     }
 
