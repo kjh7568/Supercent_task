@@ -96,7 +96,7 @@ public class PickupZone : InteractionZone
         Debug.Log($"[PickupZone] 아이템 추가 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
     }
 
-    private GameObject TakeTopItem()
+    public GameObject TakeTopItem()
     {
         if (placedItems.Count == 0) return null;
 

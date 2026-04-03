@@ -19,6 +19,13 @@ public class StackPoint : MonoBehaviour
     public bool HasSpace => items.Count < capacity;
     public int Count => items.Count;
 
+    /// <summary>다음 아이템이 배치될 월드 좌표 반환 (포물선 애니메이션 타겟용)</summary>
+    public Vector3 GetNextItemWorldPosition()
+    {
+        Vector3 localOffset = stackAxis * (itemSpacing * items.Count);
+        return transform.TransformPoint(localOffset);
+    }
+
     public void SetCapacity(int newCapacity) => capacity = newCapacity;
 
     private readonly List<GameObject> items = new();
