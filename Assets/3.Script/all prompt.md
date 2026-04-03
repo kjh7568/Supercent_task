@@ -475,3 +475,81 @@
 **User:** 대화내용 올프롬프트에 넣어
 
 **Assistant:** all prompt.md 세션 5 추가 저장 완료.
+
+---
+
+## 2026-04-03 (세션 6 - MiningSystem)
+
+**User:** 이 세션에서는 능력 업그레이드를 할거야. 돈을 지불해서 광석을 더 빠르고 캐고 더 많이 들 수 있게 하는 업그레이드. 광석 캐는 구조도 바꿀거야. 플레이어 앞에 오버랩 스피어가 채광 주기로 생성되고, 닿은 광석 하나만 채굴. 2단계는 스피어 반지름 커지고 주기 짧아짐, 3단계는 더 커짐. 프로세스 짜는데 궁금한 거 있어?
+
+**Assistant:** 오버랩 스피어 위치(이동 방향 vs forward), 채굴 완료 시점(즉시 vs 틱), 더 많이 든다=StackSystem 용량인지, OreObject 역할 변경 여부 질문.
+
+**User:** 플레이어 forward 방향. 닿자마자 채굴. StackSystem 용량 맞음. 타이머는 OreObject 자체 관리, 스피어에 닿으면 OreObject가 히든+리스폰 처리.
+
+**Assistant:** 채광존 진입 시만 채광 모드 ON 구조 제안. 가장 가까운 광석 선택 방식, 채광존 구현 방식 질문.
+
+**User:** 가장 가까운 것 채굴. 채광존은 박스 콜라이더+트리거로 별도 간단하게 만들기.
+
+**Assistant:** 업그레이드 구매 위치 질문 (디포짓 존 활용 vs 새로 만들기).
+
+**User:** 바닥에 배치할 UpgradeZone을 새로 만들 것. 기존 InteractionZone 시스템 활용 가능하면 활용.
+
+**Assistant:** Coin이 이미 StackItemType에 있고 ItemTransferAnimator 재활용 가능. 업그레이드 트리거 방식 질문.
+
+**User:** 플레이어가 존 위에 서 있는 동안 등 뒤 코인 오브젝트가 업그레이드 존으로 이동하면서 요구량 채우는 연출.
+
+**Assistant:** 기존 코드 확인 후 최종 프로세스 확정.
+- S1: OreObject 리팩토링 + MiningZone + MiningController (통합 검증)
+- S2: MiningUpgradeData + UpgradeZone (업그레이드 검증)
+
+**User:** 각 스탭별로 인게임에서 검증할 수 있어?
+
+**Assistant:** 인게임 검증 여부 분석 후 검증 불가 스탭 병합 규칙 적용하여 2스탭으로 확정.
+
+**User:** ㅇㅇ 좋네. 리퀘스트에 적어넣고 올프롬프트에 대화내용 저장.
+
+**Assistant:** Player Request.md [006] MiningSystem 추가, all prompt.md 세션 6 저장 완료.
+
+**User:** 1 ㄱ
+
+**Assistant:** S1 진행. OreObject.cs - 트리거 기반 채굴 제거, TryMine() 추가. MiningZone.cs 신규 - 박스 콜라이더 IsTrigger, 진입/이탈 시 MiningController.SetMiningMode() 호출. MiningController.cs 신규 - miningInterval마다 OverlapSphere, 가장 가까운 Active 광석 TryMine(), 씬 뷰 기즈모.
+
+**User:** 오키 잘된다. 커밋해
+
+**Assistant:** [MiningSystem] S1 커밋 완료.
+
+**User:** ㄱ (S2)
+
+**Assistant:** S2 진행. StackPoint에 SetCapacity() 추가. MiningController에 oreStackPoint 필드 + ApplyUpgrade(interval, radius, maxCarry) 수정. MiningUpgradeData.cs 신규 - ScriptableObject, 스테이지별 StageData 배열. UpgradeZone.cs 신규 - InteractionZone 상속, 코인 이동 후 소멸, 요구량 충족 시 업그레이드 적용.
+
+**User:** 레이아웃은 머하는거임?
+
+**Assistant:** InteractionZone 상속으로 인스펙터에 노출되지만 UpgradeZone은 사용 안 함. 비워둬도 됨.
+
+**User:** ㄴㄴ 내비둬. 그리고 등에있는 코인 하나당 10원이야.
+
+**Assistant:** collectedCoins += 10으로 수정.
+
+**User:** 잘 된다. 커밋
+
+**Assistant:** [MiningSystem] S2 커밋 완료.
+
+**User:** 이제 조정하나 하자. 업그레이드를 2단계 만들었어. 근데, 하나의 업그레이드 존이 하나의 업그레드만 할 수 있게 만들어야 해.
+
+**Assistant:** MiningController에 CurrentStage 프로퍼티 추가. UpgradeZone에 stageIndex 필드 추가, 진입 시 CurrentStage 비교해 차단/허용 처리.
+
+**User:** 업그레이드 완료하면 셋엑티브 펄스도 해줘
+
+**Assistant:** visual 자식 오브젝트 받아서 펄스 코루틴 구현.
+
+**User:** 뭐 한거냐? 아니 그냥 업그레이드 하면 그 존은 엑티브 false하라고
+
+**Assistant:** gameObject.SetActive(false) 한 줄로 수정.
+
+**User:** 오케이 언스테이지 내용 전부 커밋
+
+**Assistant:** 조정 내용 커밋 완료.
+
+**User:** 조정 내용 리퀘스트에 적고 올프롬프트에 대화내용 다 적어
+
+**Assistant:** Player Request.md [006] 추가 변경사항 기록, all prompt.md 세션 6 대화 전체 저장 완료.
