@@ -245,3 +245,101 @@
 **User:** 근본적인 문제(등 꽉 찼을 때 광석 사라지면 안됨)도 추가해
 
 **Assistant:** Player Request.md BF 항목에 근본 문제 추가 완료.
+
+---
+
+## 2026-04-03 (세션 4 - InteractionSystem)
+
+**User:** 이 세션에서는 InteractionZone 범용 컴포넌트를 만들거야. 디포짓 존과 픽업 존이 있어. 가공기는 디포짓존에 광석을 넣고 픽업에서 가공된 아이템이 나오는 것. 계산기는 가공품을 디포짓존에 내려놓고 판매하면 픽업존에 쌓이는 구조. 프로세스 초안 작성 전에 궁금한 점 있어?
+
+**Assistant:** 트리거 방식, 이동 순서, 쌓기 형태 차이, 픽업존 생성 시점, 기존 코드 연계 여부 질문.
+
+**User:** 1번 트리거 방식, 순차 이동, 일자 or 3줄 쌓기, 가공기는 가공완료시/계산대는 판매즉시, 기존 코드 최대한 활용.
+
+**Assistant:** 기존 코드 파악(OreObject, StackSystem, StackPoint, StackItemType, StackItemConfig, PlayerController) 후 프로세스 초안 작성.
+- S1: ZoneStackLayout 전략
+- S2: InteractionZone + DepositZone
+- S3: ItemTransferAnimator
+- S4: Processor
+- S5: CashRegister
+- S6: 씬 셋업
+
+**User:** Coin 타입 필요한지, 1:1 비율인지 질문에 ㅇㅇ/1:1 확인.
+
+**Assistant:** Coin 타입 추가 확인, 프로세스 재구성 (인게임 검증 없는 스탭 병합 규칙 적용).
+
+**User:** 스탭마다 인게임 검증 가능하게 해. 검증 없는 스탭은 다음 검증 있는 스탭과 합쳐. 메모리에 저장.
+
+**Assistant:** 메모리 저장 + 스탭 재구성 (S1~S9).
+
+**User:** 1 ㄱ
+
+**Assistant:** S1 - StackItemType에 Coin 추가.
+
+**User:** 앞으로 인게임 검증 없는 스탭은 합쳐버려. 메모리 저장. 2 진행해.
+
+**Assistant:** 메모리 저장. S2(ZoneStackLayout) + S3(DepositZone 진입 감지 & 더미 배치) 합쳐서 진행. ZoneStackLayout 추상 베이스, LinearZoneLayout, GridZoneLayout, InteractionZone 베이스, DepositZone 생성.
+
+**User:** 2열 쌓기도 있어야 하는데.
+
+**Assistant:** GridZoneLayout의 Columns 필드로 N열 지원. 인스펙터에서 Columns=2로 설정하면 됨.
+
+**User:** ㅇㅇ 잘 되네. 커밋 먼저. 스탭 번호는 1로.
+
+**Assistant:** [InteractionSystem] S1 커밋 완료.
+
+**User:** 그 전에 프로세스 내용 리퀘스트에 적어줘.
+
+**Assistant:** Player Request.md에 [004] InteractionSystem 항목 추가 완료.
+
+**User:** 3 ㄱ
+
+**Assistant:** S3 - ItemTransferAnimator(포물선 arc 이동 코루틴) + DepositZone 실제 이동 연동 + StackSystem에 HasItem/TakeItem 추가.
+
+**User:** 커밋.
+
+**Assistant:** [InteractionSystem] S2 커밋 완료.
+
+**User:** 4 ㄱ
+
+**Assistant:** S4 - PickupZone 구현 (존→플레이어 순차 이동). StackPoint에 AddExistingItem, StackSystem에 ReceiveItem 추가.
+
+**User:** 4에서 검증하려면 어캐해야한다고?
+
+**Assistant:** PickupZone에 Spawn Dummy On Start 토글 추가 or S5 먼저 구현 후 전체 흐름으로 검증 제안.
+
+**User:** 1번으로 가자. 5개 스폰되어있게 해줘.
+
+**Assistant:** PickupZone에 spawnDummyOnStart, dummySpawnCount 필드 + Start()에서 더미 5개 스폰 추가.
+
+**User:** ㅇㅋ 방금 만든 검증 로직 지워. 잘 된다.
+
+**Assistant:** PickupZone에서 더미 스폰 관련 코드 제거.
+
+**User:** 커밋 먼저.
+
+**Assistant:** [InteractionSystem] S3 커밋 완료.
+
+**User:** 5 ㄱ
+
+**Assistant:** S5 - Processor 구현. DepositZone(광석) → 가공 시간 → PickupZone(가공품) 1:1 처리 루프 코루틴.
+
+**User:** 6이 뭐드라.
+
+**Assistant:** S6 = CashRegister. DepositZone(가공품) → 즉시 판매 → PickupZone(코인).
+
+**User:** 일단 커밋.
+
+**Assistant:** [InteractionSystem] S4 커밋 완료.
+
+**User:** 6 ㄱ
+
+**Assistant:** S6 - CashRegister 구현. DepositZone(가공품) 투입 즉시 PickupZone(코인) 출력, sellInterval 간격 처리.
+
+**User:** 스탭별로 검증 다 했어. 7은 안해도 돼. 커밋.
+
+**Assistant:** [InteractionSystem] S5 커밋 완료.
+
+**User:** 대화내용 올프롬프트에 넣어줘.
+
+**Assistant:** all prompt.md 세션 4 저장 완료.
