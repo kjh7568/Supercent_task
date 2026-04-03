@@ -55,7 +55,6 @@ public class CashRegister : MonoBehaviour
         isBusy = true;
         customer.StartPurchasing();
 
-        Debug.Log($"[CashRegister] 구매 시작 — 요구량: {customer.Config.demandAmount}개");
 
         int soldCount = 0;
         int remaining = customer.Config.demandAmount;
@@ -65,7 +64,6 @@ public class CashRegister : MonoBehaviour
             // 제품이 채워질 때까지 대기
             if (depositZone.Count == 0)
             {
-                Debug.Log($"[CashRegister] 제품 대기 중 (남은 수량: {remaining}개)");
                 yield return new WaitForSeconds(0.2f);
                 continue;
             }
@@ -94,7 +92,6 @@ public class CashRegister : MonoBehaviour
             var coin = Instantiate(coinConfig.itemPrefab);
             pickupZone.PlaceItem(coin);
         }
-        Debug.Log($"[CashRegister] 구매 완료 — 코인 {soldCount}개 지급");
         customer.CompletePurchase();
         isBusy = false;
     }

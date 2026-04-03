@@ -9,11 +9,47 @@ public class StackPoint : MonoBehaviour
     [SerializeField] private Vector3 stackAxis = Vector3.up;
     [SerializeField] private float itemSpacing = 0.3f;
 
+    [Header("Hold Offset")]
+    [SerializeField] private bool useHoldOffset = false;
+    [SerializeField] private Vector3 holdOffset = Vector3.zero;
+    /// <summary>null이면 자기 자신의 아이템 수 기준. 설정 시 해당 StackPoint의 아이템 수 기준으로 이동.</summary>
+    [SerializeField] private StackPoint holdOffsetTrigger;
+
     public StackItemType TargetType => targetType;
     public bool HasSpace => items.Count < capacity;
     public int Count => items.Count;
 
     private readonly List<GameObject> items = new();
+    private Vector3 originalLocalPosition;
+    private int lastTriggerCount = -1;
+
+    private void Awake()
+    {
+        originalLocalPosition = transform.localPosition;
+    }
+
+    private void Update()
+    {
+        if (!useHoldOffset || holdOffsetTrigger == null) return;
+
+        int current = holdOffsetTrigger.Count;
+        if (current == lastTriggerCount) return;
+
+        lastTriggerCount = current;
+        transform.localPosition = current > 0
+            ? originalLocalPosition + holdOffset
+            : originalLocalPosition;
+    }
+
+    private void UpdateHoldPosition()
+    {
+        // holdOffsetTrigger가 있으면 Update에서 처리
+        if (!useHoldOffset || holdOffsetTrigger != null) return;
+
+        transform.localPosition = items.Count > 0
+            ? originalLocalPosition + holdOffset
+            : originalLocalPosition;
+    }
 
     public GameObject AddItem(StackItemConfig config)
     {
@@ -24,6 +60,7 @@ public class StackPoint : MonoBehaviour
         instance.transform.localRotation = Quaternion.identity;
 
         items.Add(instance);
+        UpdateHoldPosition();
         return instance;
     }
 
@@ -36,6 +73,7 @@ public class StackPoint : MonoBehaviour
         item.transform.localPosition = stackAxis * (itemSpacing * items.Count);
         item.transform.localRotation = Quaternion.identity;
         items.Add(item);
+        UpdateHoldPosition();
         return true;
     }
 
@@ -48,6 +86,7 @@ public class StackPoint : MonoBehaviour
         items.RemoveAt(lastIndex);
 
         top.transform.SetParent(null);
+        UpdateHoldPosition();
         return top;
     }
 }

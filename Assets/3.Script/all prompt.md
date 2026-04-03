@@ -399,3 +399,79 @@
 **User:** 대화내용 올프롬프트에 넣어줘
 
 **Assistant:** all prompt.md 세션 5 저장 완료.
+
+**User:** 오케이 언스테이지 내용 전부 커밋
+
+**Assistant:** 전체 언스테이지 커밋 완료.
+
+**User:** 이제 조정좀 하자. 스폰 위치는 줄 서는 자리 5번 뒤에서 나오는거로 하자. 위치는 빨간색 기즈모로 나타나게 해
+
+**Assistant:** CustomerQueue에 GetSpawnPosition(extraSlots) 추가. CustomerSpawner에서 queue.GetSpawnPosition(5) 사용, OnDrawGizmos 빨간 구체 추가.
+
+**User:** 커밋
+
+**Assistant:** 스폰 위치 자동 계산 & 빨간 기즈모 커밋 완료.
+
+**User:** 그리구 돈은 손님이 하나하나 가져갈 때마다 내는게 아니라 다 계산이 되면 그 때 한번에 내는거야
+
+**Assistant:** CashRegister ProcessPurchase 수정. 루프 내 코인 지급 → 루프 완료 후 soldCount만큼 일괄 PlaceItem.
+
+**User:** 굳. 잘 된다. 커밋해
+
+**Assistant:** 코인 지급 타이밍 수정 커밋 완료.
+
+**User:** 손님은 내 요구량이 4야. 근데 테이블에 있는 제품이 2야. 지금은 그럼 아예 가져가지 조차 않지만, 2개를 먼저 가져가고 나머지 2개가 채워질 때 까지 기다리는 로직이 필요해.
+
+**Assistant:** CashRegister SellLoop 조건 변경 (>= demandAmount → > 0). ProcessPurchase를 for 루프 → while(remaining > 0) 루프로 변경, 재고 없으면 0.2s 폴링 대기.
+
+**User:** 커밋
+
+**Assistant:** 부분 구매 후 재고 대기 로직 커밋 완료.
+
+**User:** 그리구 돈이 쌓이는 형태를 행렬형태로 쌓고 싶어.
+
+**Assistant:** GridZoneLayout에 rows/rowAxis/rowSpacing 추가. 열×행 레이어 채운 후 위로 쌓는 3D 그리드 구조.
+
+**User:** 아니 그니까 지금 열 밖에 없잖아. 행이 필요하다고
+
+**Assistant:** 맞음. GridZoneLayout 수정 완료.
+
+**User:** ㅇㅋ 그 다음은 생성되는 물건의 회전을 설정할 수 있게 해줘
+
+**Assistant:** ZoneStackLayout에 itemEulerAngles/ItemRotation 추가. DepositZone/PickupZone PlaceItem에서 layout.ItemRotation 사용.
+
+**User:** 지금 보면 픽업존 자식으로 오브젝트가 생성되서 픽업존의 스케일을 따라서 모양이 바뀌거든? 이거 해결해줘
+
+**Assistant:** SetParent 제거, position+rotation 직접 계산 방식으로 변경. transform.position + transform.rotation * localOffset으로 스케일 영향 차단.
+
+**User:** ㅇㅋ 언스테이지 내용 전부 커밋
+
+**Assistant:** 전체 커밋 완료.
+
+**User:** 이제 돈 픽업존에 가면 돈이 오르고 플레이어 등 뒤로 돈 오브젝트가 가도록 해야해.
+
+**Assistant:** 에디터 설정만으로 가능. PickupZone outputType=Coin, 플레이어에 Coin용 StackPoint 추가 안내.
+
+**User:** 설정 다 했는데 등으로 안감
+
+**Assistant:** 진단 로그 추가. HasSpace(Coin) = false로 확인됨.
+
+**User:** 아 ㅇㅋ 설정함
+
+**Assistant:** StackSystem의 Stack Points 배열에 Coin StackPoint 미추가가 원인이었음.
+
+**User:** 오케이 이제 스택 포인트 위치를 조정해야해. 광석을 안들고 있을 때는 원래 위치지만, 광석을 들고있는 순간부터 뒤로 약간 이동해야하거든. z축 -방향으로 0.5만큼 먼저 이동해보자.
+
+**Assistant:** StackPoint에 useHoldOffset/holdOffset 필드 추가. Awake에서 originalLocalPosition 캡처, AddItem/AddExistingItem/RemoveTopItem에서 UpdateHoldPosition 호출.
+
+**User:** 왜 광석을 안들었는데 먼저 뒤로 가있는거야 포인트가?
+
+**Assistant:** 진단 로그 추가.
+
+**User:** (재설명) 1. 광석을 잡으면 돈이 쌓이는 위치가 뒤로 가야함. 2. 광석 집어도 뒤로 이동 안함. 3. 광석 없는 상태에서 돈 먹으면 뒤로 이동함.
+
+**Assistant:** StackPoint에 holdOffsetTrigger 필드 추가. 다른 StackPoint의 Count를 기준으로 위치 이동. Update에서 폴링으로 감지.
+
+**User:** 대화내용 올프롬프트에 넣어
+
+**Assistant:** all prompt.md 세션 5 추가 저장 완료.

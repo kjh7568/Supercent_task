@@ -25,7 +25,13 @@ public class PickupZone : InteractionZone
         Debug.Log($"[PickupZone] 플레이어 진입 - {gameObject.name} (출력 타입: {outputType})");
 
         var stackSystem = player.GetComponent<StackSystem>();
-        if (stackSystem == null) return;
+        if (stackSystem == null)
+        {
+            Debug.LogWarning($"[PickupZone] StackSystem 없음 - {player.name}");
+            return;
+        }
+
+        Debug.Log($"[PickupZone] 아이템 수: {placedItems.Count}, HasSpace({outputType}): {stackSystem.HasSpace(outputType)}");
 
         if (transferCoroutine != null) StopCoroutine(transferCoroutine);
         transferCoroutine = StartCoroutine(TransferSequence(stackSystem, player.transform));

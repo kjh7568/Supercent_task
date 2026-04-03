@@ -425,6 +425,9 @@ MonoBehaviour:
   capacity: 10
   stackAxis: {x: 0, y: 1, z: 0}
   itemSpacing: 0.3
+  useHoldOffset: 0
+  holdOffset: {x: 0, y: 0, z: 0}
+  holdOffsetTrigger: {fileID: 0}
 --- !u!4 &550583655
 Transform:
   m_ObjectHideFlags: 0
@@ -615,6 +618,7 @@ MonoBehaviour:
   stackPoints:
   - {fileID: 1097767774}
   - {fileID: 550583654}
+  - {fileID: 1566612162}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,6 +790,9 @@ MonoBehaviour:
   capacity: 10
   stackAxis: {x: 0, y: 1, z: 0}
   itemSpacing: 0.3
+  useHoldOffset: 0
+  holdOffset: {x: 0, y: 0, z: 0}
+  holdOffsetTrigger: {fileID: 0}
 --- !u!4 &1097767775
 Transform:
   m_ObjectHideFlags: 0
@@ -1307,6 +1314,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1566612160
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1566612161}
+  - component: {fileID: 1566612162}
+  m_Layer: 0
+  m_Name: StackPoint_Back (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1566612161
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566612160}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: -0.6930001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 698805035}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &1566612162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566612160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5475011228f48224ebc39d1388bb5073, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetType: 2
+  capacity: 10
+  stackAxis: {x: 0, y: 1, z: 0}
+  itemSpacing: 0.3
+  useHoldOffset: 1
+  holdOffset: {x: 0, y: 0, z: -0.5}
+  holdOffsetTrigger: {fileID: 1097767774}
 --- !u!1 &1892332530
 GameObject:
   m_ObjectHideFlags: 0
@@ -2162,6 +2220,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1097767775}
+    - targetCorrespondingSourceObject: {fileID: 2854897518680764449, guid: 8b209eb9157598d4195650f4ce25de78,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1566612161}
     - targetCorrespondingSourceObject: {fileID: 2854897518680764449, guid: 8b209eb9157598d4195650f4ce25de78,
         type: 3}
       insertIndex: -1
