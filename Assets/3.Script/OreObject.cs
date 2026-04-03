@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class OreObject : MonoBehaviour
 {
-    public enum OreState { Active, Mining, Hidden }
+    public enum OreState { Active, Hidden }
 
     [Header("Settings")]
-    [SerializeField] private float miningDuration = 2f;
     [SerializeField] private float respawnTime = 10f;
 
     [Header("Stack")]
@@ -18,11 +17,7 @@ public class OreObject : MonoBehaviour
 
     private Renderer[] renderers;
     private Collider[] colliders;
-    private float miningTimer;
     private StackSystem stackSystem;
-
-    [Header("References")]
-    [SerializeField] private string playerTag = "Player";
 
     private void Awake()
     {
@@ -31,61 +26,16 @@ public class OreObject : MonoBehaviour
         stackSystem = FindObjectOfType<StackSystem>();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.CompareTag(playerTag)) return;
-        StartMining();
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (!other.CompareTag(playerTag)) return;
-        UpdateMining(Time.deltaTime);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag(playerTag)) return;
-        CancelMining();
-    }
-
-    public void StartMining()
+    /// <summary>MiningController에서 호출. 공간 있으면 즉시 채굴 완료 처리.</summary>
+    public void TryMine()
     {
         if (State != OreState.Active) return;
         if (stackSystem != null && !stackSystem.HasSpace(stackConfig.itemType)) return;
-        State = OreState.Mining;
-        miningTimer = 0f;
-    }
-
-    public void UpdateMining(float deltaTime)
-    {
-        if (State != OreState.Mining) return;
-
-        miningTimer += deltaTime;
-        if (miningTimer >= miningDuration)
-            CompletePickup();
-    }
-
-    public void CancelMining()
-    {
-        if (State != OreState.Mining) return;
-        State = OreState.Active;
-        miningTimer = 0f;
-    }
-
-    private void CompletePickup()
-    {
-        if (stackSystem != null && !stackSystem.HasSpace(stackConfig.itemType))
-        {
-            State = OreState.Active;
-            miningTimer = 0f;
-            return;
-        }
 
         State = OreState.Hidden;
-        miningTimer = 0f;
         SetVisible(false);
         OnPickedUp?.Invoke(stackConfig);
+        Debug.Log($"[OreObject] 채굴 완료 - {gameObject.name}");
         StartCoroutine(RespawnRoutine());
     }
 
@@ -94,6 +44,7 @@ public class OreObject : MonoBehaviour
         yield return new WaitForSeconds(respawnTime);
         State = OreState.Active;
         SetVisible(true);
+        Debug.Log($"[OreObject] 리스폰 - {gameObject.name}");
     }
 
     private void SetVisible(bool visible)
