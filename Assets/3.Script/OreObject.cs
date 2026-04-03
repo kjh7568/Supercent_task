@@ -26,6 +26,17 @@ public class OreObject : MonoBehaviour
         stackSystem = FindObjectOfType<StackSystem>();
     }
 
+    /// <summary>WorkerController에서 호출. stackSystem 체크 없이 채굴 완료 처리.</summary>
+    public void MineByWorker()
+    {
+        if (State != OreState.Active) return;
+
+        State = OreState.Hidden;
+        SetVisible(false);
+        Debug.Log($"[OreObject] 인부 채굴 완료 - {gameObject.name}");
+        StartCoroutine(RespawnRoutine());
+    }
+
     /// <summary>MiningController에서 호출. 공간 있으면 즉시 채굴 완료 처리.</summary>
     public void TryMine()
     {
