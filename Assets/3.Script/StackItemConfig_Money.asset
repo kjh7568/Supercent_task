@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d89dd994159e80143a049268a62bc063, type: 3}
-  m_Name: StackItemConfig_Product
+  m_Name: StackItemConfig_Money
   m_EditorClassIdentifier: 
-  itemType: 1
-  itemPrefab: {fileID: 6624949911742671607, guid: e305b2737a34d644e93e9d4ac62fdce7,
+  itemType: 2
+  itemPrefab: {fileID: 6624949911742671607, guid: edc50bbad8089164c90aaa97fb5bbeca,
     type: 3}
