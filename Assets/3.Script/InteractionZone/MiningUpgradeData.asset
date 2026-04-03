@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 149174a5c3d0c574da9b1656c0c49d96, type: 3}
   m_Name: MiningUpgradeData
   m_EditorClassIdentifier: 
-  stages: []
+  stages:
+  - miningInterval: 0.6
+    miningRadius: 2
+    maxCarry: 15
+    cost: 30
+  - miningInterval: 0.3
+    miningRadius: 3
+    maxCarry: 25
+    cost: 60

@@ -20,6 +20,7 @@ public class MiningController : MonoBehaviour
 
     public float MiningInterval => miningInterval;
     public float MiningRadius => miningRadius;
+    public int CurrentStage { get; private set; } = 0;
 
     public void SetMiningMode(bool active)
     {
@@ -47,6 +48,8 @@ public class MiningController : MonoBehaviour
 
         if (oreStackPoint != null)
             oreStackPoint.SetCapacity(maxCarry);
+
+        CurrentStage++;
 
         if (isMiningMode)
             SetMiningMode(true); // 루프 재시작으로 새 interval 적용

@@ -9,29 +9,36 @@ public class UpgradeZone : InteractionZone
 {
     [Header("Upgrade Settings")]
     [SerializeField] private MiningUpgradeData upgradeData;
+    [SerializeField] private int stageIndex = 0;
     [SerializeField] private float transferDuration = 0.3f;
     [SerializeField] private float transferInterval = 0.1f;
     [SerializeField] private float arcHeight = 1f;
 
-    private int currentStage = 0;
+
     private int collectedCoins = 0;
     private Coroutine transferCoroutine;
     private MiningController miningController;
     private StackSystem stackSystem;
 
-    private bool IsMaxStage => upgradeData == null || currentStage >= upgradeData.stages.Length;
-    private int CurrentCost => upgradeData.stages[currentStage].cost;
+    private bool IsAlreadyDone => miningController != null && miningController.CurrentStage > stageIndex;
+    private int CurrentCost => upgradeData.stages[stageIndex].cost;
 
     protected override void OnPlayerEnter(Collider player)
     {
-        if (IsMaxStage)
+        miningController = player.GetComponent<MiningController>();
+        stackSystem = player.GetComponent<StackSystem>();
+
+        if (IsAlreadyDone)
         {
-            Debug.Log("[UpgradeZone] 최대 업그레이드 상태");
+            Debug.Log($"[UpgradeZone] 스테이지 {stageIndex + 1} 이미 완료");
             return;
         }
 
-        miningController = player.GetComponent<MiningController>();
-        stackSystem = player.GetComponent<StackSystem>();
+        if (miningController.CurrentStage < stageIndex)
+        {
+            Debug.Log($"[UpgradeZone] 스테이지 {stageIndex} 먼저 완료 필요");
+            return;
+        }
 
         if (transferCoroutine != null) StopCoroutine(transferCoroutine);
         transferCoroutine = StartCoroutine(TransferSequence());
@@ -48,7 +55,7 @@ public class UpgradeZone : InteractionZone
 
     private IEnumerator TransferSequence()
     {
-        while (IsPlayerInside && !IsMaxStage)
+        while (IsPlayerInside && !IsAlreadyDone)
         {
             if (stackSystem == null || !stackSystem.HasItem(StackItemType.Coin))
             {
@@ -80,14 +87,14 @@ public class UpgradeZone : InteractionZone
 
     private void ApplyUpgrade()
     {
-        var stage = upgradeData.stages[currentStage];
+        var stage = upgradeData.stages[stageIndex];
 
         if (miningController != null)
             miningController.ApplyUpgrade(stage.miningInterval, stage.miningRadius, stage.maxCarry);
 
-        Debug.Log($"[Upgrade] 스테이지 {currentStage + 1} 완료 - radius: {stage.miningRadius}, interval: {stage.miningInterval}, maxCarry: {stage.maxCarry}");
+        Debug.Log($"[Upgrade] 스테이지 {stageIndex + 1} 완료 - radius: {stage.miningRadius}, interval: {stage.miningInterval}, maxCarry: {stage.maxCarry}");
 
-        currentStage++;
         collectedCoins = 0;
+        gameObject.SetActive(false);
     }
 }
