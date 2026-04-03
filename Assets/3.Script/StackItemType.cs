@@ -1,5 +1,6 @@
 public enum StackItemType
 {
     Ore,
-    Product
+    Product,
+    Coin
 }
