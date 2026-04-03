@@ -1,77 +1,90 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 플레이어가 진입하면 아이템을 받아 쌓는 존.
-/// S2: 더미 큐브로 레이아웃 배치를 인게임에서 확인.
+/// 플레이어가 진입하면 StackSystem에서 아이템을 순차적으로 받아 쌓는 존.
 /// </summary>
 public class DepositZone : InteractionZone
 {
-    [Header("S2 Debug - 더미 배치 테스트")]
-    [SerializeField] private bool spawnDummyOnEnter = true;
-    [SerializeField] private int dummyCount = 5;
+    [Header("Deposit Settings")]
+    [SerializeField] private StackItemType acceptedType = StackItemType.Ore;
+    [SerializeField] private float transferDuration = 0.3f;
+    [SerializeField] private float transferInterval = 0.1f;
+    [SerializeField] private float arcHeight = 1f;
 
     private readonly List<GameObject> placedItems = new();
+    private Coroutine transferCoroutine;
 
     public int Count => placedItems.Count;
     public bool HasSpace => layout != null && placedItems.Count < layout.Capacity;
+    public StackItemType AcceptedType => acceptedType;
 
     protected override void OnPlayerEnter(Collider player)
     {
-        Debug.Log($"[DepositZone] 플레이어 진입 감지 - {gameObject.name}");
+        Debug.Log($"[DepositZone] 플레이어 진입 - {gameObject.name} (수용 타입: {acceptedType})");
 
-        if (spawnDummyOnEnter)
-            SpawnDummies();
+        var stackSystem = player.GetComponent<StackSystem>();
+        if (stackSystem == null) return;
+
+        if (transferCoroutine != null) StopCoroutine(transferCoroutine);
+        transferCoroutine = StartCoroutine(TransferSequence(stackSystem));
     }
 
     protected override void OnPlayerExit(Collider player)
     {
         Debug.Log($"[DepositZone] 플레이어 이탈 - {gameObject.name}");
 
-        if (spawnDummyOnEnter)
-            ClearDummies();
+        if (transferCoroutine != null)
+        {
+            StopCoroutine(transferCoroutine);
+            transferCoroutine = null;
+        }
     }
 
-    private void SpawnDummies()
+    private IEnumerator TransferSequence(StackSystem stackSystem)
     {
-        if (layout == null)
+        while (IsPlayerInside && HasSpace && stackSystem.HasItem(acceptedType))
         {
-            Debug.LogWarning("[DepositZone] Layout이 없습니다. ZoneStackLayout 컴포넌트를 연결하세요.");
-            return;
+            var item = stackSystem.TakeItem(acceptedType);
+            if (item == null) break;
+
+            int targetIndex = placedItems.Count;
+            Vector3 targetWorldPos = transform.TransformPoint(layout.GetLocalPosition(targetIndex));
+
+            Debug.Log($"[DepositZone] 이동 시작 ({targetIndex + 1}/{layout.Capacity}) - {gameObject.name}");
+
+            bool arrived = false;
+            yield return StartCoroutine(ItemTransferAnimator.Transfer(
+                item, targetWorldPos, transferDuration, arcHeight,
+                onComplete: () => arrived = true
+            ));
+
+            if (item == null) break;
+
+            item.transform.SetParent(transform);
+            item.transform.localPosition = layout.GetLocalPosition(targetIndex);
+            item.transform.localRotation = Quaternion.identity;
+            placedItems.Add(item);
+
+            Debug.Log($"[DepositZone] 배치 완료 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
+
+            yield return new WaitForSeconds(transferInterval);
         }
 
-        for (int i = 0; i < dummyCount && i < layout.Capacity; i++)
-        {
-            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.SetParent(transform);
-            cube.transform.localPosition = layout.GetLocalPosition(i);
-            cube.transform.localScale = Vector3.one * 0.25f;
-            Destroy(cube.GetComponent<Collider>());
-            placedItems.Add(cube);
-        }
-
-        Debug.Log($"[DepositZone] 더미 {placedItems.Count}개 배치 완료 (레이아웃: {layout.GetType().Name})");
+        transferCoroutine = null;
     }
 
-    private void ClearDummies()
-    {
-        foreach (var item in placedItems)
-            if (item != null) Destroy(item);
-        placedItems.Clear();
-    }
-
-    /// <summary>아이템 오브젝트를 레이아웃 위치에 배치 (S4 이후 실제 이동에서 사용)</summary>
+    /// <summary>외부(Processor 등)에서 아이템을 직접 배치할 때 사용</summary>
     public void PlaceItem(GameObject item)
     {
-        if (!HasSpace) return;
+        if (!HasSpace || item == null) return;
 
         int index = placedItems.Count;
         item.transform.SetParent(transform);
         item.transform.localPosition = layout.GetLocalPosition(index);
         item.transform.localRotation = Quaternion.identity;
         placedItems.Add(item);
-
-        Debug.Log($"[DepositZone] 아이템 배치 ({index + 1}/{layout.Capacity}) - {gameObject.name}");
     }
 
     /// <summary>맨 위 아이템 제거 후 반환</summary>

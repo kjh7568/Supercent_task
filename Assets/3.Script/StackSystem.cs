@@ -53,6 +53,25 @@ public class StackSystem : MonoBehaviour
         Debug.LogWarning($"[StackSystem] {config.itemType} 타입의 빈 StackPoint가 없습니다.");
     }
 
+    public bool HasItem(StackItemType type)
+    {
+        foreach (var sp in stackPoints)
+            if (sp.TargetType == type && sp.Count > 0) return true;
+        return false;
+    }
+
+    /// <summary>타입에 해당하는 아이템을 꺼내 반환 (Destroy 없이). InteractionZone 이동 시 사용.</summary>
+    public GameObject TakeItem(StackItemType type)
+    {
+        for (int i = stackPoints.Count - 1; i >= 0; i--)
+        {
+            if (stackPoints[i].TargetType != type) continue;
+            var item = stackPoints[i].RemoveTopItem();
+            if (item != null) return item;
+        }
+        return null;
+    }
+
     public void Remove(StackItemType type)
     {
         for (int i = stackPoints.Count - 1; i >= 0; i--)
