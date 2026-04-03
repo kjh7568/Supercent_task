@@ -12,6 +12,9 @@ public class MiningController : MonoBehaviour
     [SerializeField] private float miningRadius = 1.5f;
     [SerializeField] private float sphereOffset = 1f;
 
+    [Header("References")]
+    [SerializeField] private StackPoint oreStackPoint;
+
     private bool isMiningMode;
     private Coroutine miningCoroutine;
 
@@ -37,10 +40,13 @@ public class MiningController : MonoBehaviour
         }
     }
 
-    public void ApplyUpgrade(float interval, float radius)
+    public void ApplyUpgrade(float interval, float radius, int maxCarry)
     {
         miningInterval = interval;
         miningRadius = radius;
+
+        if (oreStackPoint != null)
+            oreStackPoint.SetCapacity(maxCarry);
 
         if (isMiningMode)
             SetMiningMode(true); // 루프 재시작으로 새 interval 적용

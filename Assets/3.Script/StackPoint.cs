@@ -19,6 +19,8 @@ public class StackPoint : MonoBehaviour
     public bool HasSpace => items.Count < capacity;
     public int Count => items.Count;
 
+    public void SetCapacity(int newCapacity) => capacity = newCapacity;
+
     private readonly List<GameObject> items = new();
     private Vector3 originalLocalPosition;
     private int lastTriggerCount = -1;
