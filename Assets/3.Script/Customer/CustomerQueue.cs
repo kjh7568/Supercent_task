@@ -22,6 +22,10 @@ public class CustomerQueue : MonoBehaviour
     private Vector3 GetSlotPosition(int index)
         => transform.position + queueDirection.normalized * (slotSpacing * index);
 
+    /// <summary>대기열 마지막 슬롯 기준으로 extraSlots만큼 더 뒤쪽 위치 반환. 스폰/퇴장 위치 계산용.</summary>
+    public Vector3 GetSpawnPosition(int extraSlots)
+        => GetSlotPosition(maxSize - 1 + extraSlots);
+
     /// <summary>
     /// 손님을 대기열 맨 뒤에 등록하고 배정된 슬롯 위치를 반환.
     /// 슬롯이 꽉 찼으면 false 반환.

@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// 타이머 기반으로 손님을 스폰한다.
-/// 스폰 위치 = 이 오브젝트의 위치. 손님 퇴장 시 이 위치로 복귀 후 풀 반환.
+/// 스폰/퇴장 위치 = 대기열 마지막 슬롯 기준 spawnSlotOffset칸 뒤.
 /// </summary>
 public class CustomerSpawner : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class CustomerSpawner : MonoBehaviour
 
     [Header("Spawn Settings")]
     [SerializeField] private float spawnInterval = 5f;
+    [SerializeField] private int spawnSlotOffset = 5;
 
     private void Start()
     {
@@ -43,8 +44,10 @@ public class CustomerSpawner : MonoBehaviour
             return;
         }
 
+        Vector3 spawnPos = queue.GetSpawnPosition(spawnSlotOffset);
+
         var customer = pool.Get();
-        customer.transform.position = transform.position;
+        customer.transform.position = spawnPos;
         customer.transform.SetParent(null);
 
         if (!queue.TryEnqueue(customer, out var slotPos))
@@ -53,7 +56,15 @@ public class CustomerSpawner : MonoBehaviour
             return;
         }
 
-        customer.Initialize(config, queue, pool, slotPos, transform.position);
-        Debug.Log($"[CustomerSpawner] 손님 스폰 → 슬롯 {slotPos}");
+        customer.Initialize(config, queue, pool, slotPos, spawnPos);
+        Debug.Log($"[CustomerSpawner] 손님 스폰 ({spawnPos}) → 슬롯 {slotPos}");
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (queue == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(queue.GetSpawnPosition(spawnSlotOffset), 0.4f);
     }
 }
