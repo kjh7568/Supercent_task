@@ -433,13 +433,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550583653}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.232, z: 0.766}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 698805035}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &626779244
 GameObject:
   m_ObjectHideFlags: 0
@@ -713,6 +713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b91164dc87293b3439c4e99b13c0ba3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemEulerAngles: {x: 0, y: 0, z: 0}
   stackAxis: {x: 0, y: 1, z: 0}
   spacing: 0.3
   capacity: 10
@@ -989,8 +990,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   depositZone: {fileID: 979953193}
   pickupZone: {fileID: 2030341452}
-  outputConfig: {fileID: 11400000, guid: 6346a2f276e33f04fb8eae3d082d39d0, type: 2}
-  sellInterval: 0.15
+  customerQueue: {fileID: 1419512009}
+  coinConfig: {fileID: 11400000, guid: 6346a2f276e33f04fb8eae3d082d39d0, type: 2}
+  transferDuration: 0.3
+  transferInterval: 0.15
+  arcHeight: 1
 --- !u!65 &1282867936
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1287,6 +1291,7 @@ MonoBehaviour:
   queue: {fileID: 1419512009}
   config: {fileID: 11400000, guid: 9b7a343571268144696302d5084843b6, type: 2}
   spawnInterval: 5
+  spawnSlotOffset: 1
 --- !u!4 &1419512011
 Transform:
   m_ObjectHideFlags: 0
@@ -1296,8 +1301,8 @@ Transform:
   m_GameObject: {fileID: 1419512007}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -14.19, y: 0.5, z: -9}
-  m_LocalScale: {x: 2, y: 1, z: 5}
+  m_LocalPosition: {x: -14, y: 0.5, z: -9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1408,8 +1413,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b91164dc87293b3439c4e99b13c0ba3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemEulerAngles: {x: 0, y: 0, z: 0}
   stackAxis: {x: 0, y: 1, z: 0}
-  spacing: 1
+  spacing: 0.3
   capacity: 10
 --- !u!65 &1975477876
 BoxCollider:
@@ -1514,11 +1520,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3639f57d8d98eed4d8711d73d256c6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemEulerAngles: {x: 0, y: 90, z: 0}
   columns: 3
+  rows: 2
   colAxis: {x: 0, y: 0, z: 1}
+  rowAxis: {x: 1, y: 0, z: 0}
   heightAxis: {x: 0, y: 1, z: 0}
-  colSpacing: 0.4
-  heightSpacing: 0.4
+  colSpacing: 0.55
+  rowSpacing: 1.05
+  heightSpacing: 0.2
   capacity: 30
 --- !u!65 &2030341454
 BoxCollider:
@@ -1711,10 +1721,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3639f57d8d98eed4d8711d73d256c6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemEulerAngles: {x: 0, y: 0, z: 0}
   columns: 2
-  colAxis: {x: 0, y: 0, z: 1}
+  rows: 1
+  colAxis: {x: 0, y: 0, z: 1.5}
+  rowAxis: {x: 0, y: 0, z: 1}
   heightAxis: {x: 0, y: 1, z: 0}
   colSpacing: 0.4
+  rowSpacing: 0.4
   heightSpacing: 0.4
   capacity: 30
 --- !u!114 &2050723115
@@ -1866,8 +1880,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c39d41ea16eacf6439a0a91571456fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miningDuration: 2
-  respawnTime: 10
+  miningDuration: 0.5
+  respawnTime: 1
   stackConfig: {fileID: 11400000, guid: 9d4819b1976a5454d98debdaef875953, type: 2}
   playerTag: Player
 --- !u!1001 &2083967465
@@ -1965,8 +1979,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c39d41ea16eacf6439a0a91571456fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miningDuration: 2
-  respawnTime: 10
+  miningDuration: 0.5
+  respawnTime: 1
   stackConfig: {fileID: 11400000, guid: 9d4819b1976a5454d98debdaef875953, type: 2}
   playerTag: Player
 --- !u!1001 &1389003462626649826
@@ -2064,8 +2078,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c39d41ea16eacf6439a0a91571456fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miningDuration: 2
-  respawnTime: 10
+  miningDuration: 0.5
+  respawnTime: 1
   stackConfig: {fileID: 11400000, guid: 9d4819b1976a5454d98debdaef875953, type: 2}
   playerTag: Player
 --- !u!1001 &5206027947178480844

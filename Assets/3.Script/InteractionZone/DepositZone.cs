@@ -50,7 +50,7 @@ public class DepositZone : InteractionZone
             if (item == null) break;
 
             int targetIndex = placedItems.Count;
-            Vector3 targetWorldPos = transform.TransformPoint(layout.GetLocalPosition(targetIndex));
+            Vector3 targetWorldPos = GetItemWorldPosition(targetIndex);
 
             Debug.Log($"[DepositZone] 이동 시작 ({targetIndex + 1}/{layout.Capacity}) - {gameObject.name}");
 
@@ -62,9 +62,9 @@ public class DepositZone : InteractionZone
 
             if (item == null) break;
 
-            item.transform.SetParent(transform);
-            item.transform.localPosition = layout.GetLocalPosition(targetIndex);
-            item.transform.localRotation = Quaternion.identity;
+            item.transform.SetParent(null);
+            item.transform.position = targetWorldPos;
+            item.transform.rotation = transform.rotation * layout.ItemRotation;
             placedItems.Add(item);
 
             Debug.Log($"[DepositZone] 배치 완료 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
@@ -81,9 +81,9 @@ public class DepositZone : InteractionZone
         if (!HasSpace || item == null) return;
 
         int index = placedItems.Count;
-        item.transform.SetParent(transform);
-        item.transform.localPosition = layout.GetLocalPosition(index);
-        item.transform.localRotation = Quaternion.identity;
+        item.transform.SetParent(null);
+        item.transform.position = GetItemWorldPosition(index);
+        item.transform.rotation = transform.rotation * layout.ItemRotation;
         placedItems.Add(item);
     }
 
@@ -95,7 +95,9 @@ public class DepositZone : InteractionZone
         int last = placedItems.Count - 1;
         var item = placedItems[last];
         placedItems.RemoveAt(last);
-        item.transform.SetParent(null);
         return item;
     }
+
+    private Vector3 GetItemWorldPosition(int index)
+        => transform.position + transform.rotation * layout.GetLocalPosition(index);
 }

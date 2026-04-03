@@ -82,9 +82,9 @@ public class PickupZone : InteractionZone
         if (!HasSpace || item == null) return;
 
         int index = placedItems.Count;
-        item.transform.SetParent(transform);
-        item.transform.localPosition = layout.GetLocalPosition(index);
-        item.transform.localRotation = Quaternion.identity;
+        item.transform.SetParent(null);
+        item.transform.position = GetItemWorldPosition(index);
+        item.transform.rotation = transform.rotation * layout.ItemRotation;
         placedItems.Add(item);
 
         Debug.Log($"[PickupZone] 아이템 추가 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
@@ -97,7 +97,9 @@ public class PickupZone : InteractionZone
         int last = placedItems.Count - 1;
         var item = placedItems[last];
         placedItems.RemoveAt(last);
-        item.transform.SetParent(null);
         return item;
     }
+
+    private Vector3 GetItemWorldPosition(int index)
+        => transform.position + transform.rotation * layout.GetLocalPosition(index);
 }

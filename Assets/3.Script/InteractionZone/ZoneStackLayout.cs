@@ -6,7 +6,11 @@ using UnityEngine;
 /// </summary>
 public abstract class ZoneStackLayout : MonoBehaviour
 {
+    [Header("Item Rotation")]
+    [SerializeField] private Vector3 itemEulerAngles = Vector3.zero;
+
     public abstract int Capacity { get; }
+    public Quaternion ItemRotation => Quaternion.Euler(itemEulerAngles);
 
     /// <summary>index번째 아이템의 localPosition 반환</summary>
     public abstract Vector3 GetLocalPosition(int index);
