@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class StackSystem : MonoBehaviour
 {
     [SerializeField] private List<StackPoint> stackPoints = new();
+
+    public event Action<int> OnCoinCountChanged;
 
     public int TotalCount
     {
@@ -29,6 +32,14 @@ public class StackSystem : MonoBehaviour
             ore.OnPickedUp -= Add;
     }
 
+    public int GetCount(StackItemType type)
+    {
+        int count = 0;
+        foreach (var sp in stackPoints)
+            if (sp.TargetType == type) count += sp.Count;
+        return count;
+    }
+
     public bool HasSpace(StackItemType type)
     {
         foreach (var sp in stackPoints)
@@ -46,6 +57,8 @@ public class StackSystem : MonoBehaviour
             if (sp.TargetType == config.itemType && sp.HasSpace)
             {
                 sp.AddItem(config);
+                if (config.itemType == StackItemType.Coin)
+                    OnCoinCountChanged?.Invoke(GetCount(StackItemType.Coin));
                 return;
             }
         }
@@ -67,7 +80,12 @@ public class StackSystem : MonoBehaviour
         {
             if (stackPoints[i].TargetType != type) continue;
             var item = stackPoints[i].RemoveTopItem();
-            if (item != null) return item;
+            if (item != null)
+            {
+                if (type == StackItemType.Coin)
+                    OnCoinCountChanged?.Invoke(GetCount(StackItemType.Coin));
+                return item;
+            }
         }
         return null;
     }
@@ -78,7 +96,12 @@ public class StackSystem : MonoBehaviour
         foreach (var sp in stackPoints)
         {
             if (sp.TargetType == type && sp.HasSpace)
-                return sp.AddExistingItem(item);
+            {
+                bool result = sp.AddExistingItem(item);
+                if (result && type == StackItemType.Coin)
+                    OnCoinCountChanged?.Invoke(GetCount(StackItemType.Coin));
+                return result;
+            }
         }
         return false;
     }
@@ -93,6 +116,8 @@ public class StackSystem : MonoBehaviour
             if (item != null)
             {
                 Destroy(item);
+                if (type == StackItemType.Coin)
+                    OnCoinCountChanged?.Invoke(GetCount(StackItemType.Coin));
                 return;
             }
         }
