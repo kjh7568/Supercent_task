@@ -80,6 +80,7 @@ public class CashRegister : MonoBehaviour
             if (product != null)
                 Destroy(product);
 
+            customer.AddDelivered();
             soldCount++;
             remaining--;
             yield return new WaitForSeconds(transferInterval);

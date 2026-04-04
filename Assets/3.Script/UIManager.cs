@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 /// <summary>
 /// Screen Space Overlay HUD 관리자.
-/// 플레이어의 StackSystem 이벤트를 구독해 소지금액을 갱신한다.
+/// - 소지금액 표시 (StackSystem 이벤트 구독)
+/// - 손님별 요구수치 + 진행 바 (WorldToScreenPoint 위치 추적)
 /// </summary>
 public class UIManager : MonoBehaviour
 {
@@ -12,7 +14,13 @@ public class UIManager : MonoBehaviour
     [Header("Money")]
     [SerializeField] private TextMeshProUGUI moneyText;
 
+    [Header("Customer HUD")]
+    [SerializeField] private CustomerHUDElement customerHUDPrefab;
+    [SerializeField] private float customerHeadOffset = 2f;
+
     private StackSystem playerStackSystem;
+    private Camera mainCamera;
+    private readonly List<CustomerHUDElement> activeCustomerHUDs = new();
 
     private const int CoinValue = 10;
 
@@ -28,6 +36,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        mainCamera = Camera.main;
+
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
         {
@@ -54,12 +64,58 @@ public class UIManager : MonoBehaviour
             playerStackSystem.OnCoinCountChanged -= UpdateMoneyDisplay;
     }
 
+    // ── Money ─────────────────────────────────────────────
+
     private void UpdateMoneyDisplay(int coinCount)
     {
         if (moneyText != null)
         {
             moneyText.text = (coinCount * CoinValue).ToString();
             Debug.Log($"[UIManager] 소지금액 갱신: {coinCount * CoinValue}");
+        }
+    }
+
+    // ── Customer HUD ───────────────────────────────────────
+
+    public void RegisterCustomerHUD(Customer customer)
+    {
+        if (customerHUDPrefab == null) return;
+
+        var element = Instantiate(customerHUDPrefab, transform);
+        element.Bind(customer);
+        activeCustomerHUDs.Add(element);
+        Debug.Log($"[UIManager] 손님 HUD 등록 (요구량: {customer.Config.demandAmount})");
+    }
+
+    public void UnregisterCustomerHUD(Customer customer)
+    {
+        var element = activeCustomerHUDs.Find(e => e.TrackedCustomer == customer);
+        if (element == null) return;
+
+        activeCustomerHUDs.Remove(element);
+        Destroy(element.gameObject);
+        Debug.Log("[UIManager] 손님 HUD 해제");
+    }
+
+    private void LateUpdate()
+    {
+        if (mainCamera == null) return;
+
+        foreach (var hud in activeCustomerHUDs)
+        {
+            if (hud == null || hud.TrackedCustomer == null) continue;
+
+            Vector3 worldPos = hud.TrackedCustomer.transform.position + Vector3.up * customerHeadOffset;
+            Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
+
+            // 카메라 뒤로 넘어가면 숨김
+            bool behindCamera = screenPos.z < 0f;
+            hud.gameObject.SetActive(!behindCamera);
+            if (!behindCamera)
+            {
+                hud.SetScreenPosition(screenPos);
+                hud.RefreshFill();
+            }
         }
     }
 }

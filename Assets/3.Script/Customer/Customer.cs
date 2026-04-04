@@ -24,6 +24,7 @@ public class Customer : MonoBehaviour
 
     public CustomerState State { get; private set; } = CustomerState.Idle;
     public CustomerConfig Config => config;
+    public int Delivered { get; private set; }
 
     public void Initialize(
         CustomerConfig customerConfig,
@@ -38,7 +39,9 @@ public class Customer : MonoBehaviour
         targetPosition = slotPosition;
         leavePosition = exitPosition;
 
+        Delivered = 0;
         State = CustomerState.MovingToQueue;
+        UIManager.Instance?.RegisterCustomerHUD(this);
         Debug.Log($"[Customer] 스폰 → MovingToQueue (슬롯: {slotPosition})");
     }
 
@@ -83,9 +86,15 @@ public class Customer : MonoBehaviour
         Debug.Log($"[Customer] 구매 시작 → Purchasing");
     }
 
+    public void AddDelivered()
+    {
+        Delivered++;
+    }
+
     /// <summary>CashRegister에서 구매 완료 시 호출. 손님이 퇴장한다.</summary>
     public void CompletePurchase()
     {
+        UIManager.Instance?.UnregisterCustomerHUD(this);
         queue.Dequeue();
         State = CustomerState.Leaving;
         transform.SetParent(null);

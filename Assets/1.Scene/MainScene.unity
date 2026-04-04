@@ -4660,6 +4660,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moneyText: {fileID: 1895345637}
+  customerHUDPrefab: {fileID: 1140692414236086991, guid: 43fbe79074983184199568772b34a2b5,
+    type: 3}
+  customerHeadOffset: 2
 --- !u!114 &1611618227
 MonoBehaviour:
   m_ObjectHideFlags: 0
