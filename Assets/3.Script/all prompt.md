@@ -671,3 +671,39 @@
 - S3: MAX 이미지 페이드아웃 (MiningController 풀 감지 + WorldToScreenPoint)
 
 **User:** 리퀘스트랑 프롬프트 갱신해줘.
+
+**Assistant:** Player Request.md [009] UISystem 추가, all prompt.md 세션 9 저장 완료.
+
+**User:** 언스테이지 내용 커밋먼저
+
+**Assistant:** 기록 업데이트 커밋 완료.
+
+**User:** 1 ㄱ
+
+**Assistant:** S1 진행. UIManager.cs 생성 (Screen Space Overlay HUD 관리자, OnCoinCountChanged 구독 → TextMeshProUGUI 소지금액 갱신). StackSystem.cs 수정 (OnCoinCountChanged 이벤트, GetCount(type) 메서드, Add/ReceiveItem/TakeItem/Remove에서 Coin 변경 시 이벤트 발생).
+
+**User:** 커밋
+
+**Assistant:** [UISystem] S1 커밋 완료.
+
+**User:** ㄱ (S2)
+
+**Assistant:** S2 진행. CustomerHUDElement.cs 생성 (TMP 숫자 텍스트 + Image fillAmount 녹색 바). Customer.cs 수정 (Delivered 프로퍼티, AddDelivered(), Initialize 시 UIManager 등록, CompletePurchase 시 해제). CashRegister.cs 수정 (전달마다 customer.AddDelivered() 호출). UIManager.cs 수정 (RegisterCustomerHUD/UnregisterCustomerHUD, LateUpdate WorldToScreenPoint 위치 갱신 + 카메라 뒤 숨김).
+
+**User:** 커밋
+
+**Assistant:** [UISystem] S2 커밋 완료.
+
+**User:** 3 ㄱ
+
+**Assistant:** S3 진행. MiningController.cs 수정 (OnMaxReached 이벤트, Awake StackSystem 캐시, TryMineNearest 풀 상태 감지 후 이벤트 발생). UIManager.cs 수정 (maxImage/maxFadeDuration/maxTorsoOffset/maxRiseAmount 필드, ShowMax() + FadeOutMax() 코루틴, LateUpdate 몸통 WorldToScreenPoint + 상승 오프셋 적용).
+
+**User:** 아 이게 페이드아웃되면서 살짝 위로 움직이는데, 이 로직도 넣어줘
+
+**Assistant:** maxRiseAmount 필드 추가, FadeOutMax 코루틴에서 t 비례 maxScreenRiseOffset 갱신, LateUpdate에서 screenPos.y에 가산.
+
+**User:** ㅇㅇ 커밋
+
+**Assistant:** [UISystem] S3 커밋 완료.
+
+**User:** 리퀘스트랑 올프롬프트 갱신해줘.
