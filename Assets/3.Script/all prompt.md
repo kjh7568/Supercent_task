@@ -618,3 +618,56 @@
 **Assistant:** [WorkerSystem] S3 커밋 완료.
 
 **User:** 그 다음 s1에서 약간 바꾼거 리퀘스트에 반영하고 대화내용 올프롬프트에 넣어줘
+
+**Assistant:** Player Request.md S1 스폰 방식 반영, all prompt.md 세션 7 전체 저장 완료.
+
+**User:** 언스테이지 내용 전부 커밋
+
+**Assistant:** 기록 업데이트 커밋 완료.
+
+---
+
+## 2026-04-04 (세션 8 - TransportWorkerSystem)
+
+**User:** 이제 프로세서에 생산품을 계산대에 옮기는 인부를 만들거야. 픽업존과 디포짓존을 오가면서 움직이는 인부야. 인부는 픽업존에서 자신의 상한이 찰때까지 대기했다가 다 차면 디포짓존으로 옮기는거야.
+
+**Assistant:** 픽업/납품 방식, 대기 처리, 해금 방식, 시각 연출 질문.
+
+**User:** 1. 하나씩 순차적으로. 2. 하나씩 순차적으로. 3. 채워질 때까지 대기. 4. 맞아 (UnlockZone). 5. 맞아, 등 아니라 손에 쌓아서 이동.
+
+**Assistant:** 포물선 연출 여부 + 손 StackPoint 인스펙터 설정 여부 추가 질문.
+
+**User:** 6. 맞아 포물선. 7. ㅇㅇ.
+
+**Assistant:** 스펙 정리 및 구현 스텝 계획 제안.
+- S1: TransportWorkerUnlockZone (코인 납부 → 운반 인부 스폰)
+- S2: TransportWorkerController (MovingToPickup→Collecting→MovingToDeposit→Depositing FSM + 포물선 + 손 StackPoint)
+
+**User:** ㅇㅇ 리퀘스트랑 올프롬프트에 저장먼저 하자
+
+**Assistant:** Player Request.md [008] TransportWorkerSystem 추가, all prompt.md 세션 8 저장 완료.
+
+---
+
+## 2026-04-04 (세션 9 - UISystem)
+
+**User:** 기능 구현은 얼추 끝났어. 이번 세션에서는 UI 작업을 할거야. 기능은 크게 4가지야. 1. 돈 오브젝트를 먹으면 오브젝트가 등으로 가는거 말고 UI로 소지금액을 표시할거야. 2. 손님이 요구하는 제품의 요구수치를 숫자의 형태로 손님 머리위에 띄울거야. 3. 손님의 요구량이 4인데 2개만 챙겼다면, 초록색 바의 형태로 현재 충족량을 색칠할거야. 4. 광석을 캐다 최대치에 도달하면 플레이어의 몸통쪽에 MAX 이미지를 띄울거야.
+
+**Assistant:** 4가지 기능 관련 질문. 돈 UI HUD/월드스페이스 여부, 손님 요구 동시 복수 여부, 진행 바 상시 표시 여부, MAX 이미지 위치 및 트리거 조건 질문.
+
+**User:** 1. 연출 남기고 HUD. 2. 한 번에 하나. 3. 항상 표시. 4. HUD형태지만 몸통 좌표 변환 로직. 최대치에 광물 캐려 시도하면 뜨고 페이드아웃, 또 시도하면 또 뜨는 방식.
+
+**Assistant:** 2번/3번 손님 UI 월드스페이스 vs HUD 좌표변환 추가 질문.
+
+**User:** 다 좌표 변환으로 하자.
+
+**Assistant:** 월드스페이스 vs HUD 좌표변환 성능 비교 설명. 성능 측면 질문에 HUD+좌표변환이 Draw Call 측면에서 유리함을 설명.
+
+**User:** HUD로 하자.
+
+**Assistant:** 코드베이스 파악 후 3스탭 설계 확정.
+- S1: HUD Canvas + 소지금액 표시 (StackSystem Coin 이벤트 + TextMeshPro)
+- S2: 손님 요구 수치 + 진행 바 (CustomerHUDElement + WorldToScreenPoint)
+- S3: MAX 이미지 페이드아웃 (MiningController 풀 감지 + WorldToScreenPoint)
+
+**User:** 리퀘스트랑 프롬프트 갱신해줘.
