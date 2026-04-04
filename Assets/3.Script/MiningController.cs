@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -15,12 +16,20 @@ public class MiningController : MonoBehaviour
     [Header("References")]
     [SerializeField] private StackPoint oreStackPoint;
 
+    public event Action OnMaxReached;
+
+    private StackSystem stackSystem;
     private bool isMiningMode;
     private Coroutine miningCoroutine;
 
     public float MiningInterval => miningInterval;
     public float MiningRadius => miningRadius;
     public int CurrentStage { get; private set; } = 0;
+
+    private void Awake()
+    {
+        stackSystem = GetComponent<StackSystem>();
+    }
 
     public void SetMiningMode(bool active)
     {
@@ -87,8 +96,16 @@ public class MiningController : MonoBehaviour
 
         if (closest != null)
         {
-            Debug.Log($"[Mining] 채굴 시도 - {closest.gameObject.name} (거리: {minDist:F2})");
-            closest.TryMine();
+            if (stackSystem != null && !stackSystem.HasSpace(closest.StackConfig.itemType))
+            {
+                OnMaxReached?.Invoke();
+                Debug.Log("[Mining] 최대 적재량 도달 - 채굴 불가");
+            }
+            else
+            {
+                Debug.Log($"[Mining] 채굴 시도 - {closest.gameObject.name} (거리: {minDist:F2})");
+                closest.TryMine();
+            }
         }
         else
         {

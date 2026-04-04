@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Screen Space Overlay HUD 관리자.
@@ -18,9 +20,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private CustomerHUDElement customerHUDPrefab;
     [SerializeField] private float customerHeadOffset = 2f;
 
+    [Header("MAX")]
+    [SerializeField] private Image maxImage;
+    [SerializeField] private float maxFadeDuration = 1.5f;
+    [SerializeField] private float maxTorsoOffset = 1f;
+    [SerializeField] private float maxRiseAmount = 50f;
+
     private StackSystem playerStackSystem;
+    private MiningController miningController;
+    private Transform playerTransform;
     private Camera mainCamera;
     private readonly List<CustomerHUDElement> activeCustomerHUDs = new();
+    private Coroutine maxFadeCoroutine;
+    private float maxScreenRiseOffset;
 
     private const int CoinValue = 10;
 
@@ -55,6 +67,14 @@ public class UIManager : MonoBehaviour
         playerStackSystem.OnCoinCountChanged += UpdateMoneyDisplay;
         UpdateMoneyDisplay(playerStackSystem.GetCount(StackItemType.Coin));
 
+        playerTransform = player.transform;
+        miningController = player.GetComponent<MiningController>();
+        if (miningController != null)
+            miningController.OnMaxReached += ShowMax;
+
+        if (maxImage != null)
+            maxImage.gameObject.SetActive(false);
+
         Debug.Log("[UIManager] 초기화 완료");
     }
 
@@ -62,6 +82,8 @@ public class UIManager : MonoBehaviour
     {
         if (playerStackSystem != null)
             playerStackSystem.OnCoinCountChanged -= UpdateMoneyDisplay;
+        if (miningController != null)
+            miningController.OnMaxReached -= ShowMax;
     }
 
     // ── Money ─────────────────────────────────────────────
@@ -108,7 +130,6 @@ public class UIManager : MonoBehaviour
             Vector3 worldPos = hud.TrackedCustomer.transform.position + Vector3.up * customerHeadOffset;
             Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
 
-            // 카메라 뒤로 넘어가면 숨김
             bool behindCamera = screenPos.z < 0f;
             hud.gameObject.SetActive(!behindCamera);
             if (!behindCamera)
@@ -117,5 +138,52 @@ public class UIManager : MonoBehaviour
                 hud.RefreshFill();
             }
         }
+
+        if (maxImage != null && maxImage.gameObject.activeSelf && playerTransform != null)
+        {
+            Vector3 worldPos = playerTransform.position + Vector3.up * maxTorsoOffset;
+            Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
+            screenPos.y += maxScreenRiseOffset;
+            maxImage.rectTransform.position = screenPos;
+        }
+    }
+
+    // ── MAX Image ──────────────────────────────────────────
+
+    private void ShowMax()
+    {
+        if (maxImage == null) return;
+
+        if (maxFadeCoroutine != null)
+            StopCoroutine(maxFadeCoroutine);
+
+        maxImage.gameObject.SetActive(true);
+        maxScreenRiseOffset = 0f;
+        SetMaxAlpha(1f);
+        maxFadeCoroutine = StartCoroutine(FadeOutMax());
+        Debug.Log("[UIManager] MAX 표시");
+    }
+
+    private IEnumerator FadeOutMax()
+    {
+        float elapsed = 0f;
+        while (elapsed < maxFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / maxFadeDuration;
+            SetMaxAlpha(1f - t);
+            maxScreenRiseOffset = t * maxRiseAmount;
+            yield return null;
+        }
+        SetMaxAlpha(0f);
+        maxImage.gameObject.SetActive(false);
+        maxFadeCoroutine = null;
+    }
+
+    private void SetMaxAlpha(float alpha)
+    {
+        Color c = maxImage.color;
+        c.a = alpha;
+        maxImage.color = c;
     }
 }
