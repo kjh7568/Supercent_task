@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: StackItemConfig_Money
   m_EditorClassIdentifier: 
   itemType: 2
-  itemPrefab: {fileID: 6624949911742671607, guid: edc50bbad8089164c90aaa97fb5bbeca,
+  itemPrefab: {fileID: 3443128861371765764, guid: c4810031d72a66247acc9733cec9a7ba,
     type: 3}
