@@ -99,5 +99,5 @@ public class DepositZone : InteractionZone
     }
 
     private Vector3 GetItemWorldPosition(int index)
-        => transform.position + transform.rotation * layout.GetLocalPosition(index);
+        => transform.position + transform.rotation * (placementOffset + layout.GetLocalPosition(index));
 }
