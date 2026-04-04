@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: StackItemConfig_StackedOre
   m_EditorClassIdentifier: 
   itemType: 0
-  itemPrefab: {fileID: 8793810729165125397, guid: 73b726d3e86f2f847a071052fd67c941,
+  itemPrefab: {fileID: 1189631553493620780, guid: ae958bcf9e4147749a522a25e8c56e3e,
     type: 3}

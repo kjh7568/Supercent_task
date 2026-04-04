@@ -707,3 +707,17 @@
 **Assistant:** [UISystem] S3 커밋 완료.
 
 **User:** 리퀘스트랑 올프롬프트 갱신해줘.
+
+**Assistant:** Player Request.md [009] UISystem 전체 저장, all prompt.md 세션 9 전체 저장 완료.
+
+---
+
+## 2026-04-04 (세션 10 - 카메라 시점 변경 후 조이스틱 방향 수정)
+
+**User:** 지금 카메라 시야각을 원래 위에서 아래로 내려다 보는 시점에서 대각선으로 시점을 바꿨단 말이야? 그래서 조이스틱이랑 이동 매치가 안돼. 이거 수정좀
+
+**Assistant:** PlayerController.cs 수정. 기존 월드 고정 방향(dir.x → X, dir.y → Z)에서 Camera.main forward/right를 XZ 평면에 투영 후 조이스틱 입력과 조합하는 방식으로 변경. 카메라 각도가 바뀌어도 조이스틱 위쪽 = 화면 위쪽 자동 유지.
+
+**User:** 리퀘스트랑 프롬프트 갱신해줘
+
+**Assistant:** Player Request.md [BF] 항목 추가 및 all prompt.md 세션 10 저장 완료.
