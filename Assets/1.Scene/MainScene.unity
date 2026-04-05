@@ -4103,6 +4103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 337659225}
   - component: {fileID: 337659226}
+  - component: {fileID: 337659227}
   m_Layer: 0
   m_Name: StackPoint_Back (Money)
   m_TagString: Untagged
@@ -4144,6 +4145,21 @@ MonoBehaviour:
   useHoldOffset: 1
   holdOffset: {x: 0, y: 0, z: -0.5}
   holdOffsetTrigger: {fileID: 1425332421}
+--- !u!114 &337659227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 337659224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dce7f86d24325f468876799644be019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTiltAngle: 15
+  inertiaStrength: 2
+  returnSpeed: 8
 --- !u!1001 &342200332
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14051,6 +14067,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1425332422}
   - component: {fileID: 1425332421}
+  - component: {fileID: 1425332423}
   m_Layer: 0
   m_Name: StackPoint_Back(Ore)
   m_TagString: Untagged
@@ -14092,6 +14109,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 157818804649543579}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1425332423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425332420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dce7f86d24325f468876799644be019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTiltAngle: 15
+  inertiaStrength: 2
+  returnSpeed: 8
 --- !u!1001 &1431857609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15156,6 +15188,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1497699224}
   - component: {fileID: 1497699225}
+  - component: {fileID: 1497699226}
   m_Layer: 0
   m_Name: StackPoint_Hand
   m_TagString: Untagged
@@ -15197,6 +15230,21 @@ MonoBehaviour:
   useHoldOffset: 0
   holdOffset: {x: 0, y: 0, z: 0}
   holdOffsetTrigger: {fileID: 0}
+--- !u!114 &1497699226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497699223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dce7f86d24325f468876799644be019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTiltAngle: 15
+  inertiaStrength: 2
+  returnSpeed: 8
 --- !u!1001 &1507193194
 PrefabInstance:
   m_ObjectHideFlags: 0

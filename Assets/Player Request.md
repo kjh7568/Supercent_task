@@ -356,6 +356,37 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 - `MiningController`에 `IsMiningMode` 프로퍼티 추가
 - Animator Controller 에디터 설정: Idle/Run/Mine 3개 State, Speed/IsMining 파라미터, Any State→Mine 트랜지션 (Can Transition To Self = false)
 
+---
+
+## [013] CarryInertia 관성 시스템
+
+**요청 내용**
+플레이어 이동 시 등/손에 들고 있는 오브젝트 스택 전체가 관성을 받는 느낌 구현.
+- 이동 반대 방향으로 localPosition 오프셋 (밀리는 느낌)
+- 이동 방향으로 localRotation 틸트 (기울어지는 느낌)
+- 멈추면 원래 위치/회전으로 스프링 복귀
+- StackPoint 단위로 적용
+
+**구현 방법**
+- `CarryInertia.cs` 신규 컴포넌트, StackPoint 오브젝트에 부착
+- 플레이어 이동 velocity(위치 델타) 추적
+- position 오프셋: 이동 반대 방향으로 localPosition 가산, maxOffset 클램프
+- rotation 틸트: velocity 기준 forward/right 성분으로 localEulerAngles 조정
+- Lerp(returnSpeed)로 매 프레임 복귀
+
+**작업 스탭**
+
+| 스탭 | 내용 | 파일 |
+|---|---|---|
+| S1 | CarryInertia - localRotation 기반 관성 기울기 (베이스 고정, 위로 갈수록 변위 증가) | CarryInertia.cs 생성 |
+
+**구현 후 변경사항**
+
+**버그픽스: position → rotation 기반으로 전면 교체**
+- 원인 1: localPosition 전체 이동 방식은 스택 균일 이동 → 베이스 고정 불가
+- 원인 2: CarryInertia가 localPosition 덮어씌워 StackPoint의 holdOffset 무시됨
+- 해결: localRotation만 수정. StackPoint 피벗 기준 회전 → 베이스 고정, 위로 갈수록 변위 자연 증가. holdOffset(localPosition) 충돌 없음.
+
 **버그: Humanoid 전환 후에도 애니메이션 미동작**
 
 - 발생 상황: char01.fbx를 Generic → Humanoid로 변경 후 Apply했으나 모델이 여전히 애니메이션 동작 안 함

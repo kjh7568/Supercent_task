@@ -761,3 +761,35 @@
 **User:** 아 휴머노이드로 바꿨는데 안되던 이유를 알았어. 플레이어 프리팹을 생성하고 언팩컴플리틀리를 해서 FBX에서 바꾼 내용이 적용이 안된 문제였어. FBX를 휴머노이드로 바꾸고 생긴 아바타를 애니메이터에 넣어주니 정상 작동 된다.
 
 **Assistant:** 원인 확인 및 기록 갱신.
+
+---
+
+## 2026-04-05 (세션 13 - CarryInertia 관성 시스템)
+
+**User:** 이 세션에서는 플레이어가 이동할 때 등과 손에 들고있는 오브젝트 들이 관성을 먹는 느낌을 구현할거야. 먼저 질문?
+
+**Assistant:** PlayerController, StackSystem, StackPoint 구조 파악. 관성 타입(position 오프셋 vs rotation 틸트 여부)과 적용 범위(StackPoint 단위 vs 개별 아이템) 질문.
+
+**User:** 1. 둘 다겠지? 곡선을 휘는 느낌이니까? 2. 뭘 물어보고 싶은지 모르겠네?
+
+**Assistant:** 2번은 StackPoint 단위가 자연스러운 단위임을 이미 파악한 상태에서 불필요하게 물어봄. 정리: position 오프셋(이동 반대 방향) + rotation 틸트(이동 방향으로 기울기) + 멈추면 스프링 복귀. CarryInertia.cs 별도 컴포넌트로 구현 제안.
+
+**User:** ㅇㅇ 프로세스 짜면 되는데, 스탭 분할이 할거임?
+
+**Assistant:** S1(position 오프셋), S2(rotation 틸트) 2스탭 제안. 각각 인게임 검증 가능.
+
+**User:** 나눠서 하자. 그럼. 일단 프롬프트랑 리퀘스트 정리먼저 하고 s1 진행해
+
+**Assistant:** all prompt.md 세션 13 저장, Player Request.md [013] 추가 후 S1 진행.
+
+**User:** 일단 문제 2개 있어. 1. 스택의 시작지점은 안움직이고 위로 갈수록 많이 움직이는 구조여야해. 2. 왜인지는 모르겠는데, 돈들고 있을 때 광석도 들고 있으면 돈 위치 약간 뒤로 밀리는거 안되는데? 문제 파악해
+
+**Assistant:** 문제 1 - localPosition 전체 이동 방식은 스택 균일 이동. 베이스 고정 + 위로 갈수록 변위 증가 효과는 localRotation 기반이어야 함. 문제 2 - StackPoint.Update()가 holdOffset으로 localPosition 설정하는데 CarryInertia.LateUpdate()가 Awake에서 캡처한 원위치로 덮어써서 holdOffset 무시됨. 해결: localRotation만 수정하도록 변경 → holdOffset 충돌 없음 + 문제 1도 동시 해결.
+
+**User:** 휨을 더 강하게 하고 싶으면 어떤 필드임?
+
+**Assistant:** Inertia Strength. Max Tilt Angle도 같이 올려야 한계치 이상으로 휨.
+
+**User:** ㅇㅋ 됐다. 먼저 프롬프트랑 리퀘스트 갱신하고 언스테이지 내용 전부 커밋해줘
+
+**Assistant:** all prompt.md 세션 13 갱신, Player Request.md [013] 갱신, 전체 커밋 완료.
