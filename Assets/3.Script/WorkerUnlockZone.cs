@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,7 @@ public class WorkerUnlockZone : InteractionZone
     [Header("Unlock Settings")]
     [SerializeField] private int cost = 100;
     [SerializeField] private GameObject workerPrefab;
+
     [SerializeField] private Transform spawnOrigin;
     [SerializeField] private int workerCount = 3;
     [SerializeField] private float spawnSpacing = 1.2f;
@@ -18,11 +20,25 @@ public class WorkerUnlockZone : InteractionZone
     [SerializeField] private float transferInterval = 0.1f;
     [SerializeField] private float arcHeight = 1f;
 
+    [Header("UI")]
+    [SerializeField] private TMP_Text costText;
+
     private int collectedCoins = 0;
     private bool isUnlocked = false;
     private Coroutine transferCoroutine;
     private StackSystem stackSystem;
     private readonly List<GameObject> spawnedWorkers = new();
+
+    private void Start()
+    {
+        UpdateCostText();
+    }
+
+    private void UpdateCostText()
+    {
+        if (costText != null)
+            costText.text = (cost - collectedCoins).ToString();
+    }
 
     protected override void OnPlayerEnter(Collider player)
     {
@@ -67,6 +83,7 @@ public class WorkerUnlockZone : InteractionZone
 
             Destroy(coin);
             collectedCoins += 10;
+            UpdateCostText();
 
             Debug.Log($"[WorkerUnlockZone] 코인 {collectedCoins}/{cost} 납부");
 

@@ -721,3 +721,19 @@
 **User:** 리퀘스트랑 프롬프트 갱신해줘
 
 **Assistant:** Player Request.md [BF] 항목 추가 및 all prompt.md 세션 10 저장 완료.
+
+---
+
+## 2026-04-05 (세션 11 - 존 TMP 비용 표시 + 업그레이드 존 체인)
+
+**User:** 지금 업그레이드 존에 오브젝트 텍스트 메시 프로를 붙여놨어. 하위 자식에. 현재 요구량에 맞춰 텍스트를 바꾸는 기능을 만들어줘. 예를 들어 50을 요구하면 50이라 쓰이고 그중 20을 냈으면 30이라고 쓰이는거지. 업그레이드, 워커언락, 트랜스포트워커언락 전부 다에 만들어줘
+
+**Assistant:** 세 존(UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone)에 TMP_Text costText 필드 추가. Start()에서 초기 비용 표시, 코인 납부마다 (cost - collectedCoins) 갱신.
+
+**User:** 지금 업그레이드 존이 같은 위치에 있는데, 1단계 업글 끝나면 2단계 업글을 SetActive True해야해
+
+**Assistant:** UpgradeZone에 nextZone(GameObject) 필드 추가. ApplyUpgrade() 완료 시 nextZone.SetActive(true) 호출 후 자신 비활성화.
+
+**User:** 프롬프트랑 리퀘스트 갱신하고 언스테이지 내용 전부 커밋해줘
+
+**Assistant:** all prompt.md 세션 11 저장, Player Request.md 갱신, 전체 커밋 완료.

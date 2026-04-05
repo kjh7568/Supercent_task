@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -22,11 +23,25 @@ public class TransportWorkerUnlockZone : InteractionZone
     [SerializeField] private PickupZone workerPickupZone;
     [SerializeField] private DepositZone workerDepositZone;
 
+    [Header("UI")]
+    [SerializeField] private TMP_Text costText;
+
     private int collectedCoins = 0;
     private bool isUnlocked = false;
     private Coroutine transferCoroutine;
     private StackSystem stackSystem;
     private readonly List<GameObject> spawnedWorkers = new();
+
+    private void Start()
+    {
+        UpdateCostText();
+    }
+
+    private void UpdateCostText()
+    {
+        if (costText != null)
+            costText.text = (cost - collectedCoins).ToString();
+    }
 
     protected override void OnPlayerEnter(Collider player)
     {
@@ -71,6 +86,7 @@ public class TransportWorkerUnlockZone : InteractionZone
 
             Destroy(coin);
             collectedCoins += 10;
+            UpdateCostText();
 
             Debug.Log($"[TransportWorkerUnlockZone] 코인 {collectedCoins}/{cost} 납부");
 

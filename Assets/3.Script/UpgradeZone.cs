@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,11 @@ public class UpgradeZone : InteractionZone
     [SerializeField] private float transferInterval = 0.1f;
     [SerializeField] private float arcHeight = 1f;
 
+    [Header("Next Stage")]
+    [SerializeField] private GameObject nextZone;
+
+    [Header("UI")]
+    [SerializeField] private TMP_Text costText;
 
     private int collectedCoins = 0;
     private Coroutine transferCoroutine;
@@ -22,6 +28,17 @@ public class UpgradeZone : InteractionZone
 
     private bool IsAlreadyDone => miningController != null && miningController.CurrentStage > stageIndex;
     private int CurrentCost => upgradeData.stages[stageIndex].cost;
+
+    private void Start()
+    {
+        UpdateCostText();
+    }
+
+    private void UpdateCostText()
+    {
+        if (costText != null)
+            costText.text = (CurrentCost - collectedCoins).ToString();
+    }
 
     protected override void OnPlayerEnter(Collider player)
     {
@@ -73,6 +90,7 @@ public class UpgradeZone : InteractionZone
 
             Destroy(coin);
             collectedCoins += 10;
+            UpdateCostText();
 
             Debug.Log($"[UpgradeZone] 코인 {collectedCoins}/{CurrentCost} 납부");
 
@@ -95,6 +113,10 @@ public class UpgradeZone : InteractionZone
         Debug.Log($"[Upgrade] 스테이지 {stageIndex + 1} 완료 - radius: {stage.miningRadius}, interval: {stage.miningInterval}, maxCarry: {stage.maxCarry}");
 
         collectedCoins = 0;
+
+        if (nextZone != null)
+            nextZone.SetActive(true);
+
         gameObject.SetActive(false);
     }
 }
