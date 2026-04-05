@@ -737,3 +737,27 @@
 **User:** 프롬프트랑 리퀘스트 갱신하고 언스테이지 내용 전부 커밋해줘
 
 **Assistant:** all prompt.md 세션 11 저장, Player Request.md 갱신, 전체 커밋 완료.
+
+---
+
+## 2026-04-05 (세션 12 - 플레이어 애니메이션)
+
+**User:** 플레이어 애니메이션 만들거야. 이동이랑 곡괭이질만 만들거거든? 이렇게 2개만 준비해줘. 애니메이션 컨트롤러. 스탭별로 나눌 필요도 없이 간단한 문제지?
+
+**Assistant:** PlayerAnimationController.cs 생성. Animator 파라미터 Speed(float), IsMining(bool) 2개 구동. MiningController에 IsMiningMode 프로퍼티 추가. 에디터에서 Animator Controller 생성 + Avatar 연결 안내.
+
+**User:** 동작이 안돼. 애니메이터는 정상 동작하는거 같은데, 모델 문제인거 같거든? 근데 문제는 모델에 리깅이 있는거 같은데 뭐가 문젤까?
+
+**Assistant:** char01.fbx.meta 확인. animationType: 2 = Generic 리그. 3가지 원인 진단 제시. 1. Animator에 Avatar 미연결. 2. 애니메이션 클립 뼈 이름 불일치 (Generic은 리타게팅 없음). 3. Animator가 잘못된 오브젝트에 부착. 클립 미리보기로 빠른 진단 방법 안내.
+
+**User:** 제네릭 리그인걸 어캐 하는데?
+
+**Assistant:** 옵션 A(Humanoid 전환, 권장) vs 옵션 B(Generic 유지 - 같은 FBX 클립만 사용) 비교 제시. Humanoid 전환 시 Mixamo 등 외부 클립 자유롭게 사용 가능.
+
+**User:** 바꿨거든? 이거 바꾸는거 맞아?
+
+**Assistant:** 맞음. Humanoid 전환 후 체크리스트 안내. Configure... 초록불 확인, 클립도 Humanoid인지 확인, Animator Avatar 필드 연결 확인.
+
+**User:** 아 휴머노이드로 바꿨는데 안되던 이유를 알았어. 플레이어 프리팹을 생성하고 언팩컴플리틀리를 해서 FBX에서 바꾼 내용이 적용이 안된 문제였어. FBX를 휴머노이드로 바꾸고 생긴 아바타를 애니메이터에 넣어주니 정상 작동 된다.
+
+**Assistant:** 원인 확인 및 기록 갱신.

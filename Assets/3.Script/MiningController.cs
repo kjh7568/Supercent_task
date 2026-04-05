@@ -25,6 +25,7 @@ public class MiningController : MonoBehaviour
     public float MiningInterval => miningInterval;
     public float MiningRadius => miningRadius;
     public int CurrentStage { get; private set; } = 0;
+    public bool IsMiningMode => isMiningMode;
 
     private void Awake()
     {

@@ -345,6 +345,32 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [010] 플레이어 애니메이션 컨트롤러
+
+**요청 내용**
+플레이어 이동(Run/Idle)과 곡괭이질(Mine) 2가지 애니메이션 구동.
+
+**구현 방법**
+- `PlayerAnimationController.cs` 생성 (플레이어에 부착)
+- Animator 파라미터: `Speed`(float) — 조이스틱 방향 크기, `IsMining`(bool) — MiningController.IsMiningMode 상태
+- `MiningController`에 `IsMiningMode` 프로퍼티 추가
+- Animator Controller 에디터 설정: Idle/Run/Mine 3개 State, Speed/IsMining 파라미터, Any State→Mine 트랜지션 (Can Transition To Self = false)
+
+**버그: Humanoid 전환 후에도 애니메이션 미동작**
+
+- 발생 상황: char01.fbx를 Generic → Humanoid로 변경 후 Apply했으나 모델이 여전히 애니메이션 동작 안 함
+- 원인 분석:
+  1. 기존 Player 프리팹을 FBX에서 꺼낸 뒤 **Unpack Completely** 했기 때문에 FBX와 연결이 완전히 끊어진 상태
+  2. FBX 임포트 설정을 바꿔도 이미 언팩된 프리팹에는 변경사항이 전혀 반영되지 않음
+  3. Humanoid 전환으로 생성된 Avatar가 Animator 컴포넌트에 연결되지 않은 상태
+- 해결 과정:
+  1. char01.fbx → Import Settings → Rig → Humanoid → Apply
+  2. Configure... 에서 뼈 매핑 초록불 확인
+  3. Player 오브젝트의 Animator 컴포넌트 → Avatar 필드에 `char01Avatar` 연결
+  4. 정상 동작 확인
+
+---
+
 ## [012] 업그레이드 존 다음 단계 연결
 
 **요청 내용**
