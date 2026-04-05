@@ -3714,6 +3714,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   respawnTime: 5
   stackConfig: {fileID: 11400000, guid: 9d4819b1976a5454d98debdaef875953, type: 2}
+--- !u!1 &310986305
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 310986307}
+  - component: {fileID: 310986306}
+  m_Layer: 0
+  m_Name: 'TutorialManager '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &310986306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310986305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d2d374721d81c7419f79cd77f3b25ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &310986307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310986305}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 13.428623, y: -37.154545, z: 23.489752}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &316112550
 GameObject:
   m_ObjectHideFlags: 0
@@ -4157,8 +4201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dce7f86d24325f468876799644be019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTiltAngle: 15
-  inertiaStrength: 2
+  maxTiltAngle: 30
+  inertiaStrength: 15
   returnSpeed: 8
 --- !u!1001 &342200332
 PrefabInstance:
@@ -14121,8 +14165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dce7f86d24325f468876799644be019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTiltAngle: 15
-  inertiaStrength: 2
+  maxTiltAngle: 30
+  inertiaStrength: 15
   returnSpeed: 8
 --- !u!1001 &1431857609
 PrefabInstance:
@@ -15242,8 +15286,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dce7f86d24325f468876799644be019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTiltAngle: 15
-  inertiaStrength: 2
+  maxTiltAngle: 30
+  inertiaStrength: 15
   returnSpeed: 8
 --- !u!1001 &1507193194
 PrefabInstance:
@@ -23708,6 +23752,7 @@ SceneRoots:
   - {fileID: 626779248}
   - {fileID: 1302984964}
   - {fileID: 1896532586}
+  - {fileID: 310986307}
   - {fileID: 1384648711}
   - {fileID: 1419512011}
   - {fileID: 1969152181}

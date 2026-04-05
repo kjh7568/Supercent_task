@@ -402,6 +402,31 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [014] TutorialSystem 튜토리얼
+
+**요청 내용**
+튜토리얼 흐름 안내 시스템. 목적지 화살표 UI + 추적 화살표 UI + 카메라 연출 + 업그레이드 존 활성화 연동.
+
+**구현 방법**
+- 구조: `ITutorialStep` 인터페이스(OnEnter/OnExit/IsComplete) + `TutorialManager` (순서형 스텝 리스트)
+- 목적지 화살표: Canvas Image 컴포넌트, 월드 좌표 → 스크린 좌표 변환, 화면 안에 있을 때 표시
+- 추적 화살표: Canvas Image 컴포넌트, 목적지가 화면 밖으로 나가면 활성화, 플레이어 주변 회전
+- 카메라 이동: 지정 위치로 부드럽게 이동 → N초 대기 → 플레이어 추적 복귀 (Cinemachine 미사용)
+- 업그레이드 존: 기본 비활성화, 첫 돈 획득 이벤트 감지 시 특정 존 SetActive(true)
+
+**작업 스탭**
+
+| 스탭 | 내용 | 파일 |
+|---|---|---|
+| S1 | TutorialManager + ITutorialStep 뼈대 | TutorialManager.cs, ITutorialStep.cs |
+| S2 | 목적지 화살표 UI | TutorialArrowUI.cs |
+| S3 | 추적 화살표 UI | TutorialTrackingArrowUI.cs |
+| S4 | 카메라 이동 컴포넌트 | TutorialCameraController.cs |
+| S5 | 업그레이드 존 활성화 연동 | TutorialManager.cs 수정, UpgradeZone 관련 |
+| S6 | 실제 튜토리얼 스텝 구성 | 튜토리얼 흐름 확정 후 진행 |
+
+---
+
 ## [012] 업그레이드 존 다음 단계 연결
 
 **요청 내용**

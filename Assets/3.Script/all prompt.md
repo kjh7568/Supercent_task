@@ -793,3 +793,29 @@
 **User:** ㅇㅋ 됐다. 먼저 프롬프트랑 리퀘스트 갱신하고 언스테이지 내용 전부 커밋해줘
 
 **Assistant:** all prompt.md 세션 13 갱신, Player Request.md [013] 갱신, 전체 커밋 완료.
+
+---
+
+## 2026-04-05 (세션 14 - Tutorial)
+
+**User:** 이번 세션에서는 튜토리얼을 만들거야. 기능은 4가지. 1. 다음으로 가야하는 위치를 지정하는 화살표 UI. 2. 해당 화살표가 화면에 보이지 않으면 플레이어 발 밑에 추적 화살표(플레이어 주변 회전, 방향 안내). 3. 특정 동작 완료 시 카메라가 지정 위치로 이동 → 몇 초 후 플레이어 추적 복귀. 4. 업그레이드 존은 기본 비활성화 → 첫 돈 획득 시 활성화.
+
+**Assistant:** 화살표 UI 타입, 추적 화살표 타입, 카메라 방식, 업그레이드 존 활성화 조건 질문.
+
+**User:** 목적지 여러개 순서대로. Screen Space UI 추천 의견 요청. 카메라 뷰 밖일 때 추적 화살표 활성화. 추적 화살표도 UI. 이동 후 몇 초 뒤 플레이어 추적 복귀. 시네머신 안 씀. 첫 돈 획득 시 특정 존만 활성화.
+
+**Assistant:** Screen Space UI 추천 (추적 화살표도 UI라 Canvas 통일, 카메라 이동에 영향 안 받음). 상태머신 대신 ITutorialStep 인터페이스 기반 순서형 스텝 리스트 구조 제안.
+
+**User:** Screen Space UI면 오브젝트일 필요가 없다는 거지?
+
+**Assistant:** 맞음. 둘 다 Canvas 위 Image 컴포넌트로 관리.
+
+**User:** 프로세스 짜봐.
+
+**Assistant:** 6스탭 프로세스 확정.
+- S1: TutorialManager + ITutorialStep 뼈대
+- S2: 목적지 화살표 UI (TutorialArrowUI)
+- S3: 추적 화살표 UI (TutorialTrackingArrowUI)
+- S4: 카메라 이동 (TutorialCameraController)
+- S5: 업그레이드 존 활성화 (첫 돈 획득 이벤트 연동)
+- S6: 실제 튜토리얼 스텝 구성 (흐름 확정 후 진행)
