@@ -33,7 +33,10 @@ public class PickupZone : InteractionZone
 
     /// <summary>이미 위치가 확정된 아이템을 placedItems에 직접 등록 (코인 날리기 연출 완료 후 사용)</summary>
     public void AddPlacedItem(GameObject item)
-        => placedItems.Add(item);
+    {
+        placedItems.Add(item);
+        SoundManager.Instance?.PlaySound(SoundType.ItemAppear, item.transform.position);
+    }
 
     protected override void OnPlayerEnter(Collider player)
     {
@@ -107,6 +110,8 @@ public class PickupZone : InteractionZone
                     }
                     else
                     {
+                        SoundType pickupSound = outputType == StackItemType.Coin ? SoundType.PickupCoin : SoundType.PickupItem;
+                        SoundManager.Instance?.PlaySound(pickupSound, transform.position);
                         Debug.Log($"[PickupZone] 전달 완료 - {gameObject.name}");
                     }
                 }
@@ -131,6 +136,7 @@ public class PickupZone : InteractionZone
         item.transform.position = GetItemWorldPosition(index);
         item.transform.rotation = transform.rotation * layout.ItemRotation;
         placedItems.Add(item);
+        SoundManager.Instance?.PlaySound(SoundType.ItemAppear, item.transform.position);
 
         Debug.Log($"[PickupZone] 아이템 추가 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
     }

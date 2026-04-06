@@ -79,6 +79,7 @@ public class DepositZone : InteractionZone
                         item.transform.position = worldTargetPos;
                         item.transform.rotation = transform.rotation * layout.ItemRotation;
                         placedItems.Add(item);
+                        SoundManager.Instance?.PlaySound(SoundType.Deposit, worldTargetPos);
                         Debug.Log($"[DepositZone] 배치 완료 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
                     }
                 }
@@ -103,6 +104,7 @@ public class DepositZone : InteractionZone
         item.transform.position = GetItemWorldPosition(index);
         item.transform.rotation = transform.rotation * layout.ItemRotation;
         placedItems.Add(item);
+        SoundManager.Instance?.PlaySound(SoundType.Deposit, item.transform.position);
     }
 
     /// <summary>맨 위 아이템 제거 후 반환</summary>
