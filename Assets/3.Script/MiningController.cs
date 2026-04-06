@@ -111,9 +111,11 @@ public class MiningController : MonoBehaviour
             {
                 Debug.Log($"[Mining] 채굴 시도 - {closest.gameObject.name} (거리: {minDist:F2})");
                 var itemType = closest.StackConfig.itemType;
+                var orePos = closest.transform.position;
                 var item = closest.TryMine();
                 if (item != null)
                 {
+                    SoundManager.Instance?.PlaySound(SoundType.Mining, orePos);
                     var sp = stackSystem.GetStackPoint(itemType);
                     if (sp != null)
                     {

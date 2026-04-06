@@ -100,8 +100,10 @@ public class WorkerController : MonoBehaviour
     private IEnumerator TransferRoutine()
     {
         var config = target.StackConfig;
-        var item = Instantiate(config.itemPrefab, target.transform.position, Quaternion.identity);
+        Vector3 orePos = target.transform.position;
+        var item = Instantiate(config.itemPrefab, orePos, Quaternion.identity);
 
+        SoundManager.Instance?.PlaySound(SoundType.Mining, orePos);
         target.MineByWorker(); // 광석 즉시 히든 + 리스폰 타이머 시작
 
         if (depositZone != null)
