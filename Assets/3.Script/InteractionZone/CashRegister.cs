@@ -91,6 +91,9 @@ public class CashRegister : MonoBehaviour
         int baseIndex = pickupZone.Count;
         Vector3 spawnPos = customer.transform.position + Vector3.up * 0.5f;
 
+        if (coinsToSend > 0)
+            SoundManager.Instance?.PlaySound(SoundType.PayMoney, spawnPos);
+
         for (int i = 0; i < coinsToSend; i++)
         {
             int slotIndex = baseIndex + i;

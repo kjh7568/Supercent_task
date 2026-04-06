@@ -70,6 +70,7 @@ public class Prison : MonoBehaviour
     private void Accept(Customer customer)
     {
         currentCount++;
+        SoundManager.Instance?.PlaySound(SoundType.Handcuff, customer.transform.position);
         Vector3 inside = insidePoint != null ? insidePoint.position : transform.position;
         customer.EnterPrison(inside);
         OnCountChanged?.Invoke();

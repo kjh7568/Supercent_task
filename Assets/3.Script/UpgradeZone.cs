@@ -94,6 +94,7 @@ public class UpgradeZone : InteractionZone
                 {
                     Destroy(coin);
                     collectedCoins += 10;
+                    SoundManager.Instance?.PlaySound(SoundType.UpgradePay, transform.position);
                     UpdateCostText();
                     Debug.Log($"[UpgradeZone] 코인 {collectedCoins}/{CurrentCost} 납부");
                     if (collectedCoins >= CurrentCost)

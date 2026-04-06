@@ -77,6 +77,7 @@ public class PrisonUpgradeZone : InteractionZone
                 {
                     Destroy(coin);
                     collectedCoins += 10;
+                    SoundManager.Instance?.PlaySound(SoundType.UpgradePay, transform.position);
                     UpdateCostText();
                     Debug.Log($"[PrisonUpgradeZone] 코인 {collectedCoins}/{CurrentCost} 납부");
                     if (collectedCoins >= CurrentCost)

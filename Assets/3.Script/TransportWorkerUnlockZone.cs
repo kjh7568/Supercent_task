@@ -90,6 +90,7 @@ public class TransportWorkerUnlockZone : InteractionZone
                 {
                     Destroy(coin);
                     collectedCoins += 10;
+                    SoundManager.Instance?.PlaySound(SoundType.UpgradePay, transform.position);
                     UpdateCostText();
                     Debug.Log($"[TransportWorkerUnlockZone] 코인 {collectedCoins}/{cost} 납부");
                     if (collectedCoins >= cost)
