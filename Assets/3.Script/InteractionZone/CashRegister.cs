@@ -41,7 +41,8 @@ public class CashRegister : MonoBehaviour
                 var customer = customerQueue.FrontCustomer;
 
                 if (customer.State == CustomerState.WaitingInQueue &&
-                    depositZone.Count > 0 && !depositZone.IsTransferring)
+                    depositZone.Count > 0 && !depositZone.IsTransferring &&
+                    (Prison.Instance == null || !Prison.Instance.IsQueueFull))
                 {
                     StartCoroutine(ProcessPurchase(customer));
                 }

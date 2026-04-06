@@ -478,6 +478,34 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [022] 감옥 시스템 개선
+
+**요청 내용**
+- 감옥 대기열 기즈모 시각화
+- 큐 사이즈 5 고정, 꽉 차면 결제 차단
+- 죄수가 감옥 내부로 실제로 걸어 들어가는 연출
+
+**구현 방법**
+- `Prison.cs`: OnDrawGizmos 추가 (입구/슬롯/연결선), maxQueueSize=5, IsQueueFull 프로퍼티, insidePoint 필드, RequestEntry에서 큐 풀이면 거부
+- `CashRegister.cs`: SellLoop에 !Prison.Instance.IsQueueFull 조건 추가
+- `CustomerState`: EnteringPrison 상태 추가
+- `Customer.cs`: EnterPrison(insidePosition) 시 EnteringPrison 상태로 내부 이동, 도착 시 InPrison 전환 (풀 반환 없음)
+
+---
+
+## [021] 운반 인부 애니메이션 컨트롤러
+
+**요청 내용**
+운반 인부에 애니메이션 추가. Speed 프로퍼티로 정지/이동 상태 제어.
+
+**구현 방법**
+- `TransportWorkerAnimController.cs` 신규 생성
+- 매 프레임 현재 위치와 이전 위치 차이로 rawSpeed 계산
+- SmoothDamp로 부드럽게 보간 후 Animator.SetFloat("Speed", currentSpeed) 전달
+- Animator Controller에 Speed 파라미터 기반 Idle↔Move 트랜지션 구성
+
+---
+
 ## [017] 리팩토링 - 죄수 코인 발사 연출
 
 **요청 내용**

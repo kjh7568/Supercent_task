@@ -12,8 +12,10 @@ public class Prison : MonoBehaviour
     [Header("설정")]
     [SerializeField] private int baseCapacity = 20;
     [SerializeField] private Transform entrancePoint;
+    [SerializeField] private Transform insidePoint;
     [SerializeField] private float queueSpacing = 1.2f;
-    [SerializeField] private Vector3 queueDirection = Vector3.back;
+    [SerializeField] private Vector3 queueDirection = Vector3.forward;
+    [SerializeField] private int maxQueueSize = 5;
 
     private int capacity;
     private int currentCount;
@@ -22,6 +24,7 @@ public class Prison : MonoBehaviour
     public int Capacity => capacity;
     public int CurrentCount => currentCount;
     public bool IsFull => currentCount >= capacity;
+    public bool IsQueueFull => waitingQueue.Count >= maxQueueSize;
     public Vector3 EntrancePosition => entrancePoint != null ? entrancePoint.position : transform.position;
 
     /// <summary>현재 인원 또는 정원이 바뀔 때 발행.</summary>
@@ -43,11 +46,15 @@ public class Prison : MonoBehaviour
         {
             Accept(customer);
         }
-        else
+        else if (!IsQueueFull)
         {
             waitingQueue.Add(customer);
             customer.JoinPrisonQueue(GetQueuePosition(waitingQueue.Count - 1));
-            Debug.Log($"[Prison] 정원 초과 → 대기열 {waitingQueue.Count}번째");
+            Debug.Log($"[Prison] 정원 초과 → 대기열 {waitingQueue.Count}/{maxQueueSize}번째");
+        }
+        else
+        {
+            Debug.LogWarning($"[Prison] 대기열 가득 참({maxQueueSize}명) — 입소 거부");
         }
     }
 
@@ -63,7 +70,8 @@ public class Prison : MonoBehaviour
     private void Accept(Customer customer)
     {
         currentCount++;
-        customer.EnterPrison();
+        Vector3 inside = insidePoint != null ? insidePoint.position : transform.position;
+        customer.EnterPrison(inside);
         OnCountChanged?.Invoke();
         Debug.Log($"[Prison] 입소 완료 {currentCount}/{capacity}");
 
@@ -95,4 +103,31 @@ public class Prison : MonoBehaviour
     {
         return EntrancePosition + queueDirection * (queueSpacing * (index + 1));
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Vector3 entrance = entrancePoint != null ? entrancePoint.position : transform.position;
+        int previewCount = maxQueueSize;
+
+        // 입구 마커
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(entrance, 0.2f);
+
+        // 대기 슬롯
+        for (int i = 0; i < previewCount; i++)
+        {
+            Vector3 pos = entrance + queueDirection * (queueSpacing * (i + 1));
+            bool occupied = i < waitingQueue.Count;
+
+            Gizmos.color = occupied ? Color.red : new Color(0f, 1f, 0f, 0.3f);
+            Gizmos.DrawSphere(pos, 0.2f);
+
+            // 슬롯 간 연결선
+            Vector3 prev = i == 0 ? entrance : entrance + queueDirection * (queueSpacing * i);
+            Gizmos.color = new Color(1f, 1f, 0f, 0.5f);
+            Gizmos.DrawLine(prev, pos);
+        }
+    }
+#endif
 }

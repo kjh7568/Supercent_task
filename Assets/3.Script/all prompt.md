@@ -943,3 +943,65 @@
 **Assistant:** PickupZone.TransferSequence while 조건을 IsPlayerInside로 변경, 아이템 없거나 공간 없으면 0.1s 폴링 대기 추가.
 
 **User:** 오케 여기까지 리퀘스트, 프롬프트 갱신하고 언스테이지 내용 커밋해줘
+
+**Assistant:** 갱신 + 커밋 완료.
+
+**User:** 물건 옮기는 인부에 애니메이션 추가했어. Speed 프로퍼티로 애니메이션을 조정할거고 정지와 이동 밖에 없어. 컨트롤러 만들어줘
+
+**Assistant:** TransportWorkerAnimController.cs 생성. 매 프레임 이동속도 감지 → Animator Speed float 파라미터 갱신. SmoothDamp로 전환 부드럽게 처리. RequireComponent(Animator).
+
+**User:** 언스테이지 내용 커밋해줘
+
+**Assistant:** 커밋 완료.
+
+**User:** 리퀘스트, 프롬프트 갱신해줘
+
+**Assistant:** 갱신 완료.
+
+**User:** 그 다음 감옥 앞에서 줄 서잖아? 그거 기즈모로 보이게 해봐
+
+**Assistant:** Prison.cs OnDrawGizmos 추가. 입구 노란 구체, 비어있는 슬롯 초록 반투명, 대기 중인 슬롯 빨간 구체, 슬롯 간 노란 연결선.
+
+**User:** 입구 위치는 어떻게 아는거임?
+
+**Assistant:** entrancePoint 트랜스폼을 인스펙터에서 연결. 없으면 Prison 오브젝트 위치 폴백.
+
+**User:** 줄 서는거 반대로 서게 해
+
+**Assistant:** queueDirection 기본값 Vector3.back → Vector3.forward 변경.
+
+**User:** 큐 사이즈가 6이야?
+
+**Assistant:** 기즈모 미리보기가 5개로 하드코딩 되어있어서. 인스펙터 필드로 빼드릴까요?
+
+**User:** 대기열은 큐 사이즈는 5로 고정하고, 꽉차면 결재도 못하게 막아.
+
+**Assistant:** Prison에 maxQueueSize=5 필드 + IsQueueFull 프로퍼티 추가. RequestEntry에서 IsQueueFull이면 입소 거부. CashRegister SellLoop에 !Prison.Instance.IsQueueFull 조건 추가. 기즈모 슬롯 수도 maxQueueSize로 통일.
+
+**User:** 그리고 감옥에 들어가면 사라지는게 아니라 실제로 감옥 안으로 들어가야해.
+
+**Assistant:** CustomerState.EnteringPrison 추가. Prison에 insidePoint 필드 추가. Accept()에서 customer.EnterPrison(insidePosition) 호출. EnteringPrison 상태에서 내부 위치로 이동 후 InPrison 전환. 풀 반환 제거.
+
+**User:** 아 그리고 리지드 바디에서 프리즈 로테이션 y걸어놓으면 코드로 회전시키는것도 막혀?
+
+**Assistant:** transform.rotation 직접 조작은 안 막힘. AddTorque나 물리 충돌 회전만 막힘.
+
+**User:** 리지드 바디를 통해서 더 잘밀리게 하는 방법 없어? 메스 빼고
+
+**Assistant:** Drag 낮추기, Angular Drag 낮추기, Physics Material Friction 낮추기/Bounciness 높이기, ForceMode.Impulse 사용.
+
+**User:** 방 안으로 들어가야 하는데 이미 들어간 죄수들이 길막해서 안들어가지는 문제 어떻게 해결할까?
+
+**Assistant:** 1. EnteringPrison 시 콜라이더 끄기 2. 목적지 랜덤 오프셋 3. NavMesh 제안.
+
+**User:** 1번으로 해볼까
+
+**Assistant:** EnterPrison() 호출 시 GetComponentsInChildren<Collider> 전부 비활성화, InPrison 도달 시 재활성화 구현.
+
+**User:** 왜 없어지냐 방금 한거 취소해
+
+**Assistant:** 콜라이더 관련 변경 전부 롤백.
+
+**User:** 프롬프트, 리퀘스트 갱신해
+
+**Assistant:** 갱신 완료.

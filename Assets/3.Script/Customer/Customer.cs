@@ -9,6 +9,7 @@ public enum CustomerState
     Leaving,
     MovingToPrison,      // 구매 완료 후 구치소 입구로 이동 중
     WaitingForPrison,    // 구치소 앞 대기열에서 대기 중
+    EnteringPrison,      // 입소 승인 후 감옥 내부로 이동 중
     InPrison             // 입소 완료
 }
 
@@ -81,6 +82,15 @@ public class Customer : MonoBehaviour
                 if (!HasArrived(targetPosition))
                     MoveTowards(targetPosition);
                 break;
+
+            case CustomerState.EnteringPrison:
+                MoveTowards(targetPosition);
+                if (HasArrived(targetPosition))
+                {
+                    State = CustomerState.InPrison;
+                    Debug.Log($"[Customer] 감옥 내부 도착");
+                }
+                break;
         }
     }
 
@@ -140,12 +150,12 @@ public class Customer : MonoBehaviour
         targetPosition = newPosition;
     }
 
-    /// <summary>Prison이 입소를 승인할 때 호출.</summary>
-    public void EnterPrison()
+    /// <summary>Prison이 입소를 승인할 때 호출. 내부 위치로 걸어 들어간 후 풀 반환.</summary>
+    public void EnterPrison(Vector3 insidePosition)
     {
-        State = CustomerState.InPrison;
-        Debug.Log($"[Customer] 구치소 입소 완료 → 풀 반환");
-        pool.Return(this);
+        targetPosition = insidePosition;
+        State = CustomerState.EnteringPrison;
+        Debug.Log($"[Customer] 입소 승인 → EnteringPrison");
     }
 
     private void MoveTowards(Vector3 target)
