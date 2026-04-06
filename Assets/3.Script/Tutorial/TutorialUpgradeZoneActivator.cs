@@ -11,7 +11,7 @@ public class TutorialUpgradeZoneActivator : MonoBehaviour
     [Header("Activate On First Coin")]
     [SerializeField] private GameObject[] upgradeZones;
 
-    private void Start()
+    private void Awake()
     {
         stackSystem.OnCoinCountChanged += OnCoinCountChanged;
     }

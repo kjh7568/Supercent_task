@@ -79,8 +79,6 @@
 
 ---
 
----
-
 ## 섹션 3. 함수 길이 초과 (가이드라인 §7: 30줄 이상 분리)
 
 | 번호 | 파일 | 함수명 | 현재 길이 | 분리 방향 | 완료 |
@@ -98,45 +96,26 @@
 
 ---
 
-## 섹션 4. 조건문 중첩 3단계 이상 (가이드라인 §7: 3단계 → 구조 개선)
-
-| 번호 | 파일 | 위치 | 문제 | 개선 방향 | 완료 |
-|------|------|------|------|----------|------|
-| C-1 | `PickupZone.cs` | `TransferSequence()` | `while > if > yield` 3단계 중첩 | 조기 return / 보조 함수 추출로 평탄화 | [ ] |
-| C-2 | `Prison.cs` | `RequestEntry()` | 다중 `if-else` 중첩 체인 | Guard clause 패턴으로 평탄화 | [ ] |
-
----
-
-## 섹션 5. Update / LateUpdate 최적화 (가이드라인 §9, §12)
-
-| 번호 | 파일 | 위치 | 문제 | 개선 방향 | 완료 |
-|------|------|------|------|----------|------|
-| U-1 | `UIManager.cs` | `LateUpdate()` | 매 프레임 모든 손님 HUD 위치 순회 | 손님 이동 이벤트 기반으로 갱신 | [ ] |
-| U-2 | `PrisonFullHandler.cs` | `Update()` | `debugTriggerCamera` 플래그 매 프레임 확인 | 디버그 코드 `#if UNITY_EDITOR`로 격리 | [ ] |
-| U-3 | `TutorialCameraController.cs` | `Update()` | `debugTrigger` 플래그 매 프레임 확인 | 디버그 코드 `#if UNITY_EDITOR`로 격리 | [ ] |
-| U-4 | `Customer.cs` | `Update()` | switch 문으로 전체 상태 매 프레임 평가 | 상태 진입 시 1회 실행되는 구조로 개선 고려 | [ ] |
-
----
-
-## 섹션 6. 이벤트 구독 해제 누락 (가이드라인 §11)
+## 섹션 4. 이벤트 구독 해제 누락 (가이드라인 §11)
 
 | 번호 | 파일 | 문제 | 개선 방향 | 완료 |
 |------|------|------|----------|------|
-| E-1 | `PrisonCapacityDisplay.cs` | `OnDestroy()`에서 `Prison.Instance` null 체크 없이 구독 해제 | `Prison.Instance?.OnCountChanged -= ...` 형태로 방어 | [ ] |
-| E-2 | `TutorialUpgradeZoneActivator.cs` | `Start()`에서 구독 (권장: `Awake()`) | 라이프사이클 일관성을 위해 `Awake()`로 이동 | [ ] |
+| E-1 | `PrisonCapacityDisplay.cs` | `OnDestroy()`에서 `Prison.Instance` null 체크 보강 | `if (Prison.Instance != null)` 명시적 null 가드로 방어 | [x] |
+| E-2 | `TutorialUpgradeZoneActivator.cs` | `Start()`에서 구독 (권장: `Awake()`) | 라이프사이클 일관성을 위해 `Awake()`로 이동 | [x] |
+
+**목표**: 이벤트 구독 해제 시점의 null 안전성 확보 및 구독 등록 라이프사이클 일관성 통일.
+
+**어떻게 구현했는지**:
+- E-1: `OnDestroy()`에 `if (Prison.Instance != null)` null 가드 명시. C#에서 `?.` 연산자는 이벤트 `-=`에 사용 불가(컴파일 에러)이므로 if 형태 유지.
+- E-2: `TutorialUpgradeZoneActivator`의 구독 등록 메서드를 `Start()` → `Awake()`로 변경. `stackSystem`은 `[SerializeField]` 참조라 Awake 시점에 이미 할당되어 있어 안전.
+
+**결과**:
+- E-1: `OnDestroy`에 null 가드 추가. 씬 전환 시 Prison 싱글톤이 먼저 파괴되는 경우 NullReference 방지.
+- E-2: 씬 로드 초기 단계(Awake)에서 구독 등록이 완료되어 다른 컴포넌트의 Start 실행 전 발생하는 코인 이벤트도 누락 없이 수신 가능.
 
 ---
 
-## 섹션 7. 데이터-로직 혼합 (가이드라인 §10)
-
-| 번호 | 파일 | 문제 | 개선 방향 | 완료 |
-|------|------|------|----------|------|
-| D-1 | `MiningUpgradeData.cs` | 업그레이드 수치 데이터가 MonoBehaviour 안에 존재 | `ScriptableObject` 또는 순수 데이터 클래스(`[Serializable]`)로 전환 | [ ] |
-| D-2 | `PrisonUpgradeData.cs` | 동일 | 동일 | [ ] |
-
----
-
-## 섹션 8. 네이밍 규칙 (가이드라인 §14)
+## 섹션 5. 네이밍 규칙 (가이드라인 §14)
 
 | 번호 | 파일 | 대상 | 문제 | 수정안 | 완료 |
 |------|------|------|------|--------|------|
@@ -145,7 +124,7 @@
 
 ---
 
-## 섹션 9. TutorialSteps 구조 통합 (가이드라인 §2, §3)
+## 섹션 6. TutorialSteps 구조 통합 (가이드라인 §2, §3)
 
 - [ ] 6개 `Step_*` 클래스가 동일한 패턴(타겟 저장 → OnEnter에서 arrow 표시 → OnExit에서 arrow 숨김) 반복
 - **목표**: `TutorialStepBase` 추상 클래스 또는 제네릭 기반 클래스 도입으로 공통 코드 제거
@@ -160,10 +139,7 @@
 | §1 중복 로직 | 6 | 6 |
 | §2 단일 책임 | 3 | 1 (보류) |
 | §3 함수 길이 | 2 | 2 |
-| §4 조건문 중첩 | 2 | 0 |
-| §5 Update 최적화 | 4 | 0 |
-| §6 이벤트 구독 | 2 | 0 |
-| §7 데이터-로직 | 2 | 0 |
-| §8 네이밍 | 2 | 0 |
-| §9 Tutorial 통합 | 1 | 0 |
-| **합계** | **35** | **0** |
+| §4 이벤트 구독 | 2 | 2 |
+| §5 네이밍 | 2 | 0 |
+| §6 Tutorial 통합 | 1 | 0 |
+| **합계** | **29** | **0** |

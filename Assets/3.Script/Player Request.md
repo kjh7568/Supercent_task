@@ -573,3 +573,17 @@ DepositZone/PickupZone에서 아이템 이동 중 존을 나오면 아이템이 
 - `UpgradeZone.cs`에 `[SerializeField] GameObject nextZone` 필드 추가 (Header: Next Stage)
 - `ApplyUpgrade()` 완료 시 `nextZone.SetActive(true)` 호출 후 자신 비활성화
 - 인스펙터에서 1단계 존의 Next Zone 슬롯에 2단계 존 오브젝트 연결, 2단계는 미리 비활성화 상태로 설정
+
+---
+
+## [024] 리팩토링 - 폴더 분류 및 구조 개선 (2026-04-06)
+
+**요청 내용**
+전체 스크립트 기능별 폴더 분류 + Refactoring Checklist 기반 항목 순차 실행.
+
+**구현 방법**
+- **폴더 분류**: 스크립트를 Player/, Camera/, Mining/, Stack/, Worker/, UI/, UpgradeZone/, InteractionZone/ 등 기능·목적별로 분류. git mv로 .meta GUID 보존.
+- **P1-1 CoinCollectionZone 추상 클래스**: UpgradeZone, PrisonUpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone의 TransferSequence/UpdateCostText 중복 제거. InteractionZone/ 에 추상 베이스 생성. 4개 클래스 각 ~130줄 → ~50줄로 축소.
+- **P1-2 OreReservation 탐색 유틸**: `FindNearest(Vector3, Collider[])` (플레이어용), `FindNearestUnreserved(Vector3, OreObject[])` (인부용) 추가. MiningController 탐색 루프 12줄 → 1줄, WorkerController FindNearestOre 17줄 → 식 본문 1줄.
+- **F-1 CashRegister SpawnCoins 추출**: ProcessPurchase 내 코인 발사 로직 → SpawnCoins(Customer, int) 분리. 72줄 → 38줄.
+- **F-2 MiningController ExecuteMine 추출**: TryMineNearest 내 채굴 실행 로직 → ExecuteMine(OreObject) 분리 + guard clause 패턴 적용. 44줄 → 17줄.

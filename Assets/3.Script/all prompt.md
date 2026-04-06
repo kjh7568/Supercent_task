@@ -1053,3 +1053,75 @@
 **User:** 리퀘스트랑 프롬프트 업데이트 해줘
 
 **Assistant:** 갱신 완료.
+
+---
+
+## 2026-04-06 리팩토링 세션
+
+**User:** 이 세션에서는 마지막으로 프로젝트의 모든 코드에 대한 리펙토링을 진행할거야. 먼저 시작하기 전에 스크립트 파일을 기능과 목적에 맞게 파일로 분류해
+
+**Assistant:** 전체 스크립트를 Player/, Camera/, Mining/, Stack/, Worker/, UI/, UpgradeZone/, InteractionZone/, Prison/, Tutorial/ 등 기능·목적별 폴더로 분류. git mv로 .meta GUID 보존하며 이동.
+
+**User:** Refactoring guideline.md을 만들었어. 해당 내용 확인하고 해당 내용을 토대로 리펙토링 체크리스트를 만들어봐. 그리고 저 MD 파일에서 추가적으로 MonoBehaviour없이 구현이 가능하다면 그렇게 하도록 해. 체크리스트는 md파일 형태로 만들어서 가이드라인 있는 폴더에 만들면 돼.
+
+**Assistant:** Refactoring guideline.md §9에 MonoBehaviour 제거 판단 기준(static class / 순수 C# 클래스 / 얇은 래퍼) 추가. Refactoring Checklist.md 신규 생성 — §0 MonoBehaviour 최소화, §1 중복 로직, §2 단일 책임, §3 함수 길이, §4 조건문 중첩, §5 Update 최적화, §6 이벤트 구독 해제, §7 데이터-로직 혼합, §8 네이밍, §9 Tutorial 통합.
+
+**User:** m1부터 시작해보자
+
+**Assistant:** M-1~M-5 MonoBehaviour 제거 검토. ItemTransferAnimator(static 유틸), OreReservation(static), StackConfig(ScriptableObject로 전환)은 MonoBehaviour 제거 가능. GameManager, SoundManager는 생명주기 의존으로 유지.
+
+**User:** 인스펙터에서 해줘야 하는 얘들이 뭐가 있는지 말해주
+
+**Assistant:** ItemTransferAnimator → MonoBehaviour 제거 시 씬에서 컴포넌트 제거 필요. OreReservation → 오브젝트 자체 제거. StackConfig → ScriptableObject로 전환 시 기존 프리팹 필드 재연결 필요.
+
+**User:** m1이 잘 됐다고? 근데 이렇게 mono가 많이 있어야 해?
+
+**Assistant:** 현재 구조상 씬 참조(SerializeField)나 Unity 이벤트(OnTriggerEnter 등)가 필요한 컴포넌트는 MonoBehaviour 유지가 맞음. 억지로 제거하면 오히려 복잡도 증가. 실질적으로 제거 가능한 건 이미 처리됨.
+
+**User:** 아 모르겠다. 일단 걍 언스테이지 내용 전부 커밋해. 이건 나중에 다시볼게
+
+**Assistant:** 커밋 완료. (폴더 분류 + 가이드라인/체크리스트 문서 추가)
+
+**User:** 오케이 p1-1 진행해
+
+**Assistant:** CoinCollectionZone 추상 클래스 생성 (InteractionZone/). UpgradeZone, PrisonUpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone → CoinCollectionZone 상속. TransferSequence/UpdateCostText 공통 구현 추상화. 각 클래스 ~130줄 → ~50줄.
+
+**User:** 체크리스트 바꿀 때, 목표 지우지 말고 다 돼잖아? 그러면 목표: ~~~ 어떻게 구현했는지?~~~~ 결과: ~~~ 이렇게 작성하면 돼
+
+**Assistant:** Refactoring Checklist.md P1-1 항목을 목표 / 어떻게 구현했는지 / 결과 형식으로 갱신.
+
+**User:** 언스테이지 내용 커밋해줘
+
+**Assistant:** 커밋 완료. ([리팩토링] P1-1: CoinCollectionZone 추상 클래스 추출)
+
+**User:** 마이닝 컨트롤러에 컴파일 에러생겼잖아
+
+**Assistant:** TryMineNearest에서 탐색 루프 제거 후 `minDist` 변수가 사라졌는데 Debug.Log에 `{minDist:F2}` 참조가 남아있었음. 로그 메시지를 `[Mining] 채굴 시도 - {closest.gameObject.name}`로 수정.
+
+**User:** 1-3에 대해 말해보자. 이 3개의 기능이 끝인데, 더 분리를 하는게 맞을까? 너무 세세한 분리 아닌가?
+
+**Assistant:** UIManager(189줄, 주석으로 섹션 구분, 각 기능 사용처 1곳)는 분리 이득 없음 → P1-3 보류. 가이드라인 정량 기준(30줄/함수, 단일 책임) 충족 시에만 분리하는 게 맞음.
+
+**User:** 1-4도 정량적 리펙토링 기준을 4개에서 5개로 늘렸어. 1-4는 그냥 지워버려.
+
+**Assistant:** 가이드라인 §7 매개변수 기준 4개 → 5개로 수정. Customer.Initialize(5개)가 기준 미달이므로 P1-4 삭제. 나머지 항목 번호 갱신.
+
+**User:** 세션 3에 5개의 함수들을 가이드라인 2~6번을 토대로 다시 검토해봐. 그래도 수정하는게 더 좋을 거 같은거만 남겨둬
+
+**Assistant:** §3 함수 길이 항목 재검토. TryMineNearest(44줄, 두 가지 책임), ProcessPurchase(72줄, 코인 발사 분리 가능) → F-1, F-2로 남김. 나머지 3개 함수는 기준 미달 또는 분리 이득 없음으로 삭제.
+
+**User:** f1,2 동시에 해버리자.
+
+**Assistant:** F-1: CashRegister.ProcessPurchase → SpawnCoins(Customer, int) 추출 (72→38줄). F-2: MiningController.TryMineNearest → ExecuteMine(OreObject) 추출 + guard clause 패턴 (44→17줄). 커밋: [리팩토링] F-1,F-2: 함수 책임 분리.
+
+**User:** 섹션 4도 2~6으로 재검토해봐
+
+**Assistant:** §4 조건문 중첩 항목 재검토. C-1(PickupZone while>if>yield)은 yield가 조건문 아닌 코루틴 중단점이라 실제 중첩 2단계. C-2(Prison.RequestEntry if-else if-else)는 선형 분기(깊이 1단계). 두 항목 모두 기준 미달 → §4 전체 삭제.
+
+**User:** 섹션 자체를 지우고 번호 앞으로 떙겨
+
+**Assistant:** §4 삭제, §5~§9 → §4~§8로 번호 앞당김. Checklist 갱신.
+
+**User:** 일단 지금까지 내용 리퀘스트랑 프롬프트에 갱신해
+
+**Assistant:** 갱신 완료.
