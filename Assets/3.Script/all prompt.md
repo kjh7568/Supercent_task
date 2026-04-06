@@ -843,3 +843,23 @@
 **User:** S4 진행. 인스펙터에서 카메라 위치 조정용 debugTriggerCamera 불값 추가 요청.
 
 **Assistant:** PrisonFullHandler.cs 생성. debugTriggerCamera 토글로 TriggerMove 즉시 호출 가능하게 구현. S1~S4 전체 완료.
+
+---
+
+## 2026-04-06 (세션 16 - 리팩토링 버그 수정)
+
+**User:** 리팩토링 세션. 자잘한 버그 수정.
+
+**User:** 1. DepositZone/PickupZone에서 아이템 이동 중 존을 나오면 오브젝트가 멈추는 문제. 2. 원래 오브젝트가 이동하는 로직으로 수정하면서 1번도 해결하자.
+
+**Assistant:** 코드 분석 결과, 이미 원래 오브젝트가 이동하는 방식임. 버그 원인은 TakeItem/TakeTopItem 후 이동 중 StopCoroutine 시 아이템이 StackSystem에도 없고 placedItems에도 없는 고아 상태가 됨. 수정 방향: _inFlightItem 추적 + 이탈 시 강제 처리.
+
+**User:** 아 그래? 그럼 새 오브젝트 스폰이 아니라 이동하는 오브젝트가 마지막 프레임에서 회전이나 이런게 갑작스럽게 먹히는 거구나. 수정방향: 쌓이는 위치 오프셋 계산 → 이동+회전 DOTween 동시 적용. 플레이어 이동 중에도 따라가게 부모 오브젝트를 StackPoint로 지정.
+
+**Assistant:** 동의. PickupZone: parent = 플레이어 StackPoint. DepositZone: parent = 존 transform. DOTween으로 localPosition + localRotation 동시 이동. 이탈 시 DOTween Kill → 아이템이 parent 아래 멈춤 (고아 아님). StackPoint 확인 필요.
+
+**User:** DOTween 있음. 스탭별로 나눠야 하냐.
+
+**Assistant:** 3파일(ItemTransferAnimator, DepositZone, PickupZone) 모두 연관 → 한 스탭으로 진행 제안.
+
+**User:** 먼저 프롬프트랑 리퀘스트 갱신하고 진행해.

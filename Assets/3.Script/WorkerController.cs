@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -105,9 +106,9 @@ public class WorkerController : MonoBehaviour
 
         if (depositZone != null)
         {
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                item, depositZone.transform.position, arcDuration, arcHeight
-            ));
+            yield return ItemTransferAnimator.Transfer(
+                item, depositZone.transform, Vector3.zero, Quaternion.identity, arcDuration, arcHeight
+            ).WaitForCompletion();
 
             if (depositZone.HasSpace)
                 depositZone.PlaceItem(item);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ public class TransportWorkerUnlockZone : InteractionZone
     private int collectedCoins = 0;
     private bool isUnlocked = false;
     private Coroutine transferCoroutine;
+    private Tween _activeTween;
     private StackSystem stackSystem;
     private readonly List<GameObject> spawnedWorkers = new();
 
@@ -59,6 +61,9 @@ public class TransportWorkerUnlockZone : InteractionZone
 
     protected override void OnPlayerExit(Collider player)
     {
+        _activeTween?.Kill(complete: true);
+        _activeTween = null;
+
         if (transferCoroutine != null)
         {
             StopCoroutine(transferCoroutine);
@@ -79,19 +84,21 @@ public class TransportWorkerUnlockZone : InteractionZone
             var coin = stackSystem.TakeItem(StackItemType.Coin);
             if (coin == null) { yield return new WaitForSeconds(transferInterval); continue; }
 
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                coin, transform.position, transferDuration, arcHeight,
-                onComplete: null
-            ));
+            _activeTween = ItemTransferAnimator.Transfer(
+                coin, transform, Vector3.zero, Quaternion.identity, transferDuration, arcHeight,
+                onComplete: () =>
+                {
+                    Destroy(coin);
+                    collectedCoins += 10;
+                    UpdateCostText();
+                    Debug.Log($"[TransportWorkerUnlockZone] 코인 {collectedCoins}/{cost} 납부");
+                    if (collectedCoins >= cost)
+                        Unlock();
+                }
+            );
 
-            Destroy(coin);
-            collectedCoins += 10;
-            UpdateCostText();
-
-            Debug.Log($"[TransportWorkerUnlockZone] 코인 {collectedCoins}/{cost} 납부");
-
-            if (collectedCoins >= cost)
-                Unlock();
+            yield return _activeTween.WaitForCompletion();
+            _activeTween = null;
 
             yield return new WaitForSeconds(transferInterval);
         }

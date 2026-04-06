@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -71,11 +72,9 @@ public class CashRegister : MonoBehaviour
             var product = depositZone.TakeTopItem();
             if (product == null) continue;
 
-            Vector3 customerPos = customer.transform.position + Vector3.up * 0.5f;
-
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                product, customerPos, transferDuration, arcHeight
-            ));
+            yield return ItemTransferAnimator.Transfer(
+                product, customer.transform, Vector3.up * 0.5f, Quaternion.identity, transferDuration, arcHeight
+            ).WaitForCompletion();
 
             if (product != null)
                 Destroy(product);

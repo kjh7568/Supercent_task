@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -83,11 +84,9 @@ public class TransportWorkerController : MonoBehaviour
             var item = pickupZone.TakeTopItem();
             if (item == null) { yield return new WaitForSeconds(0.1f); continue; }
 
-            Vector3 targetPos = handStackPoint.GetNextItemWorldPosition();
-
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                item, targetPos, arcDuration, arcHeight
-            ));
+            yield return ItemTransferAnimator.Transfer(
+                item, handStackPoint.transform, handStackPoint.GetNextItemLocalPosition(), Quaternion.identity, arcDuration, arcHeight
+            ).WaitForCompletion();
 
             handStackPoint.AddExistingItem(item);
 
@@ -115,9 +114,9 @@ public class TransportWorkerController : MonoBehaviour
             var item = handStackPoint.RemoveTopItem();
             if (item == null) break;
 
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                item, depositZone.transform.position, arcDuration, arcHeight
-            ));
+            yield return ItemTransferAnimator.Transfer(
+                item, depositZone.transform, Vector3.zero, Quaternion.identity, arcDuration, arcHeight
+            ).WaitForCompletion();
 
             depositZone.PlaceItem(item);
 

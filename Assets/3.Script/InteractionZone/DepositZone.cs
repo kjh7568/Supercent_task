@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,7 @@ public class DepositZone : InteractionZone
 
     private readonly List<GameObject> placedItems = new();
     private Coroutine transferCoroutine;
+    private Tween _activeTween;
 
     public int Count => placedItems.Count;
     public bool HasSpace => layout != null && placedItems.Count < layout.Capacity;
@@ -35,6 +37,10 @@ public class DepositZone : InteractionZone
     {
         Debug.Log($"[DepositZone] 플레이어 이탈 - {gameObject.name}");
 
+        // Kill(complete: true) → onComplete 강제 실행 → placedItems.Add() 즉시 확정
+        _activeTween?.Kill(complete: true);
+        _activeTween = null;
+
         if (transferCoroutine != null)
         {
             StopCoroutine(transferCoroutine);
@@ -50,25 +56,31 @@ public class DepositZone : InteractionZone
             if (item == null) break;
 
             int targetIndex = placedItems.Count;
-            Vector3 targetWorldPos = GetItemWorldPosition(targetIndex);
+            Vector3 localTargetPos = placementOffset + layout.GetLocalPosition(targetIndex);
+            Quaternion localTargetRot = layout.ItemRotation;
 
             Debug.Log($"[DepositZone] 이동 시작 ({targetIndex + 1}/{layout.Capacity}) - {gameObject.name}");
 
-            bool arrived = false;
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                item, targetWorldPos, transferDuration, arcHeight,
-                onComplete: () => arrived = true
-            ));
+            _activeTween = ItemTransferAnimator.Transfer(
+                item,
+                transform,
+                localTargetPos,
+                localTargetRot,
+                transferDuration,
+                arcHeight,
+                onComplete: () =>
+                {
+                    if (item != null)
+                    {
+                        placedItems.Add(item);
+                        Debug.Log($"[DepositZone] 배치 완료 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
+                    }
+                }
+            );
 
-            if (item == null) break;
+            yield return _activeTween.WaitForCompletion();
 
-            item.transform.SetParent(null);
-            item.transform.position = targetWorldPos;
-            item.transform.rotation = transform.rotation * layout.ItemRotation;
-            placedItems.Add(item);
-
-            Debug.Log($"[DepositZone] 배치 완료 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
-
+            _activeTween = null;
             yield return new WaitForSeconds(transferInterval);
         }
 

@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ public class UpgradeZone : InteractionZone
 
     private int collectedCoins = 0;
     private Coroutine transferCoroutine;
+    private Tween _activeTween;
     private MiningController miningController;
     private StackSystem stackSystem;
 
@@ -63,6 +65,9 @@ public class UpgradeZone : InteractionZone
 
     protected override void OnPlayerExit(Collider player)
     {
+        _activeTween?.Kill(complete: true);
+        _activeTween = null;
+
         if (transferCoroutine != null)
         {
             StopCoroutine(transferCoroutine);
@@ -83,19 +88,21 @@ public class UpgradeZone : InteractionZone
             var coin = stackSystem.TakeItem(StackItemType.Coin);
             if (coin == null) { yield return new WaitForSeconds(transferInterval); continue; }
 
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                coin, transform.position, transferDuration, arcHeight,
-                onComplete: null
-            ));
+            _activeTween = ItemTransferAnimator.Transfer(
+                coin, transform, Vector3.zero, Quaternion.identity, transferDuration, arcHeight,
+                onComplete: () =>
+                {
+                    Destroy(coin);
+                    collectedCoins += 10;
+                    UpdateCostText();
+                    Debug.Log($"[UpgradeZone] 코인 {collectedCoins}/{CurrentCost} 납부");
+                    if (collectedCoins >= CurrentCost)
+                        ApplyUpgrade();
+                }
+            );
 
-            Destroy(coin);
-            collectedCoins += 10;
-            UpdateCostText();
-
-            Debug.Log($"[UpgradeZone] 코인 {collectedCoins}/{CurrentCost} 납부");
-
-            if (collectedCoins >= CurrentCost)
-                ApplyUpgrade();
+            yield return _activeTween.WaitForCompletion();
+            _activeTween = null;
 
             yield return new WaitForSeconds(transferInterval);
         }

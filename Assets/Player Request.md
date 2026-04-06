@@ -444,6 +444,20 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [016] 리팩토링 - DepositZone/PickupZone 이동 버그 수정
+
+**요청 내용**
+DepositZone/PickupZone에서 아이템 이동 중 존을 나오면 아이템이 공중에 멈추는 버그 수정.
+마지막 프레임에서 회전/위치가 갑자기 적용되는 문제도 함께 수정.
+
+**구현 방법**
+- `ItemTransferAnimator.cs` DOTween 기반으로 교체: parent 설정 후 localPosition(arc 포함) + localRotation 동시 트윈
+- `PickupZone.cs`: 이동 시작 시 아이템 parent = 플레이어 StackPoint → 플레이어 이동 중에도 목적지 추적
+- `DepositZone.cs`: 이동 시작 시 아이템 parent = 존 transform → 이탈 시 고아 방지
+- 이탈 시 DOTween Kill → 아이템이 parent 아래 멈춤 (고아 없음), 즉시 확정 처리
+
+---
+
 ## [012] 업그레이드 존 다음 단계 연결
 
 **요청 내용**

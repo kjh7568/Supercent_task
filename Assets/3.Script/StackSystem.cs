@@ -106,6 +106,14 @@ public class StackSystem : MonoBehaviour
         return false;
     }
 
+    /// <summary>타입에 해당하는 빈 공간이 있는 StackPoint 반환 (PickupZone parent 설정용)</summary>
+    public StackPoint GetStackPoint(StackItemType type)
+    {
+        foreach (var sp in stackPoints)
+            if (sp.TargetType == type && sp.HasSpace) return sp;
+        return null;
+    }
+
     public void Remove(StackItemType type)
     {
         for (int i = stackPoints.Count - 1; i >= 0; i--)

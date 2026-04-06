@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -25,6 +26,7 @@ public class PrisonUpgradeZone : InteractionZone
     private int collectedCoins = 0;
     private bool isDone = false;
     private Coroutine transferCoroutine;
+    private Tween _activeTween;
     private StackSystem stackSystem;
 
     private int CurrentCost => upgradeData.stages[stageIndex].cost;
@@ -46,6 +48,9 @@ public class PrisonUpgradeZone : InteractionZone
 
     protected override void OnPlayerExit(Collider player)
     {
+        _activeTween?.Kill(complete: true);
+        _activeTween = null;
+
         if (transferCoroutine != null)
         {
             StopCoroutine(transferCoroutine);
@@ -66,19 +71,21 @@ public class PrisonUpgradeZone : InteractionZone
             var coin = stackSystem.TakeItem(StackItemType.Coin);
             if (coin == null) { yield return new WaitForSeconds(transferInterval); continue; }
 
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                coin, transform.position, transferDuration, arcHeight,
-                onComplete: null
-            ));
+            _activeTween = ItemTransferAnimator.Transfer(
+                coin, transform, Vector3.zero, Quaternion.identity, transferDuration, arcHeight,
+                onComplete: () =>
+                {
+                    Destroy(coin);
+                    collectedCoins += 10;
+                    UpdateCostText();
+                    Debug.Log($"[PrisonUpgradeZone] 코인 {collectedCoins}/{CurrentCost} 납부");
+                    if (collectedCoins >= CurrentCost)
+                        ApplyUpgrade();
+                }
+            );
 
-            Destroy(coin);
-            collectedCoins += 10;
-            UpdateCostText();
-
-            Debug.Log($"[PrisonUpgradeZone] 코인 {collectedCoins}/{CurrentCost} 납부");
-
-            if (collectedCoins >= CurrentCost)
-                ApplyUpgrade();
+            yield return _activeTween.WaitForCompletion();
+            _activeTween = null;
 
             yield return new WaitForSeconds(transferInterval);
         }

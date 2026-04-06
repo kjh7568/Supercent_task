@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,7 @@ public class PickupZone : InteractionZone
 
     private readonly List<GameObject> placedItems = new();
     private Coroutine transferCoroutine;
+    private Tween _activeTween;
 
     public int Count => placedItems.Count;
     public bool HasSpace => layout != null && placedItems.Count < layout.Capacity;
@@ -34,12 +36,16 @@ public class PickupZone : InteractionZone
         Debug.Log($"[PickupZone] 아이템 수: {placedItems.Count}, HasSpace({outputType}): {stackSystem.HasSpace(outputType)}");
 
         if (transferCoroutine != null) StopCoroutine(transferCoroutine);
-        transferCoroutine = StartCoroutine(TransferSequence(stackSystem, player.transform));
+        transferCoroutine = StartCoroutine(TransferSequence(stackSystem));
     }
 
     protected override void OnPlayerExit(Collider player)
     {
         Debug.Log($"[PickupZone] 플레이어 이탈 - {gameObject.name}");
+
+        // Kill(complete: true) → onComplete 강제 실행 → ReceiveItem() 즉시 확정
+        _activeTween?.Kill(complete: true);
+        _activeTween = null;
 
         if (transferCoroutine != null)
         {
@@ -48,34 +54,47 @@ public class PickupZone : InteractionZone
         }
     }
 
-    private IEnumerator TransferSequence(StackSystem stackSystem, Transform playerTransform)
+    private IEnumerator TransferSequence(StackSystem stackSystem)
     {
         while (IsPlayerInside && placedItems.Count > 0 && stackSystem.HasSpace(outputType))
         {
+            var stackPoint = stackSystem.GetStackPoint(outputType);
+            if (stackPoint == null) break;
+
             var item = TakeTopItem();
             if (item == null) break;
 
-            Vector3 targetPos = playerTransform.position + Vector3.up;
+            Vector3 localTargetPos = stackPoint.GetNextItemLocalPosition();
+            Quaternion localTargetRot = Quaternion.identity;
 
             Debug.Log($"[PickupZone] 이동 시작 (남은 수량: {placedItems.Count}) - {gameObject.name}");
 
-            yield return StartCoroutine(ItemTransferAnimator.Transfer(
-                item, targetPos, transferDuration, arcHeight
-            ));
+            _activeTween = ItemTransferAnimator.Transfer(
+                item,
+                stackPoint.transform,
+                localTargetPos,
+                localTargetRot,
+                transferDuration,
+                arcHeight,
+                onComplete: () =>
+                {
+                    bool received = stackSystem.ReceiveItem(item, outputType);
+                    if (!received)
+                    {
+                        // 공간 없으면 원위치 복구
+                        PlaceItem(item);
+                        Debug.Log($"[PickupZone] StackSystem 공간 없음, 복귀");
+                    }
+                    else
+                    {
+                        Debug.Log($"[PickupZone] 전달 완료 - {gameObject.name}");
+                    }
+                }
+            );
 
-            if (item == null) break;
+            yield return _activeTween.WaitForCompletion();
 
-            bool received = stackSystem.ReceiveItem(item, outputType);
-            if (!received)
-            {
-                // 공간 없으면 원위치 복구
-                PlaceItem(item);
-                Debug.Log($"[PickupZone] StackSystem 공간 없음, 복귀");
-                break;
-            }
-
-            Debug.Log($"[PickupZone] 전달 완료 - {gameObject.name}");
-
+            _activeTween = null;
             yield return new WaitForSeconds(transferInterval);
         }
 
