@@ -2807,8 +2807,8 @@ MonoBehaviour:
   workerCount: 3
   spawnSpacing: 1.2
   workerDepositZone: {fileID: 254117512}
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
   costText: {fileID: 1676852009}
 --- !u!65 &212090975
@@ -3254,7 +3254,7 @@ MonoBehaviour:
   layout: {fileID: 254117513}
   placementOffset: {x: -0.5, y: 0, z: 0}
   acceptedType: 0
-  transferDuration: 0.3
+  transferDuration: 0.1
   transferInterval: 0.1
   arcHeight: 1
 --- !u!114 &254117513
@@ -7120,8 +7120,8 @@ MonoBehaviour:
   placementOffset: {x: 0, y: 0, z: 0}
   upgradeData: {fileID: 11400000, guid: 69452899a50787342a673eb286e0d950, type: 2}
   stageIndex: 1
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
   nextZone: {fileID: 0}
   costText: {fileID: 1476088456}
@@ -10909,8 +10909,8 @@ MonoBehaviour:
   layout: {fileID: 979953194}
   placementOffset: {x: -1.85, y: 1, z: 0}
   acceptedType: 1
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
 --- !u!114 &979953194
 MonoBehaviour:
@@ -10927,7 +10927,7 @@ MonoBehaviour:
   itemEulerAngles: {x: 0, y: -90, z: 0}
   stackAxis: {x: 0, y: 1, z: 0}
   spacing: 0.3
-  capacity: 10
+  capacity: 30
 --- !u!65 &979953195
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14329,8 +14329,8 @@ MonoBehaviour:
   placementOffset: {x: 0, y: 0, z: 0}
   upgradeData: {fileID: 11400000, guid: 69452899a50787342a673eb286e0d950, type: 2}
   stageIndex: 0
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
   nextZone: {fileID: 564588054}
   costText: {fileID: 84628060}
@@ -17543,8 +17543,8 @@ MonoBehaviour:
   spawnOrigin: {fileID: 1617738170}
   workerCount: 1
   spawnSpacing: 1.2
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
   workerPickupZone: {fileID: 3721066580736422487}
   workerDepositZone: {fileID: 979953193}
@@ -18064,6 +18064,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTarget: {fileID: 1644012135}
   upgradeZone: {fileID: 1764961097}
+  debugTriggerCamera: 0
 --- !u!1 &1686383829
 GameObject:
   m_ObjectHideFlags: 0
@@ -18814,7 +18815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1764961098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18832,8 +18833,8 @@ MonoBehaviour:
   placementOffset: {x: 0, y: 0, z: 0}
   upgradeData: {fileID: 11400000, guid: 0a1589cdcaa87d5408607cd3f09f9896, type: 2}
   stageIndex: 0
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
   nextZone: {fileID: 0}
   costText: {fileID: 427371412}
@@ -20851,8 +20852,8 @@ MonoBehaviour:
   layout: {fileID: 2030341453}
   placementOffset: {x: -0.5, y: 0, z: -0.5}
   outputType: 2
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
 --- !u!114 &2030341453
 MonoBehaviour:
@@ -20875,7 +20876,7 @@ MonoBehaviour:
   colSpacing: 0.55
   rowSpacing: 1.05
   heightSpacing: 0.35
-  capacity: 30
+  capacity: 100
 --- !u!65 &2030341454
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22176,6 +22177,8 @@ MonoBehaviour:
   miningInterval: 1
   miningRadius: 1
   sphereOffset: 1
+  arcDuration: 0.1
+  arcHeight: 1.5
   oreStackPoint: {fileID: 1425332421}
 --- !u!114 &1320834342243278815
 MonoBehaviour:
@@ -23082,7 +23085,7 @@ MonoBehaviour:
   itemEulerAngles: {x: 0, y: 0, z: 0}
   stackAxis: {x: 0, y: 1, z: 0}
   spacing: 0.3
-  capacity: 10
+  capacity: 30
 --- !u!114 &3721066580736422487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23099,8 +23102,8 @@ MonoBehaviour:
   layout: {fileID: 3721066580736422486}
   placementOffset: {x: 0, y: 0.33, z: 0}
   outputType: 1
-  transferDuration: 0.3
-  transferInterval: 0.1
+  transferDuration: 0.1
+  transferInterval: 0.01
   arcHeight: 1
 --- !u!65 &3721066580736422488
 BoxCollider:
@@ -24976,6 +24979,7 @@ SceneRoots:
   - {fileID: 788355580}
   - {fileID: 1404740701}
   - {fileID: 9206752944757162194}
+  - {fileID: 1685303359}
   - {fileID: 1400876404}
   - {fileID: 564588058}
   - {fileID: 212090977}
@@ -24983,4 +24987,3 @@ SceneRoots:
   - {fileID: 1764961101}
   - {fileID: 1540160122}
   - {fileID: 1611618230}
-  - {fileID: 1685303359}
