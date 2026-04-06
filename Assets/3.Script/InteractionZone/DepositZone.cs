@@ -61,6 +61,8 @@ public class DepositZone : InteractionZone
 
             Debug.Log($"[DepositZone] 이동 시작 ({targetIndex + 1}/{layout.Capacity}) - {gameObject.name}");
 
+            Vector3 worldTargetPos = GetItemWorldPosition(targetIndex);
+
             _activeTween = ItemTransferAnimator.Transfer(
                 item,
                 transform,
@@ -72,6 +74,9 @@ public class DepositZone : InteractionZone
                 {
                     if (item != null)
                     {
+                        item.transform.SetParent(null);
+                        item.transform.position = worldTargetPos;
+                        item.transform.rotation = transform.rotation * layout.ItemRotation;
                         placedItems.Add(item);
                         Debug.Log($"[DepositZone] 배치 완료 ({placedItems.Count}/{layout.Capacity}) - {gameObject.name}");
                     }

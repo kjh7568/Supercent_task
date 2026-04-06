@@ -455,6 +455,8 @@ DepositZone/PickupZone에서 아이템 이동 중 존을 나오면 아이템이 
 - `PickupZone.cs`: 이동 시작 시 아이템 parent = 플레이어 StackPoint → 플레이어 이동 중에도 목적지 추적
 - `DepositZone.cs`: 이동 시작 시 아이템 parent = 존 transform → 이탈 시 고아 방지
 - 이탈 시 DOTween Kill → 아이템이 parent 아래 멈춤 (고아 없음), 즉시 확정 처리
+- UpgradeZone / WorkerUnlockZone / TransportWorkerUnlockZone / PrisonUpgradeZone: 동일 _activeTween 패턴 적용. collectedCoins 증가·Destroy·ApplyUpgrade 체크를 모두 onComplete 안으로 이동 → 이탈 시에도 납부 확정
+- DepositZone onComplete에서 SetParent(null) + world position/rotation 직접 설정 → DepositZone scale 상속 및 위치 오차 제거
 
 ---
 

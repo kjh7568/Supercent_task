@@ -863,3 +863,47 @@
 **Assistant:** 3파일(ItemTransferAnimator, DepositZone, PickupZone) 모두 연관 → 한 스탭으로 진행 제안.
 
 **User:** 먼저 프롬프트랑 리퀘스트 갱신하고 진행해.
+
+**Assistant:** all prompt.md, Player Request.md 갱신 완료.
+
+**User:** ㄱ
+
+**Assistant:** ItemTransferAnimator DOTween 전환 + DepositZone/PickupZone/UpgradeZone 계열 이탈 시 고아 버그 수정 구현 완료. 수정 파일: ItemTransferAnimator, DepositZone, PickupZone, UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone, PrisonUpgradeZone, WorkerController, TransportWorkerController, CashRegister, StackPoint, StackSystem.
+
+**User:** 오케이. 된거 같아. 업그레이드 존은 아직 이동 도중에 벗어나면 오브젝트 멈추는거 같은데 이건 아직 안한거지?
+
+**Assistant:** 맞음. 업그레이드존 계열은 _activeTween 패턴 미적용 상태였음.
+
+**User:** ㅇㅇ 진행하자
+
+**Assistant:** UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone, PrisonUpgradeZone에 _activeTween 추적 + Kill(complete: true) 패턴 적용. onComplete에서 Destroy(coin) 처리.
+
+**User:** 오케이 언스테이지 내용 커밋
+
+**Assistant:** 커밋 완료.
+
+**User:** ㅇㅇ 오브젝트는 이제 잘 사라지는데, 문제는 이렇게 중간에 나오면 돈이 들어간거로 되지 않아. 내 돈은 빠져나갔는데.
+
+**Assistant:** 원인: collectedCoins += 10 등이 코루틴 본문에 있어 StopCoroutine으로 실행 안 됨. onComplete 콜백 안으로 이동하여 해결.
+
+**User:** 오케이 언스테이지 내용 커밋
+
+**Assistant:** 커밋 완료.
+
+**User:** 리퀘스트랑 프롬프트 갱신해
+
+**Assistant:** all prompt.md, Player Request.md 갱신 완료.
+
+**User:** 쌓이는 속도 조절 어디서 해? 내 손이나 디포짓존 픽업존에 쌓는 속도
+
+**Assistant:** PickupZone/DepositZone 인스펙터 Transfer Duration(이동 시간), Transfer Interval(아이템 간 딜레이).
+
+**User:** 광석을 배치할 때 지금 배치되는 자식의 부모가 바뀜에 따라 디포짓 존에 그리드를 안따서 배치가 되는데 문제 원인 파악해봐
+
+**Assistant:** 원인: Transfer 완료 후 item의 parent가 DepositZone.transform으로 남아있음. onComplete에서 localPosition = localTargetPos 설정 시 DepositZone scale 적용 → 위치 오차 + scale 상속. 이전 GetItemWorldPosition은 scale 무시하고 rotation만 적용했으나 TransformPoint는 scale 포함.
+
+**User:** 해봐
+
+**Assistant:** onComplete에서 SetParent(null) + world position/rotation 직접 설정으로 수정. DepositZone scale 영향 제거.
+
+**User:** 오케이 프롬프트랑 리퀘스트 갱신하고 언스테이지 내용 커밋까지 해줘
