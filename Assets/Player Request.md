@@ -427,6 +427,23 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [015] 구치소(Prison) 시스템
+
+**요청 내용**
+제품을 구매한 고객(죄수)이 구치소로 이동해 입소하는 시스템 구현.
+- 정원 20명 (업그레이드로 증가), 정원 초과 시 줄 서서 대기
+- 현재인원/전체인원 월드 스페이스 오브젝트로 표시
+- 정원이 차면 TutorialCameraController 재사용해 카메라 이동 알림 + 업그레이드 존 활성화
+- 업그레이드 시 건물 스케일 시각 효과
+
+**구현 방법**
+- S1: `Customer.cs` 상태 머신에 `MovingToPrison`, `WaitingForPrison`, `InPrison` 추가. `Prison.cs` 생성 — 수용 인원 관리, 입소 큐, 입소 처리.
+- S2: `PrisonCapacityDisplay.cs` — 구치소 위 TextMeshPro 월드 스페이스로 현재/전체 인원 표시. Prison 이벤트 구독.
+- S3: `PrisonUpgradeData.cs` (ScriptableObject, 단계별 비용·정원·스케일 인스펙터 할당) + `PrisonUpgradeZone.cs` (UpgradeZone 패턴 재활용, 초기 비활성).
+- S4: Prison 정원 가득 찼을 때 `TutorialCameraController.TriggerMove()` 호출 + PrisonUpgradeZone 활성화.
+
+---
+
 ## [012] 업그레이드 존 다음 단계 연결
 
 **요청 내용**

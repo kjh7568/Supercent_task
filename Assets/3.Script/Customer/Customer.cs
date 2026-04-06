@@ -6,7 +6,10 @@ public enum CustomerState
     MovingToQueue,
     WaitingInQueue,
     Purchasing,
-    Leaving
+    Leaving,
+    MovingToPrison,      // 구매 완료 후 구치소 입구로 이동 중
+    WaitingForPrison,    // 구치소 앞 대기열에서 대기 중
+    InPrison             // 입소 완료
 }
 
 /// <summary>
@@ -66,6 +69,17 @@ public class Customer : MonoBehaviour
                     pool.Return(this);
                 }
                 break;
+
+            case CustomerState.MovingToPrison:
+                MoveTowards(targetPosition);
+                if (HasArrived(targetPosition))
+                    Prison.Instance.RequestEntry(this);
+                break;
+
+            case CustomerState.WaitingForPrison:
+                if (!HasArrived(targetPosition))
+                    MoveTowards(targetPosition);
+                break;
         }
     }
 
@@ -91,14 +105,46 @@ public class Customer : MonoBehaviour
         Delivered++;
     }
 
-    /// <summary>CashRegister에서 구매 완료 시 호출. 손님이 퇴장한다.</summary>
+    /// <summary>CashRegister에서 구매 완료 시 호출. 구치소가 있으면 구치소로, 없으면 퇴장한다.</summary>
     public void CompletePurchase()
     {
         UIManager.Instance?.UnregisterCustomerHUD(this);
         queue.Dequeue();
-        State = CustomerState.Leaving;
         transform.SetParent(null);
-        Debug.Log($"[Customer] 구매 완료 → Leaving");
+
+        if (Prison.Instance != null)
+        {
+            targetPosition = Prison.Instance.EntrancePosition;
+            State = CustomerState.MovingToPrison;
+            Debug.Log($"[Customer] 구매 완료 → MovingToPrison");
+        }
+        else
+        {
+            State = CustomerState.Leaving;
+            Debug.Log($"[Customer] 구매 완료 → Leaving (구치소 없음)");
+        }
+    }
+
+    /// <summary>Prison이 대기열 자리를 배정할 때 호출.</summary>
+    public void JoinPrisonQueue(Vector3 waitPosition)
+    {
+        targetPosition = waitPosition;
+        State = CustomerState.WaitingForPrison;
+        Debug.Log($"[Customer] 구치소 대기열 합류");
+    }
+
+    /// <summary>대기열 앞으로 당겨질 때 호출.</summary>
+    public void UpdatePrisonQueuePosition(Vector3 newPosition)
+    {
+        targetPosition = newPosition;
+    }
+
+    /// <summary>Prison이 입소를 승인할 때 호출.</summary>
+    public void EnterPrison()
+    {
+        State = CustomerState.InPrison;
+        Debug.Log($"[Customer] 구치소 입소 완료 → 풀 반환");
+        pool.Return(this);
     }
 
     private void MoveTowards(Vector3 target)
