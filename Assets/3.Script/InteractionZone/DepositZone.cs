@@ -20,6 +20,7 @@ public class DepositZone : InteractionZone
 
     public int Count => placedItems.Count;
     public bool HasSpace => layout != null && placedItems.Count < layout.Capacity;
+    public bool IsTransferring => transferCoroutine != null;
     public StackItemType AcceptedType => acceptedType;
 
     protected override void OnPlayerEnter(Collider player)

@@ -30,7 +30,7 @@ public class Processor : MonoBehaviour
     {
         while (true)
         {
-            if (depositZone.Count > 0 && pickupZone.HasSpace)
+            if (depositZone.Count > 0 && !depositZone.IsTransferring && pickupZone.HasSpace)
             {
                 var ore = depositZone.TakeTopItem();
                 Destroy(ore);
