@@ -48,12 +48,16 @@
 
 ---
 
-### P1-2. 광석 탐색 로직 중복
+### P1-2. 광석 탐색 로직 중복 ✅
 
-- [ ] `MiningController.TryMineNearest()` 내 광석 탐색 로직
-- [ ] `WorkerController.FindNearestOre()` — 동일 구조
+- [x] `MiningController.TryMineNearest()` 내 광석 탐색 로직
+- [x] `WorkerController.FindNearestOre()` — 동일 구조
 
 **목표**: `OreReservation` 또는 별도 `OreSearchUtil` 정적 유틸로 추출.
+
+**어떻게 구현했는지**: `OreReservation`에 두 개의 정적 메서드 추가. `FindNearest(Vector3, Collider[])` — 플레이어용, 예약 무시. `FindNearestUnreserved(Vector3, OreObject[])` — 인부용, 예약된 광석 제외. 두 메서드는 호출 대상 컬렉션 타입과 예약 체크 여부만 다르고 핵심 루프는 동일한 구조.
+
+**결과**: `MiningController.TryMineNearest()` 탐색 루프 12줄 → 1줄. `WorkerController.FindNearestOre()` 17줄 → 1줄(식 본문 메서드). 탐색 조건 변경 시 `OreReservation` 한 곳만 수정.
 
 ---
 
@@ -151,7 +155,7 @@
 | 섹션 | 항목 수 | 완료 |
 |------|--------|------|
 | §0 MonoBehaviour 제거 | 7 | 7 (3 완료 / 4 제거불가) |
-| §1 중복 로직 | 6 | 4 |
+| §1 중복 로직 | 6 | 6 |
 | §2 단일 책임 | 4 | 0 |
 | §3 함수 길이 | 5 | 0 |
 | §4 조건문 중첩 | 2 | 0 |

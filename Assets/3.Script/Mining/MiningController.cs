@@ -83,22 +83,7 @@ public class MiningController : MonoBehaviour
     {
         Vector3 center = transform.position + transform.forward * sphereOffset;
         var hits = Physics.OverlapSphere(center, miningRadius);
-
-        OreObject closest = null;
-        float minDist = float.MaxValue;
-
-        foreach (var hit in hits)
-        {
-            var ore = hit.GetComponent<OreObject>();
-            if (ore == null || ore.State != OreObject.OreState.Active) continue;
-
-            float dist = Vector3.Distance(transform.position, ore.transform.position);
-            if (dist < minDist)
-            {
-                minDist = dist;
-                closest = ore;
-            }
-        }
+        var closest = OreReservation.FindNearest(transform.position, hits);
 
         if (closest != null)
         {
@@ -109,7 +94,7 @@ public class MiningController : MonoBehaviour
             }
             else
             {
-                Debug.Log($"[Mining] 채굴 시도 - {closest.gameObject.name} (거리: {minDist:F2})");
+                Debug.Log($"[Mining] 채굴 시도 - {closest.gameObject.name}");
                 var itemType = closest.StackConfig.itemType;
                 var orePos = closest.transform.position;
                 var item = closest.TryMine();

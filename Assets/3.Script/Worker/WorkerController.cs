@@ -136,24 +136,5 @@ public class WorkerController : MonoBehaviour
     }
 
     private OreObject FindNearestOre()
-    {
-        OreObject nearest = null;
-        float minDist = float.MaxValue;
-
-        foreach (var ore in allOres)
-        {
-            if (ore == null) continue;
-            if (ore.State != OreObject.OreState.Active) continue;
-            if (OreReservation.IsReserved(ore)) continue;
-
-            float dist = Vector3.Distance(transform.position, ore.transform.position);
-            if (dist < minDist)
-            {
-                minDist = dist;
-                nearest = ore;
-            }
-        }
-
-        return nearest;
-    }
+        => OreReservation.FindNearestUnreserved(transform.position, allOres);
 }
