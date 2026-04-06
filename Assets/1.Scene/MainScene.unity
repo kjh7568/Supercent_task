@@ -3109,6 +3109,10 @@ MonoBehaviour:
   playerTag: Player
   layout: {fileID: 0}
   placementOffset: {x: 0, y: 0, z: 0}
+  transferDuration: 0.1
+  transferInterval: 0.01
+  arcHeight: 1
+  costText: {fileID: 1676852009}
   cost: 50
   workerPrefab: {fileID: 437833300542209162, guid: 8a29727f0cae30a4d82d5f7c1ae779a2,
     type: 3}
@@ -3116,10 +3120,6 @@ MonoBehaviour:
   workerCount: 3
   spawnSpacing: 1.2
   workerDepositZone: {fileID: 254117512}
-  transferDuration: 0.1
-  transferInterval: 0.01
-  arcHeight: 1
-  costText: {fileID: 1676852009}
 --- !u!65 &212090975
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4253,8 +4253,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 310986307}
-  - component: {fileID: 310986312}
   - component: {fileID: 310986306}
+  - component: {fileID: 310986312}
   - component: {fileID: 310986309}
   - component: {fileID: 310986308}
   - component: {fileID: 310986310}
@@ -7797,13 +7797,13 @@ MonoBehaviour:
   playerTag: Player
   layout: {fileID: 0}
   placementOffset: {x: 0, y: 0, z: 0}
-  upgradeData: {fileID: 11400000, guid: 69452899a50787342a673eb286e0d950, type: 2}
-  stageIndex: 1
   transferDuration: 0.1
   transferInterval: 0.01
   arcHeight: 1
-  nextZone: {fileID: 0}
   costText: {fileID: 1476088456}
+  upgradeData: {fileID: 11400000, guid: 69452899a50787342a673eb286e0d950, type: 2}
+  stageIndex: 1
+  nextZone: {fileID: 0}
 --- !u!65 &564588056
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16718,13 +16718,13 @@ MonoBehaviour:
   playerTag: Player
   layout: {fileID: 0}
   placementOffset: {x: 0, y: 0, z: 0}
-  upgradeData: {fileID: 11400000, guid: 69452899a50787342a673eb286e0d950, type: 2}
-  stageIndex: 0
   transferDuration: 0.1
   transferInterval: 0.01
   arcHeight: 1
-  nextZone: {fileID: 564588054}
   costText: {fileID: 84628060}
+  upgradeData: {fileID: 11400000, guid: 69452899a50787342a673eb286e0d950, type: 2}
+  stageIndex: 0
+  nextZone: {fileID: 564588054}
 --- !u!65 &1400876403
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20130,18 +20130,18 @@ MonoBehaviour:
   playerTag: Player
   layout: {fileID: 0}
   placementOffset: {x: 0, y: 0, z: 0}
+  transferDuration: 0.1
+  transferInterval: 0.01
+  arcHeight: 1
+  costText: {fileID: 1860188991}
   cost: 50
   workerPrefab: {fileID: 1289184848616995060, guid: 6ba35997fed0e16448cdddf87f05efca,
     type: 3}
   spawnOrigin: {fileID: 1617738170}
   workerCount: 1
   spawnSpacing: 1.2
-  transferDuration: 0.1
-  transferInterval: 0.01
-  arcHeight: 1
   workerPickupZone: {fileID: 3721066580736422487}
   workerDepositZone: {fileID: 979953193}
-  costText: {fileID: 1860188991}
 --- !u!65 &1617738168
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21946,13 +21946,13 @@ MonoBehaviour:
   playerTag: Player
   layout: {fileID: 0}
   placementOffset: {x: 0, y: 0, z: 0}
-  upgradeData: {fileID: 11400000, guid: 0a1589cdcaa87d5408607cd3f09f9896, type: 2}
-  stageIndex: 0
   transferDuration: 0.1
   transferInterval: 0.01
   arcHeight: 1
-  nextZone: {fileID: 0}
   costText: {fileID: 427371412}
+  upgradeData: {fileID: 11400000, guid: 0a1589cdcaa87d5408607cd3f09f9896, type: 2}
+  stageIndex: 0
+  nextZone: {fileID: 0}
 --- !u!65 &1764961099
 BoxCollider:
   m_ObjectHideFlags: 0

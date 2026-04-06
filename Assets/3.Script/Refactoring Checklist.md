@@ -31,16 +31,20 @@
 
 ## 섹션 1. 중복 로직 제거 (가이드라인 §2, §3, §5)
 
-### P1-1. TransferSequence 코루틴 중복 — 4개 클래스
+### P1-1. TransferSequence 코루틴 중복 — 4개 클래스 ✅
 
 동일한 "코인 수집 후 스폰" 흐름이 4곳에 복사됨.
 
-- [ ] `UpgradeZone.cs` — `TransferSequence()` (~35줄)
-- [ ] `PrisonUpgradeZone.cs` — `TransferSequence()` (~35줄)
-- [ ] `WorkerUnlockZone.cs` — `TransferSequence()` (~35줄)
-- [ ] `TransportWorkerUnlockZone.cs` — `TransferSequence()` (~35줄)
+- [x] `UpgradeZone.cs` — `TransferSequence()` (~35줄)
+- [x] `PrisonUpgradeZone.cs` — `TransferSequence()` (~35줄)
+- [x] `WorkerUnlockZone.cs` — `TransferSequence()` (~35줄)
+- [x] `TransportWorkerUnlockZone.cs` — `TransferSequence()` (~35줄)
 
 **목표**: 공통 추상 클래스 `CoinCollectionZone` 추출. 4개 클래스는 스폰 콜백만 오버라이드.
+
+**어떻게 구현했는지**: `InteractionZone`을 상속하는 `CoinCollectionZone` 추상 클래스 신규 생성. 공통 필드(`transferDuration`, `transferInterval`, `arcHeight`, `costText`)와 공통 메서드(`OnPlayerEnter/Exit`, `TransferSequence`, `UpdateCostText`, `Start`)를 베이스로 이동. 서브클래스는 추상 멤버 3개(`RequiredCoins`, `IsDone`, `OnCostMet()`)만 구현. UpgradeZone처럼 추가 조건이 필요한 경우 `OnSetupFromPlayer()`, `CanActivate()` 선택 오버라이드로 처리.
+
+**결과**: 4개 클래스 각각 ~120줄 → ~45줄. 중복 코드 ~100줄 제거. 향후 코인 수집 로직 수정 시 `CoinCollectionZone` 한 곳만 수정하면 됨.
 
 ---
 
@@ -147,7 +151,7 @@
 | 섹션 | 항목 수 | 완료 |
 |------|--------|------|
 | §0 MonoBehaviour 제거 | 7 | 7 (3 완료 / 4 제거불가) |
-| §1 중복 로직 | 6 | 0 |
+| §1 중복 로직 | 6 | 4 |
 | §2 단일 책임 | 4 | 0 |
 | §3 함수 길이 | 5 | 0 |
 | §4 조건문 중첩 | 2 | 0 |
