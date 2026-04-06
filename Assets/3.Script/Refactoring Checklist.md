@@ -63,24 +63,21 @@
 
 ## 섹션 2. 단일 책임 원칙 위반 (가이드라인 §1, §6, §9)
 
-### P1-3. UIManager — 3가지 책임 혼재
+### P1-3. UIManager — 3가지 책임 혼재 ⏸ 보류
 
 `UIManager.cs`가 다음 3가지를 동시에 담당:
 1. 소지 금액 표시
 2. 손님 HUD 등록/해제/갱신
 3. MAX 이미지 표시
 
-- [ ] `MoneyDisplay` 클래스 분리 (소지 금액)
-- [ ] `CustomerHUDManager` 클래스 분리 (HUD 등록/갱신/위치)
-- [ ] `MaxImageController` 클래스 분리 (MAX 표시 페이드)
-- [ ] `UIManager`는 세 클래스를 조합하는 얇은 진입점으로 유지하거나 제거
+- [ ] ~~`MoneyDisplay` 클래스 분리 (소지 금액)~~
+- [ ] ~~`CustomerHUDManager` 클래스 분리 (HUD 등록/갱신/위치)~~
+- [ ] ~~`MaxImageController` 클래스 분리 (MAX 표시 페이드)~~
+- [ ] ~~`UIManager`는 세 클래스를 조합하는 얇은 진입점으로 유지하거나 제거~~
+
+**보류 사유**: 전체 189줄로 관리 가능한 크기. 주석(`// ── Money ──` 등)으로 섹션이 이미 명확히 구분됨. 각 기능의 외부 호출 지점이 각각 1곳뿐이라 재사용 이점 없음. 분리 시 씬 컴포넌트 3개 연결 + 싱글톤 3개로 오히려 복잡도 증가. 가이드라인 §2 통합 기준("사용 지점이 한 곳뿐", "추상화하면 오히려 복잡해진다") 해당.
 
 ---
-
-### P1-4. Customer.cs — 초기화 매개변수 과다
-
-- [ ] `Customer.Initialize(config, queue, cashRegister, prison, soundManager)` — 5개 매개변수  
-  **목표**: `CustomerInitData` 데이터 클래스로 묶어 매개변수 1개로 압축 (가이드라인 §7: 4개 이상 → 객체화)
 
 ---
 
@@ -88,11 +85,16 @@
 
 | 번호 | 파일 | 함수명 | 현재 길이 | 분리 방향 | 완료 |
 |------|------|--------|----------|----------|------|
-| F-1 | `CashRegister.cs` | `ProcessPurchase()` | ~72줄 | 제품 전달 로직 / 코인 발사 로직 분리 | [ ] |
-| F-2 | `MiningController.cs` | `TryMineNearest()` | ~59줄 | `FindBestTarget()` / `ExecuteMine()` 분리 | [ ] |
-| F-3 | `PickupZone.cs` | `TransferSequence()` | ~55줄 | 이동 조건 검사 / 단일 아이템 이동 분리 | [ ] |
-| F-4 | `DepositZone.cs` | `TransferSequence()` | ~44줄 | 아이템 꺼내기 / 포물선 전송 분리 | [ ] |
-| F-5 | `TutorialCameraController.cs` | `MoveRoutine()` | ~35줄 | 이동 단계 / 복귀 단계 분리 | [ ] |
+| F-1 | `CashRegister.cs` | `ProcessPurchase()` | ~72줄 | 코인 발사 블록을 `SpawnCoins()` 메서드로 추출 (yield 없는 독립 단계) | [x] |
+| F-2 | `MiningController.cs` | `TryMineNearest()` | ~44줄 | 채굴 실행 블록을 `ExecuteMine(ore)` 메서드로 추출 (탐색·판단 vs 실행 분리) | [x] |
+
+**목표**: 각 함수 내 두 단계의 책임을 이름이 있는 메서드로 분리.
+
+**어떻게 구현했는지**:
+- F-1: `ProcessPurchase`에서 yield 없는 코인 발사 블록(30줄)을 `SpawnCoins(customer, soldCount)`로 추출. 호출부는 한 줄로 교체.
+- F-2: `TryMineNearest`의 else 블록을 `ExecuteMine(OreObject ore)`로 추출. 기존 중첩 if-else를 guard clause 패턴으로 평탄화.
+
+**결과**: `ProcessPurchase` 72줄 → 38줄. `TryMineNearest` 44줄 → 17줄 + `ExecuteMine` 20줄. 각 메서드가 단일 책임을 가짐.
 
 ---
 
@@ -156,8 +158,8 @@
 |------|--------|------|
 | §0 MonoBehaviour 제거 | 7 | 7 (3 완료 / 4 제거불가) |
 | §1 중복 로직 | 6 | 6 |
-| §2 단일 책임 | 4 | 0 |
-| §3 함수 길이 | 5 | 0 |
+| §2 단일 책임 | 3 | 1 (보류) |
+| §3 함수 길이 | 2 | 2 |
 | §4 조건문 중첩 | 2 | 0 |
 | §5 Update 최적화 | 4 | 0 |
 | §6 이벤트 구독 | 2 | 0 |

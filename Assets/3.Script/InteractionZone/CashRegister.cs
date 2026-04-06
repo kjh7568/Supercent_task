@@ -57,13 +57,11 @@ public class CashRegister : MonoBehaviour
         isBusy = true;
         customer.StartPurchasing();
 
-
         int soldCount = 0;
         int remaining = customer.Config.demandAmount;
 
         while (remaining > 0)
         {
-            // 제품이 채워질 때까지 대기
             if (depositZone.Count == 0)
             {
                 yield return new WaitForSeconds(0.2f);
@@ -86,7 +84,14 @@ public class CashRegister : MonoBehaviour
             yield return new WaitForSeconds(transferInterval);
         }
 
-        // 모든 제품 전달 완료 후 코인 동시 발사
+        SpawnCoins(customer, soldCount);
+
+        customer.CompletePurchase();
+        isBusy = false;
+    }
+
+    private void SpawnCoins(Customer customer, int soldCount)
+    {
         int coinsToSend = Mathf.Min(soldCount, pickupZone.RemainingCapacity);
         int baseIndex = pickupZone.Count;
         Vector3 spawnPos = customer.transform.position + Vector3.up * 0.5f;
@@ -103,12 +108,7 @@ public class CashRegister : MonoBehaviour
             var capturedCoin = coin;
 
             ItemTransferAnimator.Transfer(
-                capturedCoin,
-                pickupZone.transform,
-                localTargetPos,
-                Quaternion.identity,
-                transferDuration,
-                arcHeight,
+                capturedCoin, pickupZone.transform, localTargetPos, Quaternion.identity, transferDuration, arcHeight,
                 onComplete: () =>
                 {
                     if (capturedCoin != null)
@@ -120,8 +120,5 @@ public class CashRegister : MonoBehaviour
                 }
             );
         }
-
-        customer.CompletePurchase();
-        isBusy = false;
     }
 }

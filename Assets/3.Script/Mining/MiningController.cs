@@ -85,43 +85,44 @@ public class MiningController : MonoBehaviour
         var hits = Physics.OverlapSphere(center, miningRadius);
         var closest = OreReservation.FindNearest(transform.position, hits);
 
-        if (closest != null)
-        {
-            if (stackSystem != null && !stackSystem.HasSpace(closest.StackConfig.itemType))
-            {
-                OnMaxReached?.Invoke();
-                Debug.Log("[Mining] 최대 적재량 도달 - 채굴 불가");
-            }
-            else
-            {
-                Debug.Log($"[Mining] 채굴 시도 - {closest.gameObject.name}");
-                var itemType = closest.StackConfig.itemType;
-                var orePos = closest.transform.position;
-                var item = closest.TryMine();
-                if (item != null)
-                {
-                    SoundManager.Instance?.PlaySound(SoundType.Mining, orePos);
-                    var sp = stackSystem.GetStackPoint(itemType);
-                    if (sp != null)
-                    {
-                        var capturedItem = item;
-                        ItemTransferAnimator.Transfer(
-                            capturedItem,
-                            sp.transform,
-                            sp.GetNextItemLocalPosition(),
-                            Quaternion.identity,
-                            arcDuration,
-                            arcHeight,
-                            onComplete: () => stackSystem.ReceiveItem(capturedItem, itemType)
-                        );
-                    }
-                }
-            }
-        }
-        else
+        if (closest == null)
         {
             Debug.Log("[Mining] 범위 내 광석 없음");
+            return;
         }
+
+        if (stackSystem != null && !stackSystem.HasSpace(closest.StackConfig.itemType))
+        {
+            OnMaxReached?.Invoke();
+            Debug.Log("[Mining] 최대 적재량 도달 - 채굴 불가");
+            return;
+        }
+
+        ExecuteMine(closest);
+    }
+
+    private void ExecuteMine(OreObject ore)
+    {
+        Debug.Log($"[Mining] 채굴 시도 - {ore.gameObject.name}");
+        var itemType = ore.StackConfig.itemType;
+        var orePos = ore.transform.position;
+        var item = ore.TryMine();
+        if (item == null) return;
+
+        SoundManager.Instance?.PlaySound(SoundType.Mining, orePos);
+        var sp = stackSystem.GetStackPoint(itemType);
+        if (sp == null) return;
+
+        var capturedItem = item;
+        ItemTransferAnimator.Transfer(
+            capturedItem,
+            sp.transform,
+            sp.GetNextItemLocalPosition(),
+            Quaternion.identity,
+            arcDuration,
+            arcHeight,
+            onComplete: () => stackSystem.ReceiveItem(capturedItem, itemType)
+        );
     }
 
     private void OnDrawGizmosSelected()
