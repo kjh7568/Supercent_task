@@ -506,6 +506,37 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [023] SoundManager 사운드 시스템
+
+**요청 내용**
+게임 전반 효과음을 관리하는 SoundManager 구현. BGM 없음, 효과음 8종.
+1. 광석 캐는 소리 (플레이어 + 광부)
+2. 광석/제품을 디포짓에 두는 소리
+3. 픽업존에 아이템이 나타나는 소리
+4. 픽업존에서 아이템 집는 소리
+5. 죄수가 수갑 가져가는 소리
+6. 돈 내는 소리
+7. 플레이어가 돈 집는 소리
+8. 업그레이드에 돈 넣는 소리
+
+**구현 방법**
+- AudioClip: Inspector 빈 슬롯 (나중에 연결)
+- 동시 재생: AudioSource 풀 10개로 겹침 허용
+- 3D 사운드: 월드 위치 기반 거리 감쇠
+- `SoundType` enum으로 사운드 타입 정의
+- `SoundManager.PlaySound(SoundType, Vector3)` 단일 API
+
+**작업 스탭**
+
+| 스탭 | 내용 | 파일 |
+|---|---|---|
+| S1 | SoundType enum + SoundManager 코어 (AudioSource 풀 + PlaySound) | SoundType.cs, SoundManager.cs |
+| S2 | 채굴 사운드 연결 (플레이어 + 광부) | MiningController.cs, WorkerController.cs |
+| S3 | DepositZone / PickupZone 사운드 연결 | DepositZone.cs, PickupZone.cs |
+| S4 | Prison / CashRegister / UpgradeZone 사운드 연결 | Prison.cs, CashRegister.cs, UpgradeZone.cs |
+
+---
+
 ## [017] 리팩토링 - 죄수 코인 발사 연출
 
 **요청 내용**

@@ -16250,6 +16250,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   respawnTime: 5
   stackConfig: {fileID: 11400000, guid: 9d4819b1976a5454d98debdaef875953, type: 2}
+--- !u!1 &1357243407
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1357243408}
+  - component: {fileID: 1357243409}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1357243408
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357243407}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1896532586}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1357243409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357243407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19b1b92833a4f8243b8060ac00e4cc36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - type: 0
+    clip: {fileID: 8300000, guid: a621dfd37da2ec04eaffcc5f60d85dfd, type: 3}
+    volume: 1
+  - type: 1
+    clip: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
+    volume: 1
+  - type: 2
+    clip: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
+    volume: 1
+  - type: 3
+    clip: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
+    volume: 1
+  - type: 4
+    clip: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
+    volume: 1
+  - type: 5
+    clip: {fileID: 8300000, guid: 19f89c6e740e7447f9e12a8310d3e973, type: 3}
+    volume: 1
+  - type: 6
+    clip: {fileID: 8300000, guid: 19f89c6e740e7447f9e12a8310d3e973, type: 3}
+    volume: 1
+  - type: 7
+    clip: {fileID: 8300000, guid: cf6c0e7fbef9449c98a0cdb5ea0c4d9f, type: 3}
+    volume: 1
+  poolSize: 10
+  minDistance: 1
+  maxDistance: 20
+  rolloffMode: 1
 --- !u!1001 &1364162676
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23261,6 +23334,7 @@ Transform:
   - {fileID: 310986307}
   - {fileID: 1384648711}
   - {fileID: 1419512011}
+  - {fileID: 1357243408}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1913323749
