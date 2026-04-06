@@ -835,3 +835,11 @@
 - S2: PrisonCapacityDisplay (월드 스페이스 TextMeshPro)
 - S3: PrisonUpgradeData + PrisonUpgradeZone
 - S4: 정원 가득 참 시 카메라 이동 + 업그레이드 존 활성화
+
+**User:** S1 진행 → S2 진행 → S3 진행. PrisonUpgradeData의 BuildingScale 제거 요청 (건물이 길어지기만 해서).
+
+**Assistant:** BuildingScale 필드 제거. PrisonUpgradeData·PrisonUpgradeZone에서 스케일 관련 코드 삭제.
+
+**User:** S4 진행. 인스펙터에서 카메라 위치 조정용 debugTriggerCamera 불값 추가 요청.
+
+**Assistant:** PrisonFullHandler.cs 생성. debugTriggerCamera 토글로 TriggerMove 즉시 호출 가능하게 구현. S1~S4 전체 완료.

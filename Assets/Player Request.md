@@ -439,8 +439,8 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 **구현 방법**
 - S1: `Customer.cs` 상태 머신에 `MovingToPrison`, `WaitingForPrison`, `InPrison` 추가. `Prison.cs` 생성 — 수용 인원 관리, 입소 큐, 입소 처리.
 - S2: `PrisonCapacityDisplay.cs` — 구치소 위 TextMeshPro 월드 스페이스로 현재/전체 인원 표시. Prison 이벤트 구독.
-- S3: `PrisonUpgradeData.cs` (ScriptableObject, 단계별 비용·정원·스케일 인스펙터 할당) + `PrisonUpgradeZone.cs` (UpgradeZone 패턴 재활용, 초기 비활성).
-- S4: Prison 정원 가득 찼을 때 `TutorialCameraController.TriggerMove()` 호출 + PrisonUpgradeZone 활성화.
+- S3: `PrisonUpgradeData.cs` (ScriptableObject, 단계별 비용·정원 인스펙터 할당, BuildingScale은 건물이 길어지기만 해서 제외) + `PrisonUpgradeZone.cs` (UpgradeZone 패턴 재활용, 초기 비활성).
+- S4: `PrisonFullHandler.cs` — Prison.OnFull 구독, 최초 1회만 트리거. TutorialCameraController.TriggerMove() 호출 + PrisonUpgradeZone 활성화. debugTriggerCamera 인스펙터 토글로 카메라 위치 수동 확인 가능.
 
 ---
 
