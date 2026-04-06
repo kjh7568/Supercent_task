@@ -1021,3 +1021,35 @@
 **User:** 리퀘스트랑 프롬프트 갱신해
 
 **Assistant:** 갱신 완료.
+
+**User:** 2ㄱ (S2 채굴 사운드)
+
+**Assistant:** MiningController TryMine() 성공 시, WorkerController TransferRoutine() 채굴 완료 시 SoundType.Mining 재생.
+
+**User:** 커밋
+
+**Assistant:** 커밋 완료.
+
+**User:** 3ㄱ (S3 DepositZone/PickupZone)
+
+**Assistant:** DepositZone TransferSequence onComplete + PlaceItem → Deposit. PickupZone PlaceItem + AddPlacedItem → ItemAppear. TransferSequence onComplete → outputType Coin이면 PickupCoin, 아니면 PickupItem.
+
+**User:** 커밋
+
+**Assistant:** 커밋 완료.
+
+**User:** 4ㄱ (S4 Prison/CashRegister/UpgradeZone)
+
+**Assistant:** Prison.Accept() → Handcuff. CashRegister 코인 발사 전 → PayMoney. UpgradeZone onComplete → UpgradePay.
+
+**User:** 어 왜 곡괭이 업글 말고 다른 업글에는 소리 안나지?
+
+**Assistant:** WorkerUnlockZone, TransportWorkerUnlockZone, PrisonUpgradeZone 누락 확인. 세 곳 모두 UpgradePay 추가.
+
+**User:** 커밋
+
+**Assistant:** 커밋 완료.
+
+**User:** 리퀘스트랑 프롬프트 업데이트 해줘
+
+**Assistant:** 갱신 완료.

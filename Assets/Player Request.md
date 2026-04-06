@@ -533,7 +533,7 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 | S1 | SoundType enum + SoundManager 코어 (AudioSource 풀 + PlaySound) | SoundType.cs, SoundManager.cs |
 | S2 | 채굴 사운드 연결 (플레이어 + 광부) | MiningController.cs, WorkerController.cs |
 | S3 | DepositZone / PickupZone 사운드 연결 | DepositZone.cs, PickupZone.cs |
-| S4 | Prison / CashRegister / UpgradeZone 사운드 연결 | Prison.cs, CashRegister.cs, UpgradeZone.cs |
+| S4 | Prison / CashRegister / 전체 업그레이드 존 사운드 연결 | Prison.cs, CashRegister.cs, UpgradeZone.cs, WorkerUnlockZone.cs, TransportWorkerUnlockZone.cs, PrisonUpgradeZone.cs |
 
 ---
 
