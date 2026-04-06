@@ -20463,7 +20463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7b100ea33d4f0944933a47e9d10068a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseCapacity: 1
+  baseCapacity: 20
   entrancePoint: {fileID: 1685303359}
   queueSpacing: 1.2
   queueDirection: {x: 0, y: 0, z: -1}
