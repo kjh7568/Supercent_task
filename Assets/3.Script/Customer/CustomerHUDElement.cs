@@ -17,15 +17,15 @@ public class CustomerHUDElement : MonoBehaviour
     public void Bind(Customer customer)
     {
         TrackedCustomer = customer;
-        demandText.text = customer.Config.demandAmount.ToString();
+        demandText.text = customer.DemandAmount.ToString();
         SetFill(0f);
     }
 
     public void RefreshFill()
     {
         if (TrackedCustomer == null) return;
-        float ratio = TrackedCustomer.Config.demandAmount > 0
-            ? (float)TrackedCustomer.Delivered / TrackedCustomer.Config.demandAmount
+        float ratio = TrackedCustomer.DemandAmount > 0
+            ? (float)TrackedCustomer.Delivered / TrackedCustomer.DemandAmount
             : 0f;
         SetFill(ratio);
     }

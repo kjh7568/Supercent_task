@@ -3564,7 +3564,7 @@ MonoBehaviour:
   placementOffset: {x: -0.5, y: 0, z: 0}
   acceptedType: 0
   transferDuration: 0.1
-  transferInterval: 0.1
+  transferInterval: 0.05
   arcHeight: 1
 --- !u!114 &254117513
 MonoBehaviour:
@@ -4891,7 +4891,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetType: 2
-  capacity: 10
+  capacity: 30
   stackAxis: {x: 0, y: 1, z: 0}
   itemSpacing: 0.35
   useHoldOffset: 1
@@ -12222,7 +12222,7 @@ MonoBehaviour:
   placementOffset: {x: -1.85, y: 1, z: 0}
   acceptedType: 1
   transferDuration: 0.1
-  transferInterval: 0.01
+  transferInterval: 0.05
   arcHeight: 1
 --- !u!114 &979953194
 MonoBehaviour:
@@ -17042,7 +17042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9bae901563f29143bfb67060b282cce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerPrefab: {fileID: 2977047467755667699, guid: 3641f079d4359624c8b9e0ac24755f04,
+  customerPrefab: {fileID: 2444899164138695802, guid: 39812e21144fcd24d85cac26b680bd84,
     type: 3}
   initialSize: 10
 --- !u!114 &1419512009
@@ -24548,7 +24548,7 @@ MonoBehaviour:
   placementOffset: {x: -0.5, y: 0, z: -0.5}
   outputType: 2
   transferDuration: 0.1
-  transferInterval: 0.01
+  transferInterval: 0.05
   arcHeight: 1
 --- !u!114 &2030341453
 MonoBehaviour:
@@ -26192,6 +26192,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   joystick: {fileID: 1124770558}
   miningController: {fileID: 1320834342243278813}
+  pickaxe: {fileID: 9133088658839239186}
+  baseMiningInterval: 1
 --- !u!95 &1320834342243278820
 Animator:
   serializedVersion: 5
@@ -27020,7 +27022,7 @@ MonoBehaviour:
   placementOffset: {x: 0, y: 0.33, z: 0}
   outputType: 1
   transferDuration: 0.1
-  transferInterval: 0.01
+  transferInterval: 0.05
   arcHeight: 1
 --- !u!65 &3721066580736422488
 BoxCollider:
@@ -28717,7 +28719,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &9133088658839239187
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -28873,8 +28875,8 @@ MonoBehaviour:
   pickupZone: {fileID: 2030341452}
   customerQueue: {fileID: 1419512009}
   coinConfig: {fileID: 11400000, guid: 6346a2f276e33f04fb8eae3d082d39d0, type: 2}
-  transferDuration: 0.3
-  transferInterval: 0.15
+  transferDuration: 0.05
+  transferInterval: 0.05
   arcHeight: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

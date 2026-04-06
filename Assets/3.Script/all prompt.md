@@ -1165,3 +1165,33 @@
 **User:** 올프롬프트, 리퀘스트 갱신하고 체크리스트 진행현황도 갱신해줘
 
 **Assistant:** 갱신 완료. 체크리스트 합계 27 → 21, 완료 현황 17완료/2보류로 정정.
+
+---
+
+**User:** 손님이 템 가져가는 속도 어디서 조정해
+
+**Assistant:** `CashRegister.cs` 인스펙터에서 `transferDuration`(아이템 날아가는 시간)과 `transferInterval`(아이템 간 대기 시간)으로 조정.
+
+**User:** 광석 캘때만 곡괭이 보이게 해줘
+
+**Assistant:** `PlayerAnimationController`에 `[SerializeField] GameObject pickaxe` 추가. `isMining` 여부에 따라 `pickaxe.SetActive(isMining)` 호출.
+
+**User:** 기본 채광 속도가 1이고 다음 단계가 0.6 다음 단계가 0.3이야. 이거에 맞춰 애니메이션 속도 빨라지게
+
+**Assistant:** `PlayerAnimationController`에 `baseMiningInterval = 1f` 추가. `_animator.speed = isMining ? baseMiningInterval / miningController.MiningInterval : 1f` 공식으로 채굴 중 애니메이션 속도 연동.
+
+**User:** 그리고 손님이 요구량 랜덤으로 정해져야 하는데 왜 3 고정임?
+
+**Assistant:** `CustomerConfig.demandAmount` 고정값을 `minDemand`/`maxDemand` 범위로 교체. `Customer.Initialize()`에서 `Random.Range(minDemand, maxDemand + 1)`로 결정, `DemandAmount` 프로퍼티로 노출. `CashRegister`, `CustomerHUDElement`, `UIManager` 참조 교체.
+
+**User:** 커스터머 애니메이터 컨트롤러 만들어줘. Speed 프로퍼티 활용해서 무브랑 아이들 상태 전환 되게 해줘
+
+**Assistant:** `CustomerAnimatorController.cs` 신규 생성. 매 프레임 이전 위치 대비 이동 거리로 실제 속도 계산 → `Speed` float 파라미터로 전달. 조이스틱 없이 `MoveTowards`로 이동하는 Customer 구조에 맞춰 입력 대신 위치 변화 감지 방식 사용.
+
+**User:** 다음으로 구매를 완료하면 지정된 메테리얼로 메테리얼 변경되게 해줘. 근데 랜더러가 자식에 붙어있어서 이점 생각하고
+
+**Assistant:** `CustomerConfig`에 `purchasedMaterial` 필드 추가. `Customer.CompletePurchase()`에서 `GetComponentInChildren<Renderer>()`로 자식 Renderer 탐색 후 메테리얼 교체.
+
+**User:** 리퀘스트랑 프롬프트 갱신. 커밋은 하지마
+
+**Assistant:** 갱신 완료.

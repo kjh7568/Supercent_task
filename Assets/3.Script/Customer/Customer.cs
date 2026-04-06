@@ -28,6 +28,7 @@ public class Customer : MonoBehaviour
 
     public CustomerState State { get; private set; } = CustomerState.Idle;
     public CustomerConfig Config => config;
+    public int DemandAmount { get; private set; }
     public int Delivered { get; private set; }
     public bool ShowHUD { get; set; } = false;
 
@@ -44,6 +45,7 @@ public class Customer : MonoBehaviour
         targetPosition = slotPosition;
         leavePosition = exitPosition;
 
+        DemandAmount = Random.Range(config.minDemand, config.maxDemand + 1);
         Delivered = 0;
         State = CustomerState.MovingToQueue;
         UIManager.Instance?.RegisterCustomerHUD(this);
@@ -119,6 +121,12 @@ public class Customer : MonoBehaviour
     /// <summary>CashRegister에서 구매 완료 시 호출. 구치소가 있으면 구치소로, 없으면 퇴장한다.</summary>
     public void CompletePurchase()
     {
+        if (config.purchasedMaterial != null)
+        {
+            var rend = GetComponentInChildren<Renderer>();
+            if (rend != null) rend.material = config.purchasedMaterial;
+        }
+
         UIManager.Instance?.UnregisterCustomerHUD(this);
         queue.Dequeue();
         transform.SetParent(null);

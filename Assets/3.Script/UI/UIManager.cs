@@ -106,7 +106,7 @@ public class UIManager : MonoBehaviour
         var element = Instantiate(customerHUDPrefab, transform);
         element.Bind(customer);
         activeCustomerHUDs.Add(element);
-        Debug.Log($"[UIManager] 손님 HUD 등록 (요구량: {customer.Config.demandAmount})");
+        Debug.Log($"[UIManager] 손님 HUD 등록 (요구량: {customer.DemandAmount})");
     }
 
     public void UnregisterCustomerHUD(Customer customer)

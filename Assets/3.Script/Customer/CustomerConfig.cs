@@ -9,11 +9,15 @@ public class CustomerConfig : ScriptableObject
 {
     [Header("Demand")]
     public StackItemType demandType = StackItemType.Product;
-    [Min(1)] public int demandAmount = 3;
+    [Min(1)] public int minDemand = 1;
+    [Min(1)] public int maxDemand = 5;
 
     [Header("Movement")]
     public float moveSpeed = 3f;
 
     [Header("Reward")]
     public int coinRewardPerItem = 10;
+
+    [Header("Visual")]
+    public Material purchasedMaterial;
 }

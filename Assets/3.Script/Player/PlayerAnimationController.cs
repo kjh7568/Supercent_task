@@ -10,6 +10,8 @@ public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] private DynamicJoystick joystick;
     [SerializeField] private MiningController miningController;
+    [SerializeField] private GameObject pickaxe;
+    [SerializeField] private float baseMiningInterval = 1f;
 
     private static readonly int SpeedHash    = Animator.StringToHash("Speed");
     private static readonly int IsMiningHash = Animator.StringToHash("IsMining");
@@ -28,5 +30,8 @@ public class PlayerAnimationController : MonoBehaviour
 
         _animator.SetFloat(SpeedHash, speed);
         _animator.SetBool(IsMiningHash, isMining);
+        _animator.speed = isMining ? baseMiningInterval / miningController.MiningInterval : 1f;
+
+        if (pickaxe != null) pickaxe.SetActive(isMining);
     }
 }

@@ -58,7 +58,7 @@ public class CashRegister : MonoBehaviour
         customer.StartPurchasing();
 
         int soldCount = 0;
-        int remaining = customer.Config.demandAmount;
+        int remaining = customer.DemandAmount;
 
         while (remaining > 0)
         {

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: CustomerConfig
   m_EditorClassIdentifier: 
   demandType: 1
-  demandAmount: 3
+  minDemand: 2
+  maxDemand: 4
   moveSpeed: 3
   coinRewardPerItem: 10
+  purchasedMaterial: {fileID: 2100000, guid: 0d435b3416811994788271b2c7a55e9d, type: 2}
