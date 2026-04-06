@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -12,6 +13,10 @@ public class MiningController : MonoBehaviour
     [SerializeField] private float miningInterval = 2f;
     [SerializeField] private float miningRadius = 1.5f;
     [SerializeField] private float sphereOffset = 1f;
+
+    [Header("Pickup Animation")]
+    [SerializeField] private float arcDuration = 0.4f;
+    [SerializeField] private float arcHeight = 1.5f;
 
     [Header("References")]
     [SerializeField] private StackPoint oreStackPoint;
@@ -105,7 +110,25 @@ public class MiningController : MonoBehaviour
             else
             {
                 Debug.Log($"[Mining] 채굴 시도 - {closest.gameObject.name} (거리: {minDist:F2})");
-                closest.TryMine();
+                var itemType = closest.StackConfig.itemType;
+                var item = closest.TryMine();
+                if (item != null)
+                {
+                    var sp = stackSystem.GetStackPoint(itemType);
+                    if (sp != null)
+                    {
+                        var capturedItem = item;
+                        ItemTransferAnimator.Transfer(
+                            capturedItem,
+                            sp.transform,
+                            sp.GetNextItemLocalPosition(),
+                            Quaternion.identity,
+                            arcDuration,
+                            arcHeight,
+                            onComplete: () => stackSystem.ReceiveItem(capturedItem, itemType)
+                        );
+                    }
+                }
             }
         }
         else

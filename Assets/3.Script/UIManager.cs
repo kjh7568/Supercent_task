@@ -131,7 +131,7 @@ public class UIManager : MonoBehaviour
             Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
 
             bool behindCamera = screenPos.z < 0f;
-            hud.gameObject.SetActive(!behindCamera);
+            hud.gameObject.SetActive(!behindCamera && hud.TrackedCustomer.ShowHUD);
             if (!behindCamera)
             {
                 hud.SetScreenPosition(screenPos);

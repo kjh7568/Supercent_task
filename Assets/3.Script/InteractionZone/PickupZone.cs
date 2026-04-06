@@ -69,10 +69,17 @@ public class PickupZone : InteractionZone
 
     private IEnumerator TransferSequence(StackSystem stackSystem)
     {
-        while (IsPlayerInside && placedItems.Count > 0 && stackSystem.HasSpace(outputType))
+        while (IsPlayerInside)
         {
+            // 아이템이 없거나 공간이 없으면 대기
+            if (placedItems.Count == 0 || !stackSystem.HasSpace(outputType))
+            {
+                yield return new WaitForSeconds(0.1f);
+                continue;
+            }
+
             var stackPoint = stackSystem.GetStackPoint(outputType);
-            if (stackPoint == null) break;
+            if (stackPoint == null) { yield return new WaitForSeconds(0.1f); continue; }
 
             var item = TakeTopItem();
             if (item == null) break;

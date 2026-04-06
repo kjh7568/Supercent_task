@@ -122,7 +122,7 @@ public class UpgradeZone : InteractionZone
         collectedCoins = 0;
 
         if (nextZone != null)
-            nextZone.SetActive(true);
+            DOVirtual.DelayedCall(1f, () => nextZone.SetActive(true));
 
         gameObject.SetActive(false);
     }

@@ -919,3 +919,27 @@
 **Assistant:** 출발 위치 동일, 도착 위치(그리드 슬롯)가 달라서 퍼지는 효과 자연 발생. PickupZone에 RemainingCapacity/GetItemLocalPositionAt/GetItemWorldPositionAt/AddPlacedItem 추가. CashRegister 즉시 PlaceItem → 동시 Transfer 발사로 교체. onComplete에서 SetParent(null) + world position 확정.
 
 **User:** 리퀘스트랑 프롬프트 갱신해줘
+
+**Assistant:** 갱신 완료.
+
+**User:** 언스테이지 내용 커밋
+
+**Assistant:** 커밋 완료.
+
+**User:** 업그레이드 존을 업글하고 다음게 생성되는 시간이 1초 정도 걸렸으면 해
+
+**Assistant:** UpgradeZone.ApplyUpgrade에서 nextZone.SetActive(true) 앞에 DOVirtual.DelayedCall(1f) 추가.
+
+**User:** 그리고 손님들도 맨 앞 손님만 말풍선 보이게 해줘
+
+**Assistant:** Customer에 ShowHUD 프로퍼티 추가. CustomerQueue.TryEnqueue/Dequeue에서 RefreshHUDVisibility() 호출 (index 0만 true). UIManager.LateUpdate에서 ShowHUD 체크 추가.
+
+**User:** 지금 광석을 캐면 등 뒤에 바로 생기는데, 광석 캔자리에서 오브젝트 스폰되고 이동하는거로 바꿔야 함
+
+**Assistant:** OreObject.TryMine() → item 반환으로 변경, OnPickedUp 이벤트 제거. StackSystem의 OnPickedUp 구독/Add(config) 제거. MiningController.TryMineNearest()에서 item 받아 ItemTransferAnimator.Transfer로 StackPoint까지 이동 처리. arcDuration/arcHeight 필드 추가.
+
+**User:** 지금 프로세스에서 픽업존에 아이템이 생기는데 존 안에 있으면 생성된 아이템이 내 스택위치로 안 움직여.
+
+**Assistant:** PickupZone.TransferSequence while 조건을 IsPlayerInside로 변경, 아이템 없거나 공간 없으면 0.1s 폴링 대기 추가.
+
+**User:** 오케 여기까지 리퀘스트, 프롬프트 갱신하고 언스테이지 내용 커밋해줘

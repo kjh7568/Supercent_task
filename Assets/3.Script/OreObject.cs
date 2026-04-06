@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -14,7 +13,6 @@ public class OreObject : MonoBehaviour
 
     public OreState State { get; private set; } = OreState.Active;
     public StackItemConfig StackConfig => stackConfig;
-    public event Action<StackItemConfig> OnPickedUp;
 
     private Renderer[] renderers;
     private Collider[] colliders;
@@ -38,17 +36,18 @@ public class OreObject : MonoBehaviour
         StartCoroutine(RespawnRoutine());
     }
 
-    /// <summary>MiningController에서 호출. 공간 있으면 즉시 채굴 완료 처리.</summary>
-    public void TryMine()
+    /// <summary>MiningController에서 호출. 공간 있으면 광석 위치에서 아이템 스폰 후 반환. 공간 없으면 null.</summary>
+    public GameObject TryMine()
     {
-        if (State != OreState.Active) return;
-        if (stackSystem != null && !stackSystem.HasSpace(stackConfig.itemType)) return;
+        if (State != OreState.Active) return null;
+        if (stackSystem != null && !stackSystem.HasSpace(stackConfig.itemType)) return null;
 
         State = OreState.Hidden;
         SetVisible(false);
-        OnPickedUp?.Invoke(stackConfig);
         Debug.Log($"[OreObject] 채굴 완료 - {gameObject.name}");
         StartCoroutine(RespawnRoutine());
+
+        return Instantiate(stackConfig.itemPrefab, transform.position, Quaternion.identity);
     }
 
     private IEnumerator RespawnRoutine()

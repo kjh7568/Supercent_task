@@ -444,6 +444,40 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [020] 리팩토링 - PickupZone 내 아이템 생성 시 즉시 이동 버그
+
+**요청 내용**
+플레이어가 PickupZone 안에 있는 상태에서 Processor가 아이템을 생성해도 플레이어 스택으로 이동하지 않는 버그 수정.
+
+**구현 방법**
+- `PickupZone.TransferSequence`: while 조건을 `IsPlayerInside`로 변경. 아이템 없거나 공간 없으면 0.1s 폴링 대기 후 재시도.
+
+---
+
+## [019] 리팩토링 - 광석 채굴 이동 연출
+
+**요청 내용**
+광석 채굴 시 등 뒤에 바로 생성되던 것을 광석 위치에서 스폰 후 StackPoint까지 날아오는 연출로 변경.
+
+**구현 방법**
+- `OreObject.cs`: OnPickedUp 이벤트 제거. TryMine() → 광석 위치에서 item Instantiate 후 반환
+- `StackSystem.cs`: OnPickedUp 구독/Add(config) 제거
+- `MiningController.cs`: TryMineNearest()에서 TryMine() 반환 item을 ItemTransferAnimator.Transfer로 StackPoint까지 이동. arcDuration/arcHeight 인스펙터 필드 추가
+
+---
+
+## [018] 리팩토링 - 맨 앞 손님만 말풍선 표시
+
+**요청 내용**
+손님 HUD(말풍선)를 대기열 맨 앞 손님에게만 표시.
+
+**구현 방법**
+- `Customer.cs`: ShowHUD 프로퍼티 추가 (기본값 false)
+- `CustomerQueue.cs`: RefreshHUDVisibility() 추가 — index 0만 ShowHUD = true. TryEnqueue/Dequeue에서 호출
+- `UIManager.cs`: LateUpdate에서 ShowHUD 체크 추가
+
+---
+
 ## [017] 리팩토링 - 죄수 코인 발사 연출
 
 **요청 내용**

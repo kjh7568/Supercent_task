@@ -43,6 +43,7 @@ public class CustomerQueue : MonoBehaviour
         queue.Add(customer);
         slotPosition = GetSlotPosition(queue.Count - 1);
 
+        RefreshHUDVisibility();
         Debug.Log($"[CustomerQueue] 손님 등록 ({queue.Count}/{maxSize}) 슬롯: {queue.Count - 1}");
         return true;
     }
@@ -59,6 +60,14 @@ public class CustomerQueue : MonoBehaviour
 
         for (int i = 0; i < queue.Count; i++)
             queue[i].UpdateSlotPosition(GetSlotPosition(i));
+
+        RefreshHUDVisibility();
+    }
+
+    private void RefreshHUDVisibility()
+    {
+        for (int i = 0; i < queue.Count; i++)
+            queue[i].ShowHUD = (i == 0);
     }
 
     private void OnDrawGizmos()

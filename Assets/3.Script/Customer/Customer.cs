@@ -28,6 +28,7 @@ public class Customer : MonoBehaviour
     public CustomerState State { get; private set; } = CustomerState.Idle;
     public CustomerConfig Config => config;
     public int Delivered { get; private set; }
+    public bool ShowHUD { get; set; } = false;
 
     public void Initialize(
         CustomerConfig customerConfig,

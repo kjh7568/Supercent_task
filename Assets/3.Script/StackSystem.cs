@@ -18,20 +18,6 @@ public class StackSystem : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        var ores = FindObjectsByType<OreObject>(FindObjectsSortMode.None);
-        foreach (var ore in ores)
-            ore.OnPickedUp += Add;
-    }
-
-    private void OnDestroy()
-    {
-        var ores = FindObjectsByType<OreObject>(FindObjectsSortMode.None);
-        foreach (var ore in ores)
-            ore.OnPickedUp -= Add;
-    }
-
     public int GetCount(StackItemType type)
     {
         int count = 0;
@@ -48,22 +34,6 @@ public class StackSystem : MonoBehaviour
                 return true;
         }
         return false;
-    }
-
-    public void Add(StackItemConfig config)
-    {
-        foreach (var sp in stackPoints)
-        {
-            if (sp.TargetType == config.itemType && sp.HasSpace)
-            {
-                sp.AddItem(config);
-                if (config.itemType == StackItemType.Coin)
-                    OnCoinCountChanged?.Invoke(GetCount(StackItemType.Coin));
-                return;
-            }
-        }
-
-        Debug.LogWarning($"[StackSystem] {config.itemType} 타입의 빈 StackPoint가 없습니다.");
     }
 
     public bool HasItem(StackItemType type)
