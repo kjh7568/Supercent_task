@@ -444,6 +444,17 @@ UpgradeZone, WorkerUnlockZone, TransportWorkerUnlockZone에 하위 자식으로 
 
 ---
 
+## [017] 리팩토링 - 죄수 코인 발사 연출
+
+**요청 내용**
+죄수 구매 완료 시 코인이 즉시 배치되던 것을 죄수 위치에서 PickupZone으로 동시에 날아오는 연출로 교체.
+
+**구현 방법**
+- `PickupZone.cs`: RemainingCapacity, GetItemLocalPositionAt(index), GetItemWorldPositionAt(index), AddPlacedItem(item) 추가
+- `CashRegister.cs`: 기존 즉시 PlaceItem 루프 → soldCount개 코인 죄수 위치에서 동시 Instantiate + ItemTransferAnimator.Transfer 동시 발사. onComplete에서 SetParent(null) + world position 확정 + AddPlacedItem 등록
+
+---
+
 ## [016] 리팩토링 - DepositZone/PickupZone 이동 버그 수정
 
 **요청 내용**

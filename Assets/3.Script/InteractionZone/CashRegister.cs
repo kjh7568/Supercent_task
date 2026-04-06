@@ -85,13 +85,38 @@ public class CashRegister : MonoBehaviour
             yield return new WaitForSeconds(transferInterval);
         }
 
-        // 모든 제품 전달 완료 후 코인 한번에 지급
-        for (int i = 0; i < soldCount; i++)
+        // 모든 제품 전달 완료 후 코인 동시 발사
+        int coinsToSend = Mathf.Min(soldCount, pickupZone.RemainingCapacity);
+        int baseIndex = pickupZone.Count;
+        Vector3 spawnPos = customer.transform.position + Vector3.up * 0.5f;
+
+        for (int i = 0; i < coinsToSend; i++)
         {
-            if (!pickupZone.HasSpace) break;
-            var coin = Instantiate(coinConfig.itemPrefab);
-            pickupZone.PlaceItem(coin);
+            int slotIndex = baseIndex + i;
+            var coin = Instantiate(coinConfig.itemPrefab, spawnPos, Quaternion.identity);
+            Vector3 worldTargetPos = pickupZone.GetItemWorldPositionAt(slotIndex);
+            Vector3 localTargetPos = pickupZone.GetItemLocalPositionAt(slotIndex);
+            var capturedCoin = coin;
+
+            ItemTransferAnimator.Transfer(
+                capturedCoin,
+                pickupZone.transform,
+                localTargetPos,
+                Quaternion.identity,
+                transferDuration,
+                arcHeight,
+                onComplete: () =>
+                {
+                    if (capturedCoin != null)
+                    {
+                        capturedCoin.transform.SetParent(null);
+                        capturedCoin.transform.position = worldTargetPos;
+                        pickupZone.AddPlacedItem(capturedCoin);
+                    }
+                }
+            );
         }
+
         customer.CompletePurchase();
         isBusy = false;
     }

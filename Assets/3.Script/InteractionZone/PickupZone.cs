@@ -20,7 +20,20 @@ public class PickupZone : InteractionZone
 
     public int Count => placedItems.Count;
     public bool HasSpace => layout != null && placedItems.Count < layout.Capacity;
+    public int RemainingCapacity => layout != null ? layout.Capacity - placedItems.Count : 0;
     public StackItemType OutputType => outputType;
+
+    /// <summary>CashRegister 등 외부에서 코인 발사 시 슬롯 localPosition 쿼리용</summary>
+    public Vector3 GetItemLocalPositionAt(int index)
+        => placementOffset + layout.GetLocalPosition(index);
+
+    /// <summary>CashRegister 등 외부에서 코인 발사 시 슬롯 worldPosition 쿼리용</summary>
+    public Vector3 GetItemWorldPositionAt(int index)
+        => transform.position + transform.rotation * (placementOffset + layout.GetLocalPosition(index));
+
+    /// <summary>이미 위치가 확정된 아이템을 placedItems에 직접 등록 (코인 날리기 연출 완료 후 사용)</summary>
+    public void AddPlacedItem(GameObject item)
+        => placedItems.Add(item);
 
     protected override void OnPlayerEnter(Collider player)
     {

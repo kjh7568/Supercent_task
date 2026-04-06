@@ -907,3 +907,15 @@
 **Assistant:** onComplete에서 SetParent(null) + world position/rotation 직접 설정으로 수정. DepositZone scale 영향 제거.
 
 **User:** 오케이 프롬프트랑 리퀘스트 갱신하고 언스테이지 내용 커밋까지 해줘
+
+**Assistant:** 갱신 + 커밋 완료.
+
+**User:** 이번엔 죄수가 돈을 내는 연출이 필요해. 죄수가 돈을 낼 때는 하나하나 내는게 아니라 한번에 여러개를 내는거야.
+
+**Assistant:** 질문 - 1. 코인이 죄수→픽업존으로 날아가는 연출? 2. 동시 vs 연속? 3. 죄수 위치에서 새로 생성?
+
+**User:** 1. 픽업존. 2. 연속이 아니라 4개 사면 4개 동시. 3. ㅇㅇ.
+
+**Assistant:** 출발 위치 동일, 도착 위치(그리드 슬롯)가 달라서 퍼지는 효과 자연 발생. PickupZone에 RemainingCapacity/GetItemLocalPositionAt/GetItemWorldPositionAt/AddPlacedItem 추가. CashRegister 즉시 PlaceItem → 동시 Transfer 발사로 교체. onComplete에서 SetParent(null) + world position 확정.
+
+**User:** 리퀘스트랑 프롬프트 갱신해줘
