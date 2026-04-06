@@ -576,6 +576,17 @@ DepositZone/PickupZone에서 아이템 이동 중 존을 나오면 아이템이 
 
 ---
 
+## [025] 리팩토링 - 이벤트 구독 라이프사이클 개선 (2026-04-06)
+
+**요청 내용**
+섹션 4 E-1, E-2 동시 진행.
+
+**구현 방법**
+- E-1: `PrisonCapacityDisplay.OnDestroy()`에 `if (Prison.Instance != null)` null 가드 확인 및 명시. `?.` 연산자는 C# 이벤트 `-=`에 사용 불가(컴파일 에러)이므로 if 형태 유지.
+- E-2: `TutorialUpgradeZoneActivator` 구독 등록 `Start()` → `Awake()`로 이동. `[SerializeField]` 참조는 Awake 시점에 이미 할당됨.
+
+---
+
 ## [024] 리팩토링 - 폴더 분류 및 구조 개선 (2026-04-06)
 
 **요청 내용**

@@ -1125,3 +1125,43 @@
 **User:** 일단 지금까지 내용 리퀘스트랑 프롬프트에 갱신해
 
 **Assistant:** 갱신 완료.
+
+---
+
+## 2026-04-06 리팩토링 세션 (이어서)
+
+**User:** 이전 세션에 이어서 리펙토링 계속 할거야. 먼저 섹션 4를 2~6번 가이드로 재검토 하고 그래도 수정이 필요할 거 같은 것만 남겨두고 지워줘
+
+**Assistant:** U-1~U-4 전부 §2~6 위반 없음. U-1(LateUpdate 이벤트화)은 복잡도 증가, U-2/U-3(debug 플래그)은 단순 분기, U-4(switch 상태)는 타입 배열 고정. §9/§12 관심사. 섹션 4 전체 삭제, 이후 섹션 번호 재정렬.
+
+**User:** 섹션 4 항목 2개 동시에 진행해줘
+
+**Assistant:** E-1: PrisonCapacityDisplay.OnDestroy() null 가드 명시. E-2: TutorialUpgradeZoneActivator Start() → Awake()로 이동.
+
+**User:** 체크리스트 왜 갱신안해? 체크 리스트 갱신해줘. 섹션 3처럼 목표, 어떻게 구현했는지?, 결과도 작성해주고
+
+**Assistant:** Refactoring Checklist.md §4 E-1·E-2 완료 처리. 목표/어떻게 구현했는지/결과 형식으로 갱신.
+
+**User:** 피리즘캐버시디스플레이에 컴파일 에러
+
+**Assistant:** `Prison.Instance?.OnCountChanged -= Refresh;`는 C# 이벤트 `-=`에 `?.` 사용 불가. `if (Prison.Instance != null)` 형태로 복원. 체크리스트 설명도 수정.
+
+**User:** 섹션 5는 그냥 지워
+
+**Assistant:** §5 데이터-로직 혼합 삭제 (MiningUpgradeData, PrisonUpgradeData 모두 이미 ScriptableObject). 섹션 번호 재정렬.
+
+**User:** 언스테이지 내용 전부 커밋
+
+**Assistant:** 커밋 완료. ([리팩토링] E-2: 이벤트 구독 라이프사이클 개선 + 체크리스트 정리)
+
+**User:** 섹션 5는 뭐가 문제라는거야?
+
+**Assistant:** Step 1~5에 `arrow`, `targetPos` 필드 + `OnEnter/OnExit` 1줄 구현이 5개 클래스에 동일하게 복사됨. §6 상속 기준으로 TutorialStepBase 추출 가능하나, 각 클래스가 12줄 내외로 짧고 Step_CameraMove는 패턴이 달라 일관성 저하.
+
+**User:** 보류하자 그럼
+
+**Assistant:** §5 Tutorial 통합 ⏸ 보류 처리. 보류 사유 명시.
+
+**User:** 올프롬프트, 리퀘스트 갱신하고 체크리스트 진행현황도 갱신해줘
+
+**Assistant:** 갱신 완료. 체크리스트 합계 27 → 21, 완료 현황 17완료/2보류로 정정.
